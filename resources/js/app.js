@@ -229,6 +229,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ---------- Thousand-separator numeric inputs ----------
+    // Digits only, grouped with "." (id-ID style, matching number_format($n, 0, ',', '.')).
+    // These are type="text" inputs, so there is no spinner and the scroll wheel
+    // never changes the value. Raw digits are restored before the form posts.
+    const toDigits = (s) => (s || '').replace(/\D/g, '');
+    const groupDigits = (digits) =>
+        digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const digitsToCaret = (text, caret) => toDigits(text.slice(0, caret)).length;
+    const caretForDigits = (text, count) => {
+        let pos = 0;
+        let seen = 0;
+        while (pos < text.length && seen < count) {
+            if (text[pos] >= '0' && text[pos] <= '9') seen++;
+            pos++;
+        }
+        return pos;
+    };
+
+    document.querySelectorAll('[data-numeric]').forEach((input) => {
+        const max = input.dataset.max ? Number(input.dataset.max) : Infinity;
+
+        const reformat = () => {
+            const raw = input.value;
+            const caret = input.selectionStart ?? raw.length;
+            const count = digitsToCaret(raw, caret);
+            const hadFocus = document.activeElement === input;
+
+            let digits = toDigits(raw).replace(/^0+(?=\d)/, '');
+            if (max !== Infinity && digits && Number(digits) > max) digits = String(max);
+            input.value = groupDigits(digits);
+
+            if (hadFocus) {
+                const pos = caretForDigits(input.value, count);
+                input.setSelectionRange(pos, pos);
+            }
+        };
+
+        // Ignore keys that aren't digits or editing keys.
+        input.addEventListener('beforeinput', (e) => {
+            if (e.inputType && e.inputType.startsWith('insert') && !/^insertText$|^insertFromPaste$/.test(e.inputType)) {
+                e.preventDefault();
+            }
+        });
+        input.addEventListener('input', reformat);
+
+        // Format whatever is prefilled (old() or the model value).
+        reformat();
+
+        // Post raw digits so server-side integer validation still passes.
+        input.form?.addEventListener('submit', () => {
+            input.value = toDigits(input.value);
+        });
+    });
+
     // ---------- Nearby search (rAF-debounced) ----------
     const searchInput = document.getElementById('hero-search');
     const searchHint = document.getElementById('search-hint');

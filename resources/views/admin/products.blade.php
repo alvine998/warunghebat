@@ -22,6 +22,11 @@
     @forelse($products as $p)
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-4">
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            @if($p->image_path)
+                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl object-cover border border-ink-900/10 shrink-0">
+            @else
+                <div class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl bg-cream-100 border border-dashed border-ink-900/15 grid place-items-center text-2xl shrink-0">📷</div>
+            @endif
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                     <p class="font-extrabold">{{ $p->name }}</p>

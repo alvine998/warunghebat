@@ -85,6 +85,9 @@
     <div class="mt-4 grid gap-2">
         @foreach($pendingProducts as $p)
         <div class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-2.5">
+            @if($p->image_path)
+                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-10 h-10 rounded-xl object-cover border border-ink-900/10 shrink-0">
+            @endif
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-extrabold truncate">{{ $p->name }}</p>
                 <p class="text-xs font-semibold text-ink-500">{{ $p->user->name }} • {{ $p->category }} • Rp {{ number_format($p->price, 0, ',', '.') }}</p>

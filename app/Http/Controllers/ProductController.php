@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -37,22 +38,36 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->sanitizeNumeric($request);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'category' => ['required', 'string', 'in:' . implode(',', Product::CATEGORIES)],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'price.required' => 'Harga wajib diisi.',
             'price.min' => 'Harga tidak boleh negatif.',
             'stock.required' => 'Stok wajib diisi.',
             'category.in' => 'Kategori tidak valid.',
+            'image.required' => 'Foto produk wajib diunggah (1 foto).',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
+        $imagePath = $request->file('image')->store('products', 'public');
+
         Auth::user()->products()->create([
-            ...$validated,
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'category' => $validated['category'],
+            'image_path' => $imagePath,
             'status' => 'pending',
             'rejection_reason' => null,
         ]);
@@ -72,23 +87,48 @@ class ProductController extends Controller
     {
         $this->authorizeOwner($product);
 
+        $this->sanitizeNumeric($request);
+
+        // 1 product = 1 image. New image optional only if product already has one.
+        $imageRule = $product->image_path
+            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']
+            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'category' => ['required', 'string', 'in:' . implode(',', Product::CATEGORIES)],
+            'image' => $imageRule,
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'price.required' => 'Harga wajib diisi.',
             'price.min' => 'Harga tidak boleh negatif.',
             'stock.required' => 'Stok wajib diisi.',
             'category.in' => 'Kategori tidak valid.',
+            'image.required' => 'Foto produk wajib diunggah (1 foto).',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran foto maksimal 2MB.',
         ]);
+
+        $imagePath = $product->image_path;
+        if ($request->hasFile('image')) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
 
         // Any edit sends the product back to pending for re-verification.
         $product->update([
-            ...$validated,
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'category' => $validated['category'],
+            'image_path' => $imagePath,
             'status' => 'pending',
             'rejection_reason' => null,
         ]);
@@ -101,10 +141,24 @@ class ProductController extends Controller
     {
         $this->authorizeOwner($product);
 
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
+
         $product->delete();
 
         return redirect()->route('seller.products.index')
             ->with('success', 'Produk dihapus.');
+    }
+
+    protected function sanitizeNumeric(Request $request): void
+    {
+        // Inputs are displayed with thousand separators ("15.000"); keep only digits.
+        foreach (['price', 'stock'] as $key) {
+            if ($request->filled($key)) {
+                $request->merge([$key => preg_replace('/\D/', '', (string) $request->input($key))]);
+            }
+        }
     }
 
     protected function authorizeOwner(Product $product): void

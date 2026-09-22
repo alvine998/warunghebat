@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $product->exists ? route('seller.products.update', $product) : route('seller.products.store') }}" class="mt-5 rounded-[28px] bg-white border border-ink-900/10 p-6 grid gap-4">
+    <form method="POST" action="{{ $product->exists ? route('seller.products.update', $product) : route('seller.products.store') }}" enctype="multipart/form-data" class="mt-5 rounded-[28px] bg-white border border-ink-900/10 p-6 grid gap-4">
         @csrf
         @if($product->exists)
             @method('PUT')
@@ -40,11 +40,11 @@
         <div class="grid grid-cols-2 gap-3">
             <div>
                 <label class="text-[13px] font-extrabold">Harga (Rp) *</label>
-                <input name="price" type="number" required min="0" max="1000000000" value="{{ old('price', $product->price ?? 0) }}" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                <input name="price" type="text" inputmode="numeric" autocomplete="off" required data-numeric data-max="1000000000" value="{{ old('price', $product->price ?? 0) }}" placeholder="0" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
             </div>
             <div>
                 <label class="text-[13px] font-extrabold">Stok *</label>
-                <input name="stock" type="number" required min="0" max="1000000" value="{{ old('stock', $product->stock ?? 0) }}" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                <input name="stock" type="text" inputmode="numeric" autocomplete="off" required data-numeric data-max="1000000" value="{{ old('stock', $product->stock ?? 0) }}" placeholder="0" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
             </div>
         </div>
 
@@ -55,6 +55,17 @@
                 <option value="{{ $c }}" @selected(old('category', $product->category ?? 'Lainnya') === $c)>{{ $c }}</option>
                 @endforeach
             </select>
+        </div>
+
+        <div>
+            <label class="text-[13px] font-extrabold">Foto produk * <span class="font-semibold text-ink-500">(1 foto, JPG/PNG/WebP, maks 2MB)</span></label>
+            @if($product->exists && $product->image_path)
+                <div class="mt-1.5 flex items-center gap-3">
+                    <img src="{{ $product->image_url }}" alt="Foto {{ $product->name }}" class="w-20 h-20 rounded-2xl object-cover border border-ink-900/10">
+                    <p class="text-xs font-semibold text-ink-500">Foto saat ini. Unggah file baru untuk mengganti (tetap 1 foto).</p>
+                </div>
+            @endif
+            <input name="image" type="file" accept="image/jpeg,image/png,image/webp" {{ $product->exists && $product->image_path ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
         </div>
 
         <button class="mt-1 w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 transition">{{ $product->exists ? 'Simpan & kirim verifikasi ulang' : 'Simpan & kirim verifikasi' }}</button>

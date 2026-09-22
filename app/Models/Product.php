@@ -14,6 +14,7 @@ class Product extends Model
         'price',
         'stock',
         'category',
+        'image_path',
         'status',
         'rejection_reason',
     ];
@@ -41,6 +42,15 @@ class Product extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        return asset('storage/' . ltrim($this->image_path, '/'));
     }
 
     public function isPending(): bool
