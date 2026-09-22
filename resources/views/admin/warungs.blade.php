@@ -9,7 +9,6 @@
         <h1 class="font-black tracking-tight text-3xl mt-1">{{ $warungs->count() }} warung terdaftar</h1>
         <p class="text-sm font-medium text-ink-500">Verifikasi status warung: Aktif, Review, Nonaktif.</p>
     </div>
-    <span class="text-sm font-extrabold bg-leaf-600 text-white px-5 py-2.5 rounded-full w-fit">+ Tambah Warung</span>
 </div>
 
 <form method="GET" action="{{ route('admin.warungs') }}" class="mt-4 flex flex-col sm:flex-row gap-2">

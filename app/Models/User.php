@@ -87,6 +87,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Inventory-based financial overview for this seller's catalog.
+     *
+     * @return array{inventory_value: int, avg_price: int, total: int, categories: Collection, top_products: Collection}
+     */
+    public function financialOverview(): array
+    {
+        return [
+            'inventory_value' => (int) $this->products()->selectRaw('COALESCE(SUM(price * stock), 0) AS total')->value('total'),
+            'avg_price' => (int) round($this->products()->avg('price') ?? 0),
+            'total' => $this->products()->count(),
+            'categories' => $this->products()
+                ->selectRaw('category, COUNT(*) AS products, COALESCE(SUM(stock), 0) AS stock, COALESCE(SUM(price * stock), 0) AS value')
+                ->groupBy('category')
+                ->orderByDesc('value')
+                ->get(),
+            'top_products' => $this->products()
+                ->selectRaw('products.*, (price * stock) AS stock_value')
+                ->orderByDesc('stock_value')
+                ->take(5)
+                ->get(),
+        ];
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

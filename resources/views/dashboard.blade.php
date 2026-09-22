@@ -63,6 +63,18 @@
             @include('seller.store._stats')
         </div>
         @endif
+        @if(auth()->user()->canSell() && ! empty($finance ?? null))
+        <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                    <p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">💰 RINGKASAN KEUANGAN</p>
+                    <h2 class="font-extrabold text-lg mt-0.5">Nilai daganganmu</h2>
+                </div>
+                <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-brand-600">Kelola produk →</a>
+            </div>
+            @include('seller.store._finance')
+        </div>
+        @endif
         <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
             <div class="flex items-center justify-between">
                 <h2 class="font-extrabold text-lg">Pesanan terakhir</h2>

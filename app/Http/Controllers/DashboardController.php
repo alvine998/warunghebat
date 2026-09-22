@@ -25,7 +25,8 @@ class DashboardController extends Controller
         $storeStats = $user->canSell() ? $user->storeStats() : null;
         $lowStockProducts = $user->canSell() ? $user->lowStockProducts() : collect();
         $store = $user->canSell() ? Store::resolveFor($user) : null;
+        $finance = $user->canSell() ? $user->financialOverview() : null;
 
-        return view('dashboard', compact('stats', 'recentOrders', 'storeStats', 'lowStockProducts', 'store'));
+        return view('dashboard', compact('stats', 'recentOrders', 'storeStats', 'lowStockProducts', 'store', 'finance'));
     }
 }
