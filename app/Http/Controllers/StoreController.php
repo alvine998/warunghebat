@@ -84,7 +84,7 @@ class StoreController extends Controller
             'phone' => $validated['phone'] ?? null,
             'open_time' => $validated['open_time'] ?? null,
             'close_time' => $validated['close_time'] ?? null,
-            'is_open' => $request->boolean('is_open'),
+            'is_open' => $request->has('is_open') ? $request->boolean('is_open') : $store->is_open,
             'image_path' => $imagePath,
         ]);
 

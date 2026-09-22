@@ -12,6 +12,15 @@
     <span class="text-sm font-extrabold bg-leaf-600 text-white px-5 py-2.5 rounded-full w-fit">+ Tambah Warung</span>
 </div>
 
+<form method="GET" action="{{ route('admin.warungs') }}" class="mt-4 flex flex-col sm:flex-row gap-2">
+    <label class="sr-only" for="warung-search">Cari warung</label>
+    <div class="flex flex-1 items-center gap-2 rounded-2xl bg-white border border-ink-900/10 px-4 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10">
+        <x-icon name="search" class="w-5 h-5 text-ink-400" />
+        <input id="warung-search" name="search" value="{{ request('search') }}" type="search" placeholder="Cari nama warung, pemilik, atau kategori..." class="w-full bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-ink-400">
+    </div>
+    <button type="submit" class="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-600 transition">Cari</button>
+</form>
+
 <div class="mt-5 grid gap-3 sm:grid-cols-2">
     @foreach($warungs as $w)
     <article class="rounded-[24px] bg-white border border-ink-900/10 p-5">
@@ -29,5 +38,8 @@
         </div>
     </article>
     @endforeach
+    @if($warungs->isEmpty())
+        <div class="sm:col-span-2 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-8 text-center font-semibold text-ink-500">Tidak ada warung yang cocok dengan pencarian.</div>
+    @endif
 </div>
 @endsection

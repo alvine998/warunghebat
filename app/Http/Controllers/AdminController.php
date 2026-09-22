@@ -39,9 +39,17 @@ class AdminController extends Controller
     {
         $query = User::latest();
         $role = $request->input('role');
+        $search = trim((string) $request->input('search', ''));
 
         if (is_string($role) && in_array($role, ['pembeli', 'penjual', 'admin'], true)) {
             $query->where('role', $role);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
         }
 
         $users = $query->paginate(15)->withQueryString();
@@ -49,7 +57,7 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
     }
 
-    public function warungs(): View
+    public function warungs(Request $request): View
     {
         $warungs = collect([
             ['name' => 'Warung Bang Jago', 'owner' => 'Bang Jago', 'cat' => 'Makanan', 'distance' => '200m', 'rating' => '4.9', 'status' => 'Aktif'],
@@ -59,6 +67,14 @@ class AdminController extends Controller
             ['name' => 'Dapur Nusa Frozen', 'owner' => 'Nusa', 'cat' => 'Frozen', 'distance' => '800m', 'rating' => '4.8', 'status' => 'Aktif'],
             ['name' => 'Toko Harian Berkah', 'owner' => 'Pak Berkah', 'cat' => 'Harian', 'distance' => '900m', 'rating' => '4.6', 'status' => 'Nonaktif'],
         ]);
+        $search = trim((string) $request->input('search', ''));
+
+        if ($search !== '') {
+            $search = strtolower($search);
+            $warungs = $warungs->filter(function (array $warung) use ($search): bool {
+                return str_contains(strtolower(implode(' ', $warung)), $search);
+            })->values();
+        }
 
         return view('admin.warungs', compact('warungs'));
     }
@@ -66,9 +82,22 @@ class AdminController extends Controller
     public function products(Request $request): View
     {
         $query = Product::with('user')->latest();
+        $search = trim((string) $request->input('search', ''));
 
         if ($request->filled('status') && in_array($request->string('status'), Product::STATUSES, true)) {
             $query->where('status', $request->string('status'));
+        }
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search): void {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $products = $query->paginate(15)->withQueryString();

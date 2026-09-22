@@ -79,15 +79,6 @@
             </div>
         </div>
 
-        <label class="flex items-center gap-3 rounded-2xl border border-ink-900/10 bg-cream-50/60 px-4 py-3.5 cursor-pointer">
-            <input type="hidden" name="is_open" value="0">
-            <input name="is_open" type="checkbox" value="1" @checked(old('is_open', $store->is_open)) class="w-5 h-5 accent-leaf-600">
-            <span>
-                <span class="block text-[13px] font-extrabold">Warung sedang buka</span>
-                <span class="block text-xs font-semibold text-ink-500">Matikan jika tutup sementara — pembeli akan melihat status tutup.</span>
-            </span>
-        </label>
-
         <div>
             <label class="text-[13px] font-extrabold">Foto warung <span class="font-semibold text-ink-500">(JPG/PNG/WebP, maks 2MB)</span></label>
             @if($store->image_path)

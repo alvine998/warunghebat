@@ -18,6 +18,18 @@
     <a href="{{ route('admin.products', ['status' => 'rejected']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('status') === 'rejected' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="x-mark" class="w-4 h-4" /> Ditolak ({{ $counts['rejected'] }})</a>
 </div>
 
+<form method="GET" action="{{ route('admin.products') }}" class="mt-4 flex flex-col sm:flex-row gap-2">
+    @if(request('status'))
+        <input type="hidden" name="status" value="{{ request('status') }}">
+    @endif
+    <label class="sr-only" for="product-search">Cari produk</label>
+    <div class="flex flex-1 items-center gap-2 rounded-2xl bg-white border border-ink-900/10 px-4 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10">
+        <x-icon name="search" class="w-5 h-5 text-ink-400" />
+        <input id="product-search" name="search" value="{{ request('search') }}" type="search" placeholder="Cari nama produk, kategori, atau penjual..." class="w-full bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-ink-400">
+    </div>
+    <button type="submit" class="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-600 transition">Cari</button>
+</form>
+
 <div class="mt-4 grid gap-2.5">
     @forelse($products as $p)
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-4">
