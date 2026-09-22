@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,12 +29,19 @@ class ProductController extends Controller
             'rejected' => Auth::user()->products()->where('status', 'rejected')->count(),
         ];
 
-        return view('seller.products.index', compact('products', 'counts'));
+        return view('seller.products.index', [
+            'products' => $products,
+            'counts' => $counts,
+            'store' => Store::resolveFor(Auth::user()),
+        ]);
     }
 
     public function create(): View
     {
-        return view('seller.products.form', ['product' => new Product()]);
+        return view('seller.products.form', [
+            'product' => new Product,
+            'store' => Store::resolveFor(Auth::user()),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -45,7 +53,7 @@ class ProductController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
-            'category' => ['required', 'string', 'in:' . implode(',', Product::CATEGORIES)],
+            'category' => ['required', 'string', 'in:'.implode(',', Product::CATEGORIES)],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
             'name.required' => 'Nama produk wajib diisi.',
@@ -80,7 +88,10 @@ class ProductController extends Controller
     {
         $this->authorizeOwner($product);
 
-        return view('seller.products.form', compact('product'));
+        return view('seller.products.form', [
+            'product' => $product,
+            'store' => Store::resolveFor(Auth::user()),
+        ]);
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -99,7 +110,7 @@ class ProductController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
-            'category' => ['required', 'string', 'in:' . implode(',', Product::CATEGORIES)],
+            'category' => ['required', 'string', 'in:'.implode(',', Product::CATEGORIES)],
             'image' => $imageRule,
         ], [
             'name.required' => 'Nama produk wajib diisi.',

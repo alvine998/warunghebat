@@ -6,10 +6,17 @@
 
 @section('content')
 <section class="pt-6 sm:pt-8 pb-10 max-w-2xl mx-auto px-4 sm:px-6">
-    <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Kembali</a>
+    <div class="flex items-center justify-between gap-2 flex-wrap">
+        <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Kembali</a>
+        @include('seller.store._open_toggle', ['store' => $store])
+    </div>
 
     <h1 class="font-black tracking-tight text-3xl mt-2">{{ $product->exists ? 'Edit produk' : 'Tambah produk' }}</h1>
     <p class="text-sm font-medium text-ink-500">{{ $product->exists ? 'Perubahan akan dikirim ulang ke admin untuk verifikasi.' : 'Produk baru menunggu verifikasi admin sebelum tayang.' }}</p>
+
+    @if (session('success'))
+        <div class="mt-4 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
+    @endif
 
     @if ($errors->any())
         <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-bold p-4">

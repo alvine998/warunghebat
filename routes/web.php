@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 
 // ---------- SELLER (penjual + admin, CRUD produk) ----------
 Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(function () {
+    Route::get('/store', [StoreController::class, 'edit'])->name('store.edit');
+    Route::put('/store', [StoreController::class, 'update'])->name('store.update');
+    Route::patch('/store/toggle', [StoreController::class, 'toggle'])->name('store.toggle');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');

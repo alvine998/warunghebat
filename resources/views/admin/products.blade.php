@@ -3,7 +3,7 @@
 @section('title', 'Verifikasi Produk — Backoffice Warung Hebat')
 
 @section('content')
-<p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">📦 VERIFIKASI PRODUK</p>
+<p class="flex items-center gap-2 text-[11px] font-extrabold tracking-[0.2em] text-brand-600"><x-icon name="package" class="w-4 h-4" /> VERIFIKASI PRODUK</p>
 <h1 class="font-black tracking-tight text-3xl mt-1">Produk penjual</h1>
 <p class="text-sm font-medium text-ink-500">Setujui produk yang layak tayang, tolak dengan alasan yang jelas.</p>
 
@@ -13,9 +13,9 @@
 
 <div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
     <a href="{{ route('admin.products') }}" class="px-4 py-2 rounded-full {{ !request('status') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
-    <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'pending' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">⏳ Pending ({{ $counts['pending'] }})</a>
-    <a href="{{ route('admin.products', ['status' => 'approved']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'approved' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">✅ Tayang ({{ $counts['approved'] }})</a>
-    <a href="{{ route('admin.products', ['status' => 'rejected']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'rejected' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">❌ Ditolak ({{ $counts['rejected'] }})</a>
+    <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('status') === 'pending' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="clock" class="w-4 h-4" /> Pending ({{ $counts['pending'] }})</a>
+    <a href="{{ route('admin.products', ['status' => 'approved']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('status') === 'approved' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="check-circle" class="w-4 h-4" /> Tayang ({{ $counts['approved'] }})</a>
+    <a href="{{ route('admin.products', ['status' => 'rejected']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('status') === 'rejected' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="x-mark" class="w-4 h-4" /> Ditolak ({{ $counts['rejected'] }})</a>
 </div>
 
 <div class="mt-4 grid gap-2.5">
@@ -25,7 +25,7 @@
             @if($p->image_path)
                 <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl object-cover border border-ink-900/10 shrink-0">
             @else
-                <div class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl bg-cream-100 border border-dashed border-ink-900/15 grid place-items-center text-2xl shrink-0">📷</div>
+                <div class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl bg-cream-100 border border-dashed border-ink-900/15 grid place-items-center shrink-0"><x-icon name="document" class="w-7 h-7 text-ink-400" /></div>
             @endif
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">

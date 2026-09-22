@@ -27,11 +27,11 @@
             </form>
         </div>
         <nav class="hidden lg:grid gap-1 px-4 text-sm font-bold">
-            <a href="{{ route('admin.dashboard') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">📊 Ringkasan</a>
-            <a href="{{ route('admin.users') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">👥 Pengguna</a>
-            <a href="{{ route('admin.warungs') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">🏪 Warung</a>
-            <a href="{{ route('admin.products') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">📦 Produk</a>
-            <a href="{{ route('home') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 text-white/80">🌐 Lihat Situs</a>
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="chart" class="w-5 h-5" /> Ringkasan</a>
+            <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="users" class="w-5 h-5" /> Pengguna</a>
+            <a href="{{ route('admin.warungs') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="store" class="w-5 h-5" /> Warung</a>
+            <a href="{{ route('admin.products') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="package" class="w-5 h-5" /> Produk</a>
+            <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 text-white/80"><x-icon name="globe" class="w-5 h-5" /> Lihat Situs</a>
         </nav>
         <div class="hidden lg:block mt-auto p-4">
             <div class="rounded-2xl bg-white/[.07] border border-white/10 p-4">
@@ -48,10 +48,10 @@
     {{-- Mobile top tabs --}}
     <div class="lg:hidden bg-ink-900 text-white px-4 pb-4 -mt-1">
         <nav class="grid grid-cols-4 gap-1.5 text-[13px] font-extrabold">
-            <a href="{{ route('admin.dashboard') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'bg-white/10' }}">📊 Ringkasan</a>
-            <a href="{{ route('admin.users') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'bg-white/10' }}">👥 Pengguna</a>
-            <a href="{{ route('admin.warungs') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'bg-white/10' }}">🏪 Warung</a>
-            <a href="{{ route('admin.products') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'bg-white/10' }}">📦 Produk</a>
+            <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 text-center py-2.5 rounded-xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="chart" class="w-5 h-5" /> Ringkasan</a>
+            <a href="{{ route('admin.users') }}" class="flex flex-col items-center gap-1 text-center py-2.5 rounded-xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="users" class="w-5 h-5" /> Pengguna</a>
+            <a href="{{ route('admin.warungs') }}" class="flex flex-col items-center gap-1 text-center py-2.5 rounded-xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="store" class="w-5 h-5" /> Warung</a>
+            <a href="{{ route('admin.products') }}" class="flex flex-col items-center gap-1 text-center py-2.5 rounded-xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="package" class="w-5 h-5" /> Produk</a>
         </nav>
     </div>
 

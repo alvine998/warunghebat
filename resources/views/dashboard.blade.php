@@ -6,12 +6,17 @@
 
 @section('content')
 <section class="pt-6 sm:pt-8 pb-10 max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex items-center justify-between gap-2 mb-5 flex-wrap">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <span class="w-9 h-9 rounded-xl bg-ink-900 grid place-items-center -rotate-3"><span class="text-brand-400 font-black">W</span></span>
             <span class="font-extrabold">Warung Hebat</span>
         </a>
-        <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-[13px] font-extrabold border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-5 py-2.5 transition"><x-icon name="globe" class="w-4 h-4" /> Lihat Situs</a>
+        <div class="flex items-center gap-2 flex-wrap">
+            @if(auth()->user()->canSell() && ! empty($store ?? null))
+                @include('seller.store._open_toggle', ['store' => $store])
+            @endif
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-[13px] font-extrabold border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-5 py-2.5 transition"><x-icon name="globe" class="w-4 h-4" /> Lihat Situs</a>
+        </div>
     </div>
     @if (session('success'))
         <div class="mb-5 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
@@ -42,6 +47,22 @@
     </div>
 
     <div class="mt-5 grid gap-3.5 lg:grid-cols-[1fr_380px]">
+        <div class="grid gap-3.5 content-start">
+        @if(auth()->user()->canSell() && ! empty($storeStats ?? null))
+        <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                    <p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">📊 STATISTIK WARUNG</p>
+                    <h2 class="font-extrabold text-lg mt-0.5">Performa tokomu</h2>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ route('seller.store.edit') }}" class="text-[13px] font-extrabold px-4 py-2 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">⚙️ Pengaturan</a>
+                    <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-brand-600">Kelola produk →</a>
+                </div>
+            </div>
+            @include('seller.store._stats')
+        </div>
+        @endif
         <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
             <div class="flex items-center justify-between">
                 <h2 class="font-extrabold text-lg">Pesanan terakhir</h2>
@@ -64,14 +85,16 @@
                 @endforelse
             </div>
         </div>
+        </div>
         <div class="grid gap-3.5">
             @if(auth()->user()->canSell())
             <div class="rounded-[28px] bg-ink-900 text-white p-6">
                 <p class="font-extrabold">Kelola produkmu 📦</p>
                 <p class="text-[13px] font-medium text-white/70 mt-1">Tambah, edit, dan pantau status verifikasi admin.</p>
-                <div class="mt-4 flex gap-2">
+                <div class="mt-4 flex gap-2 flex-wrap">
                     <a href="{{ route('seller.products.index') }}" class="bg-white text-ink-900 text-sm font-extrabold px-5 py-2.5 rounded-full">Kelola →</a>
                     <a href="{{ route('seller.products.create') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">+ Tambah</a>
+                    <a href="{{ route('seller.store.edit') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">⚙️ Warung</a>
                 </div>
             </div>
             @else

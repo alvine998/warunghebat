@@ -5,7 +5,7 @@
 @section('content')
 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
     <div>
-        <p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">🏪 WARUNG MITRA</p>
+        <p class="flex items-center gap-2 text-[11px] font-extrabold tracking-[0.2em] text-brand-600"><x-icon name="store" class="w-4 h-4" /> WARUNG MITRA</p>
         <h1 class="font-black tracking-tight text-3xl mt-1">{{ $warungs->count() }} warung terdaftar</h1>
         <p class="text-sm font-medium text-ink-500">Verifikasi status warung: Aktif, Review, Nonaktif.</p>
     </div>
@@ -18,7 +18,7 @@
         <div class="flex items-start justify-between gap-3">
             <div>
                 <p class="font-extrabold text-lg">{{ $w['name'] }}</p>
-                <p class="text-[13px] font-semibold text-ink-500">{{ $w['owner'] }} • {{ $w['cat'] }} • 📍 {{ $w['distance'] }} • ⭐ {{ $w['rating'] }}</p>
+                <p class="flex items-center gap-1 text-[13px] font-semibold text-ink-500">{{ $w['owner'] }} • {{ $w['cat'] }} • <x-icon name="map-pin" class="w-3.5 h-3.5" /> {{ $w['distance'] }} • <x-icon name="star-solid" class="w-3.5 h-3.5 text-amber-500" /> {{ $w['rating'] }}</p>
             </div>
             <span class="shrink-0 text-[11px] font-extrabold rounded-full px-3 py-1.5 {{ $w['status'] === 'Aktif' ? 'bg-leaf-100 text-leaf-700' : ($w['status'] === 'Review' ? 'bg-amber-100 text-amber-800' : 'bg-ink-900/10 text-ink-500') }}">{{ $w['status'] }}</span>
         </div>

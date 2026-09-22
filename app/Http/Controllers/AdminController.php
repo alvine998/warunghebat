@@ -35,9 +35,16 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('stats', 'latestUsers', 'warungs', 'pendingProducts'));
     }
 
-    public function users(): View
+    public function users(Request $request): View
     {
-        $users = User::latest()->paginate(15);
+        $query = User::latest();
+        $role = $request->input('role');
+
+        if (is_string($role) && in_array($role, ['pembeli', 'penjual', 'admin'], true)) {
+            $query->where('role', $role);
+        }
+
+        $users = $query->paginate(15)->withQueryString();
 
         return view('admin.users', compact('users'));
     }

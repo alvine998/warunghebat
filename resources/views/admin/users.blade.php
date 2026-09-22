@@ -3,9 +3,16 @@
 @section('title', 'Pengguna — Backoffice Warung Hebat')
 
 @section('content')
-<p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">👥 PENGGUNA</p>
+<p class="flex items-center gap-2 text-[11px] font-extrabold tracking-[0.2em] text-brand-600"><x-icon name="users" class="w-4 h-4" /> PENGGUNA</p>
 <h1 class="font-black tracking-tight text-3xl mt-1">Semua pengguna</h1>
 <p class="text-sm font-medium text-ink-500">{{ $users->total() }} akun terdaftar • peran: pembeli, penjual, admin.</p>
+
+<div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
+    <a href="{{ route('admin.users') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ !request('role') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="users" class="w-4 h-4" /> Semua</a>
+    <a href="{{ route('admin.users', ['role' => 'pembeli']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('role') === 'pembeli' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="shopping-bag" class="w-4 h-4" /> Pembeli</a>
+    <a href="{{ route('admin.users', ['role' => 'penjual']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('role') === 'penjual' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="store" class="w-4 h-4" /> Penjual</a>
+    <a href="{{ route('admin.users', ['role' => 'admin']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('role') === 'admin' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="shield" class="w-4 h-4" /> Admin</a>
+</div>
 
 <div class="mt-5 rounded-[24px] bg-white border border-ink-900/10 overflow-hidden">
     <div class="overflow-x-auto">

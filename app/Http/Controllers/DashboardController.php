@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -21,6 +22,10 @@ class DashboardController extends Controller
 
         $recentOrders = $user->orders()->latest()->take(5)->get();
 
-        return view('dashboard', compact('stats', 'recentOrders'));
+        $storeStats = $user->canSell() ? $user->storeStats() : null;
+        $lowStockProducts = $user->canSell() ? $user->lowStockProducts() : collect();
+        $store = $user->canSell() ? Store::resolveFor($user) : null;
+
+        return view('dashboard', compact('stats', 'recentOrders', 'storeStats', 'lowStockProducts', 'store'));
     }
 }

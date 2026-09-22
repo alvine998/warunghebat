@@ -6,9 +6,13 @@
 
 @section('content')
 <section class="pt-6 sm:pt-8 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex items-center justify-between gap-2 mb-5 flex-wrap">
         <a href="{{ route('dashboard') }}" class="text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Dashboard</a>
-        <a href="{{ route('seller.products.create') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">+ Tambah Produk</a>
+        <div class="flex items-center gap-2 flex-wrap">
+            @include('seller.store._open_toggle', ['store' => $store])
+            <a href="{{ route('seller.store.edit') }}" class="text-[13px] font-extrabold px-5 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">⚙️ Pengaturan Warung</a>
+            <a href="{{ route('seller.products.create') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">+ Tambah Produk</a>
+        </div>
     </div>
 
     @if (session('success'))

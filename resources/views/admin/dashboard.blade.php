@@ -5,8 +5,8 @@
 @section('content')
 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
     <div>
-        <p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">📊 RINGKASAN</p>
-        <h1 class="font-black tracking-tight text-3xl mt-1">Halo, {{ strtok(auth()->user()->name, ' ') }} 👋</h1>
+        <p class="flex items-center gap-2 text-[11px] font-extrabold tracking-[0.2em] text-brand-600"><x-icon name="chart" class="w-4 h-4" /> RINGKASAN</p>
+        <h1 class="font-black tracking-tight text-3xl mt-1">Halo, {{ strtok(auth()->user()->name, ' ') }}</h1>
         <p class="text-sm font-medium text-ink-500">Kondisi marketplace hari ini, Selasa 23 Sep 2026.</p>
     </div>
     <a href="{{ route('admin.users') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Kelola Pengguna →</a>
@@ -14,13 +14,13 @@
 
 <div class="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
     @foreach([
-        ['👥','Total Pengguna', $stats['users'], 'bg-ink-900 text-white'],
-        ['🛍️','Pembeli', $stats['pembeli'], 'bg-white border border-ink-900/10'],
-        ['🏪','Penjual', $stats['penjual'], 'bg-white border border-ink-900/10'],
-        ['🛠️','Admin', $stats['admins'], 'bg-brand-500 text-white'],
+        ['users','Total Pengguna', $stats['users'], 'bg-ink-900 text-white'],
+        ['shopping-bag','Pembeli', $stats['pembeli'], 'bg-white border border-ink-900/10'],
+        ['store','Penjual', $stats['penjual'], 'bg-white border border-ink-900/10'],
+        ['shield','Admin', $stats['admins'], 'bg-brand-500 text-white'],
     ] as $s)
     <div class="rounded-[24px] p-5 {{ $s[3] }}">
-        <p class="text-2xl">{{ $s[0] }}</p>
+        <x-icon name="{{ $s[0] }}" class="w-7 h-7" />
         <p class="font-black text-3xl mt-1">{{ number_format($s[2], 0, ',', '.') }}</p>
         <p class="text-[12px] font-bold opacity-70">{{ $s[1] }}</p>
     </div>
@@ -29,7 +29,7 @@
 
 <div class="mt-3 rounded-[24px] bg-amber-50 border border-amber-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
     <div class="flex-1">
-        <p class="font-extrabold">⏳ {{ number_format($stats['pending_products'] ?? 0, 0, ',', '.') }} produk menunggu verifikasi</p>
+        <p class="flex items-center gap-2 font-extrabold"><x-icon name="clock" class="w-5 h-5" /> {{ number_format($stats['pending_products'] ?? 0, 0, ',', '.') }} produk menunggu verifikasi</p>
         <p class="text-[13px] font-medium text-amber-900/70">Setujui produk yang layak tayang, tolak dengan alasan yang jelas.</p>
     </div>
     <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Verifikasi →</a>
