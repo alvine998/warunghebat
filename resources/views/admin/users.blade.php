@@ -1,0 +1,39 @@
+@extends('layouts.admin')
+
+@section('title', 'Pengguna — Backoffice Warung Hebat')
+
+@section('content')
+<p class="text-[11px] font-extrabold tracking-[0.2em] text-brand-600">👥 PENGGUNA</p>
+<h1 class="font-black tracking-tight text-3xl mt-1">Semua pengguna</h1>
+<p class="text-sm font-medium text-ink-500">{{ $users->total() }} akun terdaftar • peran: pembeli, penjual, admin.</p>
+
+<div class="mt-5 rounded-[24px] bg-white border border-ink-900/10 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[640px]">
+            <thead>
+                <tr class="text-left text-[11px] font-extrabold tracking-widest text-ink-500 border-b border-ink-900/10">
+                    <th class="px-5 py-4">NAMA</th>
+                    <th class="px-5 py-4">EMAIL</th>
+                    <th class="px-5 py-4">PERAN</th>
+                    <th class="px-5 py-4">GABUNG</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($users as $u)
+                <tr class="border-b border-ink-900/5 last:border-0 hover:bg-cream-50">
+                    <td class="px-5 py-3.5 font-extrabold whitespace-nowrap">
+                        <span class="inline-grid place-items-center w-8 h-8 rounded-lg text-white text-xs font-black mr-2 {{ $u->role === 'admin' ? 'bg-brand-500' : ($u->role === 'penjual' ? 'bg-leaf-600' : 'bg-ink-900') }}">{{ strtoupper(substr($u->name, 0, 1)) }}</span>{{ $u->name }}
+                    </td>
+                    <td class="px-5 py-3.5 font-medium text-ink-500">{{ $u->email }}</td>
+                    <td class="px-5 py-3.5"><span class="text-[11px] font-extrabold rounded-full px-3 py-1.5 {{ $u->role === 'admin' ? 'bg-brand-100 text-brand-700' : ($u->role === 'penjual' ? 'bg-leaf-100 text-leaf-700' : 'bg-cream-100 text-ink-700') }}">{{ $u->role }}</span></td>
+                    <td class="px-5 py-3.5 font-semibold text-ink-500 whitespace-nowrap">{{ $u->created_at->format('d M Y') }}</td>
+                </tr>
+                @empty
+                <tr><td colspan="4" class="px-5 py-8 text-center font-semibold text-ink-500">Belum ada pengguna.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="mt-4">{{ $users->links() }}</div>
+@endsection

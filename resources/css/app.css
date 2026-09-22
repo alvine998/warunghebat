@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-cream-50: #FFF9EF;
+    --color-cream-100: #FFF3DC;
+    --color-cream-200: #FFE8BD;
+
+    --color-brand-50: #FFF4E8;
+    --color-brand-100: #FFE6CC;
+    --color-brand-200: #FFC999;
+    --color-brand-300: #FFA566;
+    --color-brand-400: #FF7A29;
+    --color-brand-500: #F95D0B;
+    --color-brand-600: #EA4A05;
+    --color-brand-700: #C23807;
+
+    --color-leaf-50: #EFFBF3;
+    --color-leaf-100: #D7F5E1;
+    --color-leaf-500: #159A4C;
+    --color-leaf-600: #0D7A3B;
+    --color-leaf-700: #0B6130;
+    --color-leaf-900: #0A2E18;
+
+    --color-ink-900: #1A130D;
+    --color-ink-700: #41352A;
+    --color-ink-500: #7A6C5E;
+
+    --animate-marquee: marquee 28s linear infinite;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-float-slow: float 8s ease-in-out infinite;
+
+    @keyframes marquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+}
+
+/* Lenis smooth scroll base */
+html.lenis, html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--color-cream-50);
+    color: var(--color-ink-900);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeSpeed;
+}
+
+/* Skip rendering offscreen sections until scrolled near.
+   Big win for initial render + scroll perf on mobile. */
+#kategori,
+#cara-kerja,
+#warung,
+#mitra,
+#faq {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+}
+
+/* Reveal on scroll — transform/opacity only (GPU-friendly) */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal-scale {
+    opacity: 0;
+    transform: scale(.94) translateY(16px);
+    transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+}
+.reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+/* Marquee: GPU layer + pause when offscreen (toggled by JS) */
+.animate-marquee {
+    will-change: transform;
+    transform: translateZ(0);
+}
+.marquee-paused .animate-marquee {
+    animation-play-state: paused;
+}
+
+/* Floating cards: only animate when visible; cheaper on mobile */
+.animate-float, .animate-float-slow {
+    transform: translateZ(0);
+}
+@media (max-width: 640px) {
+    .animate-float, .animate-float-slow {
+        animation-duration: 9s;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal-scale {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .animate-marquee, .animate-float, .animate-float-slow {
+        animation: none;
+    }
+}
+
+/* Custom scrollbar — desktop only (mobile never sees it) */
+@media (hover: hover) and (pointer: fine) {
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #FFF9EF; }
+    ::-webkit-scrollbar-thumb { background: #1A130D; border-radius: 99px; border: 2px solid #FFF9EF; }
+}
+
+/* Grain texture — desktop only. The feTurbulence SVG repaint
+   is expensive on mobile GPUs, so skip it there. */
+@media (hover: hover) and (pointer: fine) {
+    .grain::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: .08;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+}
+
+/* Hero phone tilt on desktop */
+@media (min-width: 1024px) {
+    .phone-tilt {
+        transform: perspective(1200px) rotateY(-12deg) rotateX(4deg);
+        transition: transform .6s cubic-bezier(.22,1,.36,1);
+    }
+    .phone-tilt:hover {
+        transform: perspective(1200px) rotateY(-4deg) rotateX(1deg);
+    }
+}
+
+/* Bottom nav safe area */
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}

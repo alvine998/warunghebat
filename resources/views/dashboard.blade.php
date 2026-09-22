@@ -1,0 +1,85 @@
+@extends('layouts.app')
+
+@section('title', 'Dashboard — Warung Hebat')
+
+@section('bare', true)
+
+@section('content')
+<section class="pt-6 sm:pt-8 pb-10 max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between mb-5">
+        <a href="{{ route('home') }}" class="flex items-center gap-2">
+            <span class="w-9 h-9 rounded-xl bg-ink-900 grid place-items-center -rotate-3"><span class="text-brand-400 font-black">W</span></span>
+            <span class="font-extrabold">Warung Hebat</span>
+        </a>
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-[13px] font-extrabold border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-5 py-2.5 transition"><x-icon name="globe" class="w-4 h-4" /> Lihat Situs</a>
+    </div>
+    @if (session('success'))
+        <div class="mb-5 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="mb-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4">{{ session('error') }}</div>
+    @endif
+
+    <div class="rounded-[28px] bg-ink-900 text-white p-6 sm:p-8 relative overflow-hidden grain">
+        <div class="absolute -top-20 -right-20 w-72 h-72 bg-brand-500/30 blur-[90px] rounded-full"></div>
+        <div class="relative flex flex-col sm:flex-row sm:items-center gap-5">
+            <span class="w-16 h-16 rounded-3xl bg-brand-500 grid place-items-center text-2xl font-black shrink-0">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+            <div class="flex-1">
+                <p class="text-[12px] font-bold text-white/50 tracking-widest">SELAMAT DATANG KEMBALI 👋</p>
+                <h1 class="font-black tracking-tight text-2xl sm:text-3xl">{{ auth()->user()->name }}</h1>
+                <p class="text-sm font-medium text-white/60">{{ auth()->user()->email }} • Bergabung {{ auth()->user()->created_at->diffForHumans() }}</p>
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="bg-white/10 border border-white/15 hover:bg-white/20 font-extrabold text-sm px-6 py-3 rounded-full transition">Keluar</button>
+            </form>
+        </div>
+        <div class="relative mt-6 grid grid-cols-3 gap-2.5 max-w-lg">
+            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['points'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">POIN HEBAT</p></div>
+            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['orders'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">PESANAN</p></div>
+            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['favorites'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">WARUNG FAVORIT</p></div>
+        </div>
+    </div>
+
+    <div class="mt-5 grid gap-3.5 lg:grid-cols-[1fr_380px]">
+        <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="font-extrabold text-lg">Pesanan terakhir</h2>
+                <a href="{{ route('home') }}#warung" class="text-[13px] font-extrabold text-brand-600">+ Pesan lagi</a>
+            </div>
+            <div class="mt-4 grid gap-2.5">
+                @forelse($recentOrders as $o)
+                <div class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-3">
+                    <span class="w-11 h-11 rounded-xl bg-cream-100 grid place-items-center text-xl">{{ $o->icon }}</span>
+                    <div class="flex-1 min-w-0"><p class="text-sm font-extrabold truncate">{{ $o->item_name }}</p><p class="text-xs font-semibold text-ink-500">{{ $o->warung_name }} • {{ $o->created_at->diffForHumans() }}</p></div>
+                    <div class="text-right"><p class="text-sm font-black">Rp {{ number_format($o->total, 0, ',', '.') }}</p><span class="text-[11px] font-extrabold rounded-full px-2.5 py-1 {{ $o->status === 'Selesai' ? 'bg-leaf-100 text-leaf-700' : 'bg-brand-100 text-brand-700' }}">{{ $o->status }}</span></div>
+                </div>
+                @empty
+                <div class="rounded-2xl border border-dashed border-ink-900/15 p-6 text-center">
+                    <p class="text-2xl">🍽️</p>
+                    <p class="mt-1 text-sm font-extrabold">Belum ada pesanan</p>
+                    <p class="text-xs font-semibold text-ink-500">Yuk jajan di warung terdekat dan kumpulkan poin.</p>
+                    <a href="{{ route('home') }}#warung" class="mt-3 inline-block text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Cari Warung →</a>
+                </div>
+                @endforelse
+            </div>
+        </div>
+        <div class="grid gap-3.5">
+            <div class="rounded-[28px] bg-leaf-600 text-white p-6">
+                <p class="font-extrabold">Mau buka warung? 🏪</p>
+                <p class="text-[13px] font-medium text-white/75 mt-1">Daftar jadi mitra gratis, 0% komisi 3 bulan pertama.</p>
+                <a href="{{ route('home') }}#mitra" class="mt-4 inline-block bg-white text-leaf-700 text-sm font-extrabold px-5 py-2.5 rounded-full">Pelajari →</a>
+            </div>
+            <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
+                <p class="font-extrabold">Aksi cepat</p>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <a href="{{ route('home') }}#warung" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">📍 Terdekat</a>
+                    <a href="{{ route('home') }}#kategori" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">🛍️ Kategori</a>
+                    <a href="#" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">🎁 Voucher</a>
+                    <a href="#" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">💬 Bantuan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
