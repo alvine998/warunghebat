@@ -59,5 +59,6 @@
         @yield('content')
     </main>
 </div>
+@include('components.toasts')
 </body>
 </html>

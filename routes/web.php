@@ -53,6 +53,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::get('/warungs', [AdminController::class, 'warungs'])->name('warungs');
     Route::get('/products', [AdminController::class, 'products'])->name('products');
+    Route::patch('/products/bulk-update', [AdminController::class, 'bulkUpdate'])->name('products.bulk-update');
     Route::patch('/products/{product}/approve', [AdminController::class, 'approve'])->name('products.approve');
     Route::patch('/products/{product}/reject', [AdminController::class, 'reject'])->name('products.reject');
 });

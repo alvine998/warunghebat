@@ -10,6 +10,9 @@
 @if (session('success'))
     <div class="mt-4 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
 @endif
+@if ($errors->any())
+    <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4">{{ $errors->first() }}</div>
+@endif
 
 <div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
     <a href="{{ route('admin.products') }}" class="px-4 py-2 rounded-full {{ !request('status') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
@@ -30,10 +33,35 @@
     <button type="submit" class="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-600 transition">Cari</button>
 </form>
 
+<form id="bulk-products-form" method="POST" action="{{ route('admin.products.bulk-update') }}" class="mt-4 rounded-[24px] bg-ink-900 text-white p-4 sm:p-5" onsubmit="return confirm('Terapkan tindakan ini ke produk yang dipilih?');">
+    @csrf
+    @method('PATCH')
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <label class="inline-flex items-center gap-2 text-sm font-extrabold">
+            <input type="checkbox" id="select-all-products" class="h-4 w-4 rounded border-white/30 accent-brand-500">
+            Pilih semua di halaman
+        </label>
+        <span id="selected-products-count" class="text-xs font-semibold text-white/60">0 dipilih</span>
+        <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:justify-end">
+            <select name="action" id="bulk-product-action" required class="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-sm font-bold text-white outline-none focus:border-brand-400">
+                <option value="" class="text-ink-900">Pilih tindakan...</option>
+                <option value="approve" class="text-ink-900">Setujui produk</option>
+                <option value="reject" class="text-ink-900">Tolak produk</option>
+            </select>
+            <button type="submit" class="rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-extrabold hover:bg-brand-600 transition">Terapkan</button>
+        </div>
+    </div>
+    <div id="bulk-rejection-field" class="hidden mt-3">
+        <label for="bulk-rejection-reason" class="sr-only">Alasan penolakan</label>
+        <input id="bulk-rejection-reason" name="rejection_reason" maxlength="1000" placeholder="Alasan penolakan untuk semua produk yang dipilih..." class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-medium text-white outline-none placeholder:text-white/50 focus:border-brand-400">
+    </div>
+</form>
+
 <div class="mt-4 grid gap-2.5">
     @forelse($products as $p)
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-4">
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <input type="checkbox" name="product_ids[]" value="{{ $p->id }}" form="bulk-products-form" class="product-checkbox h-5 w-5 shrink-0 rounded border-ink-900/20 accent-brand-500" aria-label="Pilih {{ $p->name }}">
             @if($p->image_path)
                 <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-full sm:w-16 h-40 sm:h-16 rounded-2xl object-cover border border-ink-900/10 shrink-0">
             @else
@@ -77,4 +105,37 @@
 </div>
 
 <div class="mt-4">{{ $products->links() }}</div>
+
+<script>
+    const selectAllProducts = document.getElementById('select-all-products');
+    const productCheckboxes = [...document.querySelectorAll('.product-checkbox')];
+    const selectedProductsCount = document.getElementById('selected-products-count');
+    const bulkProductAction = document.getElementById('bulk-product-action');
+    const bulkRejectionField = document.getElementById('bulk-rejection-field');
+    const bulkRejectionReason = document.getElementById('bulk-rejection-reason');
+
+    function updateSelectedProducts() {
+        const selectedCount = productCheckboxes.filter((checkbox) => checkbox.checked).length;
+
+        selectedProductsCount.textContent = `${selectedCount} dipilih`;
+        selectAllProducts.checked = productCheckboxes.length > 0 && selectedCount === productCheckboxes.length;
+        selectAllProducts.indeterminate = selectedCount > 0 && selectedCount < productCheckboxes.length;
+    }
+
+    selectAllProducts.addEventListener('change', () => {
+        productCheckboxes.forEach((checkbox) => {
+            checkbox.checked = selectAllProducts.checked;
+        });
+        updateSelectedProducts();
+    });
+
+    productCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', updateSelectedProducts));
+
+    bulkProductAction.addEventListener('change', () => {
+        const rejecting = bulkProductAction.value === 'reject';
+
+        bulkRejectionField.classList.toggle('hidden', ! rejecting);
+        bulkRejectionReason.required = rejecting;
+    });
+</script>
 @endsection

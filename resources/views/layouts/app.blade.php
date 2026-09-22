@@ -192,6 +192,8 @@
         @include('components.auth-modals')
     @endguest
 
+    @include('components.toasts')
+
     @stack('scripts')
 </body>
 </html>

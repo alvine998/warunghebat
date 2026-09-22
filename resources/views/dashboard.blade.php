@@ -18,13 +18,6 @@
             <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-[13px] font-extrabold border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-5 py-2.5 transition"><x-icon name="globe" class="w-4 h-4" /> Lihat Situs</a>
         </div>
     </div>
-    @if (session('success'))
-        <div class="mb-5 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="mb-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4">{{ session('error') }}</div>
-    @endif
-
     <div class="rounded-[28px] bg-ink-900 text-white p-6 sm:p-8 relative overflow-hidden grain">
         <div class="absolute -top-20 -right-20 w-72 h-72 bg-brand-500/30 blur-[90px] rounded-full"></div>
         <div class="relative flex flex-col sm:flex-row sm:items-center gap-5">

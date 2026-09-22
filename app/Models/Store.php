@@ -14,6 +14,8 @@ class Store extends Model
         'slug',
         'description',
         'address',
+        'latitude',
+        'longitude',
         'phone',
         'open_time',
         'close_time',

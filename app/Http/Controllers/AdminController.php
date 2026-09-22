@@ -131,4 +131,27 @@ class AdminController extends Controller
 
         return back()->with('success', "Produk \"{$product->name}\" ditolak dengan alasan.");
     }
+
+    public function bulkUpdate(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'action' => ['required', 'in:approve,reject'],
+            'product_ids' => ['required', 'array', 'min:1'],
+            'product_ids.*' => ['integer', 'distinct', 'exists:products,id'],
+            'rejection_reason' => ['required_if:action,reject', 'nullable', 'string', 'max:1000'],
+        ], [
+            'product_ids.required' => 'Pilih minimal satu produk.',
+            'product_ids.min' => 'Pilih minimal satu produk.',
+            'rejection_reason.required_if' => 'Alasan penolakan wajib diisi.',
+        ]);
+
+        $updates = $validated['action'] === 'approve'
+            ? ['status' => 'approved', 'rejection_reason' => null]
+            : ['status' => 'rejected', 'rejection_reason' => $validated['rejection_reason']];
+
+        $count = Product::whereIn('id', $validated['product_ids'])->update($updates);
+        $message = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
+
+        return back()->with('success', "{$count} produk berhasil {$message}.");
+    }
 }

@@ -15,10 +15,6 @@
         </div>
     </div>
 
-    @if (session('success'))
-        <div class="mb-5 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
-    @endif
-
     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
             <p class="text-[11px] font-extrabold tracking-[0.2em] text-leaf-700">🏪 PRODUK SAYA</p>
