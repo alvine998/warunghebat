@@ -36,12 +36,6 @@
             <h2 class="font-black tracking-tight text-3xl sm:text-4xl">Bikin akun gratis 🎉</h2>
             <p class="text-ink-500 font-medium text-[15px] mt-1.5">Sudah punya akun? <a href="{{ route('login') }}" class="text-brand-600 font-extrabold">Masuk</a></p>
 
-            @if ($errors->any())
-                <div class="mt-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-bold p-4">
-                    <ul class="list-disc pl-4 space-y-1">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
-                </div>
-            @endif
-
             <form method="POST" action="{{ route('register') }}" class="mt-6 grid gap-3.5">
                 @csrf
                 <label class="grid gap-1.5">

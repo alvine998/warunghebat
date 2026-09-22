@@ -14,20 +14,6 @@
     <h1 class="font-black tracking-tight text-3xl mt-2">{{ $product->exists ? 'Edit produk' : 'Tambah produk' }}</h1>
     <p class="text-sm font-medium text-ink-500">{{ $product->exists ? 'Perubahan akan dikirim ulang ke admin untuk verifikasi.' : 'Produk baru menunggu verifikasi admin sebelum tayang.' }}</p>
 
-    @if (session('success'))
-        <div class="mt-4 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
-    @endif
-
-    @if ($errors->any())
-        <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-bold p-4">
-            <ul class="list-disc pl-5 space-y-1">
-                @foreach ($errors->all() as $e)
-                <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <form method="POST" action="{{ $product->exists ? route('seller.products.update', $product) : route('seller.products.store') }}" enctype="multipart/form-data" class="mt-5 rounded-[28px] bg-white border border-ink-900/10 p-6 grid gap-4">
         @csrf
         @if($product->exists)

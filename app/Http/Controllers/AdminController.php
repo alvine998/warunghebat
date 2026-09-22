@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,24 +60,37 @@ class AdminController extends Controller
 
     public function warungs(Request $request): View
     {
-        $warungs = collect([
-            ['name' => 'Warung Bang Jago', 'owner' => 'Bang Jago', 'cat' => 'Makanan', 'distance' => '200m', 'rating' => '4.9', 'status' => 'Aktif'],
-            ['name' => 'Kopi Hebat Tebet', 'owner' => 'Rina', 'cat' => 'Minuman', 'distance' => '350m', 'rating' => '4.8', 'status' => 'Aktif'],
-            ['name' => 'Sembako Bu RT', 'owner' => 'Bu RT', 'cat' => 'Sembako', 'distance' => '500m', 'rating' => '4.9', 'status' => 'Aktif'],
-            ['name' => 'Jajan Pasar Yu Ning', 'owner' => 'Yu Ning', 'cat' => 'Jajanan', 'distance' => '650m', 'rating' => '4.7', 'status' => 'Review'],
-            ['name' => 'Dapur Nusa Frozen', 'owner' => 'Nusa', 'cat' => 'Frozen', 'distance' => '800m', 'rating' => '4.8', 'status' => 'Aktif'],
-            ['name' => 'Toko Harian Berkah', 'owner' => 'Pak Berkah', 'cat' => 'Harian', 'distance' => '900m', 'rating' => '4.6', 'status' => 'Nonaktif'],
-        ]);
+        $query = Store::with(['user' => fn ($query) => $query->withCount('products')])->latest();
         $search = trim((string) $request->input('search', ''));
 
         if ($search !== '') {
-            $search = strtolower($search);
-            $warungs = $warungs->filter(function (array $warung) use ($search): bool {
-                return str_contains(strtolower(implode(' ', $warung)), $search);
-            })->values();
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search): void {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
         }
 
+        $warungs = $query->paginate(12)->withQueryString();
+
         return view('admin.warungs', compact('warungs'));
+    }
+
+    public function suspendStore(Store $store): RedirectResponse
+    {
+        $store->update(['is_open' => false]);
+
+        return back()->with('success', "Warung \"{$store->name}\" berhasil disuspend.");
+    }
+
+    public function activateStore(Store $store): RedirectResponse
+    {
+        $store->update(['is_open' => true]);
+
+        return back()->with('success', "Warung \"{$store->name}\" berhasil diaktifkan kembali.");
     }
 
     public function products(Request $request): View

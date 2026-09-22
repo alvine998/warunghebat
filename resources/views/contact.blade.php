@@ -10,15 +10,6 @@
         <p class="reveal text-ink-500 font-medium text-[15px] mt-2" style="--reveal-delay:140ms">Pesanan bermasalah, mau jadi mitra, atau sekadar kasih masukan — balas maksimal 1×24 jam kerja.</p>
     </div>
 
-    @if (session('success'))
-        <div class="reveal is-visible mt-6 max-w-2xl rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">✅ {{ session('success') }}</div>
-    @endif
-    @if ($errors->any())
-        <div class="mt-6 max-w-2xl rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-bold p-4">
-            <ul class="list-disc pl-4 space-y-1">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
-        </div>
-    @endif
-
     <div class="mt-8 grid gap-3.5 lg:grid-cols-[380px_1fr]">
         {{-- Info channels --}}
         <div class="grid gap-3 content-start">

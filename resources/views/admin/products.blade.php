@@ -7,13 +7,6 @@
 <h1 class="font-black tracking-tight text-3xl mt-1">Produk penjual</h1>
 <p class="text-sm font-medium text-ink-500">Setujui produk yang layak tayang, tolak dengan alasan yang jelas.</p>
 
-@if (session('success'))
-    <div class="mt-4 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-sm font-bold p-4">{{ session('success') }}</div>
-@endif
-@if ($errors->any())
-    <div class="mt-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4">{{ $errors->first() }}</div>
-@endif
-
 <div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
     <a href="{{ route('admin.products') }}" class="px-4 py-2 rounded-full {{ !request('status') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
     <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full {{ request('status') === 'pending' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}"><x-icon name="clock" class="w-4 h-4" /> Pending ({{ $counts['pending'] }})</a>

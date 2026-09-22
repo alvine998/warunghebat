@@ -40,13 +40,6 @@
             <h2 class="font-black tracking-tight text-3xl sm:text-4xl">Masuk dulu yuk 👋</h2>
             <p class="text-ink-500 font-medium text-[15px] mt-1.5">Belum punya akun? <a href="{{ route('register') }}" class="text-brand-600 font-extrabold">Daftar gratis</a></p>
 
-            @if ($errors->any())
-                <div class="mt-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-bold p-4">{{ $errors->first() }}</div>
-            @endif
-            @if (session('success'))
-                <div class="mt-5 rounded-2xl bg-leaf-50 border border-leaf-500/30 text-leaf-700 text-[13px] font-bold p-4">{{ session('success') }}</div>
-            @endif
-
             <form method="POST" action="{{ route('login') }}" class="mt-6 grid gap-3.5">
                 @csrf
                 <label class="grid gap-1.5">
