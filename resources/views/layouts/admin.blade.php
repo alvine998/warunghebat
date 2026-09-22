@@ -30,6 +30,7 @@
             <a href="{{ route('admin.dashboard') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">📊 Ringkasan</a>
             <a href="{{ route('admin.users') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">👥 Pengguna</a>
             <a href="{{ route('admin.warungs') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">🏪 Warung</a>
+            <a href="{{ route('admin.products') }}" class="px-4 py-3 rounded-2xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}">📦 Produk</a>
             <a href="{{ route('home') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 text-white/80">🌐 Lihat Situs</a>
         </nav>
         <div class="hidden lg:block mt-auto p-4">
@@ -46,10 +47,11 @@
 
     {{-- Mobile top tabs --}}
     <div class="lg:hidden bg-ink-900 text-white px-4 pb-4 -mt-1">
-        <nav class="grid grid-cols-3 gap-1.5 text-[13px] font-extrabold">
+        <nav class="grid grid-cols-4 gap-1.5 text-[13px] font-extrabold">
             <a href="{{ route('admin.dashboard') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.dashboard') ? 'bg-white text-ink-900' : 'bg-white/10' }}">📊 Ringkasan</a>
             <a href="{{ route('admin.users') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'bg-white/10' }}">👥 Pengguna</a>
             <a href="{{ route('admin.warungs') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'bg-white/10' }}">🏪 Warung</a>
+            <a href="{{ route('admin.products') }}" class="text-center py-2.5 rounded-xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'bg-white/10' }}">📦 Produk</a>
         </nav>
     </div>
 

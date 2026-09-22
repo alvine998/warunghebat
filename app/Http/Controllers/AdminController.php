@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -14,9 +17,11 @@ class AdminController extends Controller
             'pembeli' => User::where('role', 'pembeli')->count(),
             'penjual' => User::where('role', 'penjual')->count(),
             'admins' => User::where('role', 'admin')->count(),
+            'pending_products' => Product::where('status', 'pending')->count(),
         ];
 
         $latestUsers = User::latest()->take(8)->get();
+        $pendingProducts = Product::with('user')->where('status', 'pending')->latest()->take(5)->get();
 
         // Dummy warung rows until a Warung model exists.
         $warungs = collect([
@@ -27,7 +32,7 @@ class AdminController extends Controller
             ['name' => 'Dapur Nusa Frozen', 'owner' => 'Nusa', 'cat' => 'Frozen', 'orders' => 318, 'status' => 'Aktif'],
         ]);
 
-        return view('admin.dashboard', compact('stats', 'latestUsers', 'warungs'));
+        return view('admin.dashboard', compact('stats', 'latestUsers', 'warungs', 'pendingProducts'));
     }
 
     public function users(): View
@@ -49,5 +54,45 @@ class AdminController extends Controller
         ]);
 
         return view('admin.warungs', compact('warungs'));
+    }
+
+    public function products(Request $request): View
+    {
+        $query = Product::with('user')->latest();
+
+        if ($request->filled('status') && in_array($request->string('status'), Product::STATUSES, true)) {
+            $query->where('status', $request->string('status'));
+        }
+
+        $products = $query->paginate(15)->withQueryString();
+
+        $counts = [
+            'all' => Product::count(),
+            'pending' => Product::where('status', 'pending')->count(),
+            'approved' => Product::where('status', 'approved')->count(),
+            'rejected' => Product::where('status', 'rejected')->count(),
+        ];
+
+        return view('admin.products', compact('products', 'counts'));
+    }
+
+    public function approve(Product $product): RedirectResponse
+    {
+        $product->update(['status' => 'approved', 'rejection_reason' => null]);
+
+        return back()->with('success', "Produk \"{$product->name}\" disetujui dan sudah tayang.");
+    }
+
+    public function reject(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'max:1000'],
+        ], [
+            'rejection_reason.required' => 'Alasan penolakan wajib diisi agar penjual bisa memperbaiki.',
+        ]);
+
+        $product->update(['status' => 'rejected', 'rejection_reason' => $validated['rejection_reason']]);
+
+        return back()->with('success', "Produk \"{$product->name}\" ditolak dengan alasan.");
     }
 }

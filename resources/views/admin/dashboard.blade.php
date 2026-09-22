@@ -27,6 +27,14 @@
     @endforeach
 </div>
 
+<div class="mt-3 rounded-[24px] bg-amber-50 border border-amber-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+    <div class="flex-1">
+        <p class="font-extrabold">⏳ {{ number_format($stats['pending_products'] ?? 0, 0, ',', '.') }} produk menunggu verifikasi</p>
+        <p class="text-[13px] font-medium text-amber-900/70">Setujui produk yang layak tayang, tolak dengan alasan yang jelas.</p>
+    </div>
+    <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Verifikasi →</a>
+</div>
+
 <div class="mt-4 grid gap-3.5 lg:grid-cols-2">
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-5 sm:p-6">
         <div class="flex items-center justify-between">
@@ -67,4 +75,28 @@
         </div>
     </div>
 </div>
+
+@if(($pendingProducts ?? collect())->isNotEmpty())
+<div class="mt-3.5 rounded-[24px] bg-white border border-ink-900/10 p-5 sm:p-6">
+    <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-lg">Perlu verifikasi</h2>
+        <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="text-[13px] font-extrabold text-brand-600">Semua →</a>
+    </div>
+    <div class="mt-4 grid gap-2">
+        @foreach($pendingProducts as $p)
+        <div class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-2.5">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-extrabold truncate">{{ $p->name }}</p>
+                <p class="text-xs font-semibold text-ink-500">{{ $p->user->name }} • {{ $p->category }} • Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+            </div>
+            <form method="POST" action="{{ route('admin.products.approve', $p) }}">
+                @csrf
+                @method('PATCH')
+                <button class="text-[11px] font-extrabold rounded-full px-3 py-1.5 bg-leaf-600 text-white hover:bg-leaf-700 transition">Setujui</button>
+            </form>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 @endsection

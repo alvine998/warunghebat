@@ -65,11 +65,22 @@
             </div>
         </div>
         <div class="grid gap-3.5">
+            @if(auth()->user()->canSell())
+            <div class="rounded-[28px] bg-ink-900 text-white p-6">
+                <p class="font-extrabold">Kelola produkmu 📦</p>
+                <p class="text-[13px] font-medium text-white/70 mt-1">Tambah, edit, dan pantau status verifikasi admin.</p>
+                <div class="mt-4 flex gap-2">
+                    <a href="{{ route('seller.products.index') }}" class="bg-white text-ink-900 text-sm font-extrabold px-5 py-2.5 rounded-full">Kelola →</a>
+                    <a href="{{ route('seller.products.create') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">+ Tambah</a>
+                </div>
+            </div>
+            @else
             <div class="rounded-[28px] bg-leaf-600 text-white p-6">
                 <p class="font-extrabold">Mau buka warung? 🏪</p>
                 <p class="text-[13px] font-medium text-white/75 mt-1">Daftar jadi mitra gratis, 0% komisi 3 bulan pertama.</p>
                 <a href="{{ route('home') }}#mitra" class="mt-4 inline-block bg-white text-leaf-700 text-sm font-extrabold px-5 py-2.5 rounded-full">Pelajari →</a>
             </div>
+            @endif
             <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
                 <p class="font-extrabold">Aksi cepat</p>
                 <div class="mt-3 grid grid-cols-2 gap-2">

@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Product extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'name',
+        'description',
+        'price',
+        'stock',
+        'category',
+        'status',
+        'rejection_reason',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'price' => 'integer',
+            'stock' => 'integer',
+        ];
+    }
+
+    public const STATUSES = ['pending', 'approved', 'rejected'];
+
+    public const CATEGORIES = [
+        'Makanan',
+        'Minuman',
+        'Sembako',
+        'Jajanan',
+        'Frozen',
+        'Harian',
+        'Lainnya',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
+    }
+}
