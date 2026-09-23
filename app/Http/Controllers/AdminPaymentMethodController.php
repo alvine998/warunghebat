@@ -10,10 +10,34 @@ use Illuminate\View\View;
 
 class AdminPaymentMethodController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = trim((string) $request->input('search', ''));
+
         return view('admin.payment-methods', [
-            'methods' => PaymentMethod::orderBy('sort_order')->orderBy('id')->paginate(20),
+            'methods' => PaymentMethod::query()
+                ->when($search !== '', function ($query) use ($search): void {
+                    // "transfer bank" / "e-wallet" are the labels shown in the list.
+                    $types = array_keys(array_filter(
+                        PaymentMethod::TYPE_LABELS,
+                        fn (string $label): bool => str_contains(mb_strtolower($label), mb_strtolower($search)),
+                    ));
+
+                    $query->where(function ($query) use ($search, $types): void {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('account_number', 'like', "%{$search}%")
+                            ->orWhere('account_name', 'like', "%{$search}%")
+                            ->orWhere('type', 'like', "%{$search}%");
+
+                        if ($types !== []) {
+                            $query->orWhereIn('type', $types);
+                        }
+                    });
+                })
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->paginate(20)
+                ->withQueryString(),
         ]);
     }
 

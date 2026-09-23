@@ -1,0 +1,212 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Warung Hebat" [ref=e4] [cursor=pointer]:
+        - /url: http://127.0.0.1:8000
+        - generic [ref=e5]: W
+        - generic [ref=e7]:
+          - generic [ref=e8]: Warung Hebat
+          - generic [ref=e9]: BELANJA DEKAT • HIDUP HEBAT
+      - navigation [ref=e10]:
+        - link "Kategori" [ref=e11] [cursor=pointer]:
+          - /url: "#kategori"
+        - link "Cara Kerja" [ref=e12] [cursor=pointer]:
+          - /url: "#cara-kerja"
+        - link "Warung Terdekat" [ref=e13] [cursor=pointer]:
+          - /url: "#warung"
+        - link "Cerita Kami" [ref=e14] [cursor=pointer]:
+          - /url: "#cerita"
+        - link "Jadi Mitra" [ref=e15] [cursor=pointer]:
+          - /url: "#mitra"
+        - link "FAQ" [ref=e16] [cursor=pointer]:
+          - /url: "#faq"
+      - generic [ref=e17]:
+        - link "Masuk" [ref=e18] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/login
+        - link "Daftar Gratis" [ref=e19] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - link "← Semua warung" [ref=e22] [cursor=pointer]:
+        - /url: http://127.0.0.1:8000#warung
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - img "Foto Warung Bang Jago" [ref=e25]
+          - generic [ref=e27]: 🛍️ 5 produk
+          - generic [ref=e28]: Buka
+        - generic [ref=e30]:
+          - generic [ref=e32]:
+            - heading "Warung Bang Jago" [level=1] [ref=e33]
+            - paragraph [ref=e34]: Budi Santoso
+          - paragraph [ref=e35]: Gorengan hangat tiap sore dan nasi goreng tek-tek legendaris sejak 2014.
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]: 📍
+              - generic [ref=e39]: Jl. Tebet Raya No. 12, Jakarta Selatan
+            - generic [ref=e40]: 🕐 07:00 – 21:00
+            - link "✆ 081234567890" [ref=e41] [cursor=pointer]:
+              - /url: https://wa.me/081234567890
+      - generic [ref=e42]:
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: 📍 LOKASI WARUNG
+            - heading "Ada di sekitar sini" [level=2] [ref=e47]
+          - link "Buka dengan Google Maps →" [ref=e48] [cursor=pointer]:
+            - /url: https://www.google.com/maps?q=-6.2297000,106.8546000
+        - generic [ref=e49]:
+          - generic:
+            - button "Marker" [ref=e50] [cursor=pointer]
+            - generic [ref=e51]:
+              - generic [ref=e53]:
+                - strong [ref=e54]: Warung Bang Jago
+                - text: Jl. Tebet Raya No. 12, Jakarta Selatan
+              - button "Close popup" [ref=e56] [cursor=pointer]: ×
+          - generic:
+            - generic [ref=e57]:
+              - button "Zoom in" [ref=e58] [cursor=pointer]: +
+              - button "Zoom out" [ref=e59] [cursor=pointer]: −
+            - generic [ref=e60]:
+              - link "Leaflet" [ref=e61] [cursor=pointer]:
+                - /url: https://leafletjs.com
+              - text: "| ©"
+              - link "OpenStreetMap" [ref=e66] [cursor=pointer]:
+                - /url: https://www.openstreetmap.org/copyright
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - paragraph [ref=e69]: 🛍️ ETALASE
+          - heading "Produk warung ini" [level=2] [ref=e70]
+        - generic [ref=e71]:
+          - article [ref=e72]:
+            - button "Perbesar foto Kerupuk Udang" [ref=e73]:
+              - img "Foto Kerupuk Udang" [ref=e74]
+              - generic [ref=e75]: 🔍
+            - generic [ref=e76]:
+              - paragraph [ref=e77]: Kerupuk Udang
+              - paragraph [ref=e78]: Harian
+              - paragraph [ref=e79]: Kerupuk udang goreng, renyah dan gurih.
+              - generic [ref=e80]:
+                - paragraph [ref=e81]: Rp 5.000
+                - generic [ref=e82]: Habis
+          - article [ref=e83]:
+            - button "Perbesar foto Es Teh Manis" [ref=e84]:
+              - img "Foto Es Teh Manis" [ref=e85]
+              - generic [ref=e86]: 🔍
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: Es Teh Manis
+              - paragraph [ref=e89]: Minuman
+              - paragraph [ref=e90]: Teh tubruk manis dengan es batu serut.
+              - generic [ref=e91]:
+                - paragraph [ref=e92]: Rp 4.000
+                - generic [ref=e93]: Stok 58
+              - button "+ Keranjang" [ref=e94]
+          - article [ref=e95]:
+            - button "Perbesar foto Gorengan Campur" [ref=e96]:
+              - img "Foto Gorengan Campur" [ref=e97]
+              - generic [ref=e98]: 🔍
+            - generic [ref=e99]:
+              - paragraph [ref=e100]: Gorengan Campur
+              - paragraph [ref=e101]: Jajanan
+              - paragraph [ref=e102]: Tahu, tempe, bakwan, dan cireng goreng panas.
+              - generic [ref=e103]:
+                - paragraph [ref=e104]: Rp 5.000
+                - generic [ref=e105]: Stok 4
+              - button "+ Keranjang" [ref=e106]
+          - article [ref=e107]:
+            - button "Perbesar foto Mie Ayam Bangka" [ref=e108]:
+              - img "Foto Mie Ayam Bangka" [ref=e109]
+              - generic [ref=e110]: 🔍
+            - generic [ref=e111]:
+              - paragraph [ref=e112]: Mie Ayam Bangka
+              - paragraph [ref=e113]: Makanan
+              - paragraph [ref=e114]: Mie kuning kenyal, topping ayam kecap dan pangsit goreng.
+              - generic [ref=e115]:
+                - paragraph [ref=e116]: Rp 12.000
+                - generic [ref=e117]: Stok 15
+              - button "+ Keranjang" [ref=e118]
+          - article [ref=e119]:
+            - button "Perbesar foto Nasi Goreng Tek-Tek" [ref=e120]:
+              - img "Foto Nasi Goreng Tek-Tek" [ref=e121]
+              - generic [ref=e122]: 🔍
+            - generic [ref=e123]:
+              - paragraph [ref=e124]: Nasi Goreng Tek-Tek
+              - paragraph [ref=e125]: Makanan
+              - paragraph [ref=e126]: Nasi goreng kampung dengan telur mata sapi dan kerupuk.
+              - generic [ref=e127]:
+                - paragraph [ref=e128]: Rp 15.000
+                - generic [ref=e129]: Stok 17
+              - button "+ Keranjang" [ref=e130]
+      - generic [ref=e131]:
+        - paragraph [ref=e132]:
+          - text: Mau pesan dari
+          - strong [ref=e133]: Warung Bang Jago
+          - text: "? Daftar gratis 30 detik, langsung jajan."
+        - generic [ref=e134]:
+          - link "Daftar Gratis →" [ref=e135] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/register
+          - link "Masuk" [ref=e136] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/login
+  - contentinfo [ref=e137]:
+    - generic [ref=e138]:
+      - generic [ref=e139]:
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - generic [ref=e142]: W
+            - generic [ref=e144]: Warung Hebat
+          - paragraph [ref=e145]: Marketplace digital mobile-first untuk makanan, minuman & kebutuhan harian dari warung-warung hebat di sekitarmu.
+          - generic [ref=e146]:
+            - link "Instagram" [ref=e147] [cursor=pointer]:
+              - /url: "#"
+            - link "TikTok" [ref=e152] [cursor=pointer]:
+              - /url: "#"
+            - link "X" [ref=e155] [cursor=pointer]:
+              - /url: "#"
+            - link "WhatsApp" [ref=e158] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=e161]:
+          - paragraph [ref=e162]: BELANJA
+          - list [ref=e163]:
+            - listitem [ref=e164]:
+              - link "Makanan" [ref=e165] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e166]:
+              - link "Minuman" [ref=e167] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e168]:
+              - link "Sembako" [ref=e169] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e170]:
+              - link "Kebutuhan Harian" [ref=e171] [cursor=pointer]:
+                - /url: "#kategori"
+        - generic [ref=e172]:
+          - paragraph [ref=e173]: MITRA
+          - list [ref=e174]:
+            - listitem [ref=e175]:
+              - link "Buka Warung" [ref=e176] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=e177]:
+              - link "WarungKu App" [ref=e178] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=e179]:
+              - link "Biaya & Komisi" [ref=e180] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e181]:
+              - link "Cerita Mitra" [ref=e182] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e183]:
+          - paragraph [ref=e184]: BANTUAN
+          - list [ref=e185]:
+            - listitem [ref=e186]:
+              - link "FAQ" [ref=e187] [cursor=pointer]:
+                - /url: "#faq"
+            - listitem [ref=e188]:
+              - link "Hubungi Kami" [ref=e189] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/hubungi-kami
+            - listitem [ref=e190]:
+              - link "Syarat & Ketentuan" [ref=e191] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/syarat-ketentuan
+            - listitem [ref=e192]:
+              - link "Kebijakan Privasi" [ref=e193] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/kebijakan-privasi
+      - generic [ref=e194]:
+        - paragraph [ref=e195]: © 2026 Warung Hebat.
+        - paragraph [ref=e196]: Lebih Mudah dan Terjangkau

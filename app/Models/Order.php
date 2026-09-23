@@ -102,6 +102,16 @@ class Order extends Model
         return 'WH-'.str_pad((string) $this->getKey(), 5, '0', STR_PAD_LEFT);
     }
 
+    /** Resolves a typed code ("WH-00012") back to the order id for searching. */
+    public static function idFromCode(string $search): ?int
+    {
+        if (! preg_match('/^wh-?0*(\d+)$/i', trim($search), $matches)) {
+            return null;
+        }
+
+        return (int) $matches[1];
+    }
+
     public function statusLabel(): string
     {
         return self::STATUS_LABELS[$this->status] ?? $this->status;

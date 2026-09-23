@@ -17,8 +17,27 @@ class AdminOrderController extends Controller
             $status = null;
         }
 
+        $search = trim((string) $request->input('search', ''));
+        $orderId = Order::idFromCode($search);
+
         $orders = Order::with(['user', 'store', 'items'])
             ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($search !== '', function ($query) use ($search, $orderId): void {
+                $query->where(function ($query) use ($search, $orderId): void {
+                    $query->where('warung_name', 'like', "%{$search}%")
+                        ->orWhere('item_name', 'like', "%{$search}%")
+                        ->orWhereHas('items', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('user', function ($query) use ($search): void {
+                            $query->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('store', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+
+                    if ($orderId) {
+                        $query->orWhere('id', $orderId);
+                    }
+                });
+            })
             ->latest('id')
             ->paginate(15)
             ->withQueryString();

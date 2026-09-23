@@ -15,12 +15,29 @@ class AdminWithdrawalController extends Controller
     {
         $status = $request->string('status')->toString();
 
-        if (! in_array($status, Withdrawal::STATUSES, true)) {
+        if ($status === 'all') {
+            $status = null;
+        } elseif (! in_array($status, Withdrawal::STATUSES, true)) {
             $status = Withdrawal::STATUS_PENDING;
         }
 
+        $search = trim((string) $request->input('search', ''));
+        $withdrawalId = preg_match('/^#?(\d+)$/', $search, $matches) ? (int) $matches[1] : null;
+
         $withdrawals = Withdrawal::with(['wallet.store', 'processor'])
-            ->where('status', $status)
+            ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($search !== '', function ($query) use ($search, $withdrawalId): void {
+                $query->where(function ($query) use ($search, $withdrawalId): void {
+                    $query->where('bank_name', 'like', "%{$search}%")
+                        ->orWhere('account_number', 'like', "%{$search}%")
+                        ->orWhere('account_name', 'like', "%{$search}%")
+                        ->orWhereHas('wallet.store', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+
+                    if ($withdrawalId) {
+                        $query->orWhere('id', $withdrawalId);
+                    }
+                });
+            })
             ->latest('id')
             ->paginate(15)
             ->withQueryString();

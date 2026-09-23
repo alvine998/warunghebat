@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,6 +18,7 @@ class HomeController extends Controller
 
         return view('landing', [
             'stores' => $nearby->take(6),
+            'articles' => Article::query()->published()->with('author:id,name')->latest('published_at')->take(3)->get(),
             'nearbyParams' => array_filter(
                 ['lat' => $params['lat'], 'lng' => $params['lng'], 'radius' => $params['radius']],
                 fn ($value) => $value !== null

@@ -8,12 +8,25 @@
 <p class="text-sm font-medium text-ink-500">Periksa bukti transfer, lalu verifikasi agar dana ditahan untuk pesanan warung.</p>
 
 <div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
+    <a href="{{ route('admin.payments', ['status' => 'all', 'search' => request('search')]) }}" class="px-4 py-2 rounded-full {{ ! $status ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
     @foreach(['pending', 'verified', 'rejected'] as $value)
-        <a href="{{ route('admin.payments', ['status' => $value]) }}" class="px-4 py-2 rounded-full {{ $status === $value ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">
+        <a href="{{ route('admin.payments', ['status' => $value, 'search' => request('search')]) }}" class="px-4 py-2 rounded-full {{ $status === $value ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">
             {{ \App\Models\Payment::STATUS_LABELS[$value] }} ({{ $counts[$value] }})
         </a>
     @endforeach
 </div>
+
+<form method="GET" action="{{ route('admin.payments') }}" class="mt-4 flex flex-col sm:flex-row gap-2">
+    @if(request('status'))
+        <input type="hidden" name="status" value="{{ request('status') }}">
+    @endif
+    <label class="sr-only" for="payment-search">Cari pembayaran</label>
+    <div class="flex flex-1 items-center gap-2 rounded-2xl bg-white border border-ink-900/10 px-4 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10">
+        <x-icon name="search" class="w-5 h-5 text-ink-400" />
+        <input id="payment-search" name="search" value="{{ request('search') }}" type="search" placeholder="Cari kode pesanan, pembeli, warung, atau metode..." class="w-full bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-ink-400">
+    </div>
+    <button type="submit" class="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-600 transition">Cari</button>
+</form>
 
 <div class="mt-4 grid gap-2.5">
     @forelse($payments as $payment)
@@ -69,8 +82,13 @@
         </div>
     @empty
         <div class="rounded-[24px] bg-white border border-dashed border-ink-900/15 p-8 text-center">
-            <p class="font-extrabold">Tidak ada pembayaran di status ini</p>
-            <p class="text-sm font-medium text-ink-500 mt-1">Bukti transfer pembeli akan muncul di sini untuk diverifikasi.</p>
+            @if(request('search'))
+                <p class="font-extrabold">Tidak ada pembayaran yang cocok dengan "{{ request('search') }}"</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain atau pilih tab Semua.</p>
+            @else
+                <p class="font-extrabold">Tidak ada pembayaran di status ini</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Bukti transfer pembeli akan muncul di sini untuk diverifikasi.</p>
+            @endif
         </div>
     @endforelse
 </div>

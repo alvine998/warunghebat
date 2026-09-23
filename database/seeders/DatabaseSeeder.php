@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             FavoriteSeeder::class,
             ContactMessageSeeder::class,
             SettingSeeder::class,
+            ArticleSeeder::class,
             PaymentMethodSeeder::class,
             OrderSeeder::class,
             PaymentSeeder::class,

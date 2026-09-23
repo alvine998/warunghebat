@@ -3,14 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="Warung Hebat — marketplace digital mobile-first. Belanja makanan, minuman & kebutuhan harian dari warung terdekat.">
     <meta name="theme-color" content="#1A130D">
     <meta name="color-scheme" content="light">
     <meta name="format-detection" content="telephone=no">
-    <meta property="og:title" content="Warung Hebat — Belanja Dekat, Hidup Hebat">
-    <meta property="og:description" content="Marketplace digital mobile-first. Makanan, minuman & kebutuhan harian dari warung terdekat.">
-    <meta property="og:type" content="website">
     <title>@yield('title', 'Warung Hebat — Belanja Dekat, Hidup Hebat')</title>
+    @include('components.seo')
     {{-- Fonts + CSS/JS are self-hosted via Vite (hashed, immutable).
          Module scripts are deferred by default; font CSS uses font-display: swap. --}}
     @fonts

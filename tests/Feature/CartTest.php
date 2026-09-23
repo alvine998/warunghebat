@@ -243,6 +243,20 @@ class CartTest extends TestCase
         $this->assertNull(session('cart'));
     }
 
+    public function test_add_to_cart_is_rejected_when_the_store_is_closed(): void
+    {
+        $buyer = User::factory()->create(['role' => 'pembeli']);
+        $seller = User::factory()->create(['role' => 'penjual']);
+        Store::factory()->for($seller)->create(['is_open' => false]);
+        $product = Product::factory()->for($seller)->create(['status' => 'approved', 'stock' => 10]);
+
+        $this->actingAs($buyer)
+            ->post(route('cart.store'), ['product_id' => $product->id])
+            ->assertSessionHas('error');
+
+        $this->assertNull(session('cart'));
+    }
+
     /** @return array<string, mixed> */
     private function cartFor(Store $store, Product $product, int $qty): array
     {

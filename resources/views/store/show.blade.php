@@ -60,9 +60,9 @@
                     <p class="inline-flex text-[11px] font-extrabold tracking-[0.18em] text-leaf-700 bg-leaf-100 border border-leaf-500/20 rounded-full px-3.5 py-1.5">📍 LOKASI WARUNG</p>
                     <h2 class="font-black tracking-tight text-lg sm:text-2xl mt-2">Ada di sekitar sini</h2>
                 </div>
-                <a id="store-detail-osm" href="https://www.openstreetmap.org/#map=16/{{ $store->latitude }}/{{ $store->longitude }}" target="_blank" rel="noopener" class="hidden sm:inline-flex justify-center shrink-0 text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Buka di OSM →</a>
+                <a id="store-detail-gmaps" href="https://www.google.com/maps?q={{ $store->latitude }},{{ $store->longitude }}" target="_blank" rel="noopener" class="hidden sm:inline-flex justify-center shrink-0 text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Buka dengan Google Maps →</a>
             </div>
-            <a id="store-detail-osm-mobile" href="https://www.openstreetmap.org/#map=16/{{ $store->latitude }}/{{ $store->longitude }}" target="_blank" rel="noopener" class="sm:hidden text-center text-[13px] font-extrabold px-4 py-3 rounded-full border border-ink-900/15 active:bg-ink-900 active:text-white transition">Buka di OSM →</a>
+            <a id="store-detail-gmaps-mobile" href="https://www.google.com/maps?q={{ $store->latitude }},{{ $store->longitude }}" target="_blank" rel="noopener" class="sm:hidden text-center text-[13px] font-extrabold px-4 py-3 rounded-full border border-ink-900/15 active:bg-ink-900 active:text-white transition">Buka dengan Google Maps →</a>
         </div>
         <div
             id="store-detail-map"
@@ -89,11 +89,20 @@
                 <p class="text-sm font-medium text-ink-500 mt-1">Produk yang sudah diverifikasi admin akan muncul di sini.</p>
             </div>
         @else
+            <div class="mb-4 bg-white rounded-[22px] border border-ink-900/10 shadow-sm p-2 flex items-center gap-2 max-w-md">
+                <span class="pl-2 text-ink-500"><x-icon name="search" class="w-5 h-5" /></span>
+                <input id="product-search" type="search" autocomplete="off" aria-label="Cari produk di warung ini" placeholder="Cari produk di warung ini..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
+            </div>
+            <p id="product-search-hint" class="hidden mb-4 text-[12px] font-semibold text-ink-500" role="status"></p>
+
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
                 @foreach($store->products as $i => $p)
-                <article class="reveal group rounded-[20px] sm:rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ ($i%4)*70 }}ms">
+                <article data-product-search="{{ trim($p->name.' '.$p->category.' '.($p->description ?? '')) }}" class="reveal group rounded-[20px] sm:rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ ($i%4)*70 }}ms">
                     @if($p->image_path)
-                        <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" loading="lazy" class="w-full h-28 sm:h-36 object-cover">
+                        <button type="button" class="relative block w-full cursor-zoom-in" data-zoom-src="{{ $p->image_url }}" data-zoom-alt="Foto {{ $p->name }}" data-zoom-caption="{{ $p->name }}" aria-label="Perbesar foto {{ $p->name }}">
+                            <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" loading="lazy" class="w-full h-28 sm:h-36 object-cover">
+                            <span class="absolute top-2 right-2 w-7 h-7 grid place-items-center rounded-full bg-white/90 text-ink-900 text-[13px] font-black shadow-sm">🔍</span>
+                        </button>
                     @else
                         <div class="w-full h-28 sm:h-36 bg-cream-100 border-b border-dashed border-ink-900/15 grid place-items-center text-3xl">📷</div>
                     @endif
@@ -112,6 +121,9 @@
                             @endif
                         </div>
                         @if($p->stock > 0)
+                            @if(! $store->is_open)
+                            <button type="button" disabled aria-disabled="true" title="Warung sedang tutup" class="mt-2 sm:mt-3 w-full min-h-11 py-2.5 px-2 rounded-full bg-ink-900/10 text-ink-500 text-[12px] sm:text-[13px] font-extrabold cursor-not-allowed">Warung tutup</button>
+                            @else
                             @auth
                             <form method="POST" action="{{ route('cart.store') }}" class="mt-2 sm:mt-3">
                                 @csrf
@@ -121,11 +133,52 @@
                             @else
                             <button type="button" data-open-login class="mt-2 sm:mt-3 w-full min-h-11 py-2.5 px-2 rounded-full bg-ink-900 text-white text-[12px] sm:text-[13px] font-extrabold hover:bg-brand-500 active:scale-[.98] transition">+ Keranjang</button>
                             @endauth
+                            @endif
                         @endif
                     </div>
                 </article>
                 @endforeach
             </div>
+            <div id="product-search-empty" class="hidden rounded-[24px] bg-white border border-dashed border-ink-900/15 p-7 sm:p-10 text-center">
+                <p class="text-4xl">🔍</p>
+                <p class="font-extrabold text-base sm:text-lg mt-2">Produk tidak ditemukan</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain — nama produk atau kategori.</p>
+            </div>
+
+            @push('scripts')
+            <script>
+            (function () {
+                var input = document.getElementById('product-search');
+                if (!input) return;
+                var hint = document.getElementById('product-search-hint');
+                var empty = document.getElementById('product-search-empty');
+                var cards = Array.from(document.querySelectorAll('[data-product-search]')).map(function (card) {
+                    return { card: card, text: (card.dataset.productSearch || '').toLowerCase() };
+                });
+                var queued = false;
+                input.addEventListener('input', function () {
+                    if (queued) return;
+                    queued = true;
+                    requestAnimationFrame(function () {
+                        queued = false;
+                        var raw = input.value;
+                        var q = raw.toLowerCase().trim();
+                        var visible = 0;
+                        for (var i = 0; i < cards.length; i++) {
+                            var match = !q || cards[i].text.includes(q);
+                            cards[i].card.style.display = match ? '' : 'none';
+                            if (match) visible++;
+                        }
+                        if (hint) {
+                            hint.classList.toggle('hidden', !q);
+                            hint.textContent = q ? visible + ' produk ditemukan untuk "' + raw + '"' : '';
+                        }
+                        if (empty) empty.classList.toggle('hidden', !(q && visible === 0));
+                    });
+                });
+            })();
+            </script>
+            @endpush
         @endif
     </div>
 
@@ -139,35 +192,24 @@
         </div>
     </div>
     @endguest
+
+    {{-- ===== PRODUCT ZOOM (lightbox) ===== --}}
+    @if($store->products->contains(fn ($p) => $p->image_path !== null))
+    <div id="modal-product-zoom" class="hidden fixed inset-0 z-[70] modal-backdrop" role="dialog" aria-modal="true" aria-label="Perbesar foto produk">
+        <div class="absolute inset-0 bg-ink-900/85 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 overflow-y-auto p-4 sm:p-8 flex items-center justify-center">
+            <button type="button" class="absolute top-4 right-4 w-10 h-10 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 transition" aria-label="Tutup" data-zoom-close>✕</button>
+            <figure class="relative max-w-full">
+                <img id="product-zoom-img" alt="" class="mx-auto block max-w-full max-h-[72vh] sm:max-h-[78vh] object-contain rounded-2xl bg-white shadow-2xl">
+                <figcaption id="product-zoom-caption" class="mt-3 text-center text-[13px] font-bold text-white/75"></figcaption>
+            </figure>
+        </div>
+    </div>
+    @endif
 </section>
 @endsection
 
-@php($cartConflict = session('cart_conflict'))
-@if(is_array($cartConflict) && ! empty($cartConflict['product_id']))
-<div id="modal-cart-conflict" class="hidden fixed inset-0 z-[70] modal-backdrop" data-auto-open>
-    <div class="absolute inset-0 bg-ink-900/60 backdrop-blur-sm" data-close-modal></div>
-    <div class="absolute inset-0 overflow-y-auto" data-lenis-prevent>
-        <div class="min-h-full flex items-end sm:items-center justify-center p-0 sm:p-6">
-            <div class="modal-card relative w-full sm:max-w-md bg-cream-50 rounded-t-[28px] sm:rounded-[28px] p-6 sm:p-8 shadow-2xl">
-                <button type="button" data-close-modal class="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-ink-900/5 hover:bg-ink-900 hover:text-white transition" aria-label="Tutup">✕</button>
-                <div class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold px-3 py-1.5 mb-4">1 transaksi • 1 warung</div>
-                <p class="font-extrabold text-xl tracking-tight leading-tight">Ganti isi keranjang?</p>
-                <p class="text-sm text-ink-500 font-medium mt-2 leading-relaxed">
-                    Keranjang kamu sekarang berisi produk dari <strong class="text-ink-900">{{ $cartConflict['current_store_name'] }}</strong>.
-                    Kalau lanjut tambah dari <strong class="text-ink-900">{{ $cartConflict['new_store_name'] }}</strong>, sisa isi keranjang akan diganti.
-                </p>
-                <form method="POST" action="{{ route('cart.store') }}" class="mt-5 grid gap-2.5">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $cartConflict['product_id'] }}">
-                    <input type="hidden" name="force" value="1">
-                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-brand-500 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition shadow-lg shadow-brand-500/30">Ya, ganti keranjang →</button>
-                    <button type="button" data-close-modal class="w-full py-3.5 rounded-2xl border-2 border-ink-900/10 bg-white font-extrabold text-[15px] hover:border-ink-900 transition">Batal</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+@include('components.cart-conflict-modal')
 
 @if($store->latitude !== null && $store->longitude !== null)
 @push('head')

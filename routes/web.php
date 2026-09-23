@@ -1,20 +1,24 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminArticleController;
 use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminPaymentMethodController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminWithdrawalController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +26,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/warung', [HomeController::class, 'nearby'])->name('store.index');
 Route::get('/w/{store}', [StoreController::class, 'show'])->name('store.show');
+Route::get('/kategori/{category}', [CategoryController::class, 'show'])->name('category.show');
+
+// Editorial content: blog index + detail, plus the company page.
+Route::get('/artikel', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/artikel/{article}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/tentang', fn () => view('about', [
+    'seoTitle' => 'Tentang Warung Hebat',
+    'seoDescription' => 'Warung Hebat menghubungkan pembeli dengan warung tetangga: jarak dekat, harga warung asli, dan 92% uang pesanan sampai ke pemilik warung.',
+]))->name('about');
 
 // ---------- BUYER (cart, checkout, orders) ----------
 Route::middleware('auth')->group(function () {
@@ -55,6 +68,13 @@ Route::get('/kebijakan-privasi', fn () => view('legal.privacy'))->name('privacy'
 Route::get('/hubungi-kami', [ContactController::class, 'show'])->name('contact');
 Route::post('/hubungi-kami', [ContactController::class, 'send'])->name('contact.send');
 
+// Crawler files. robots.txt is served here (not from public/) so the sitemap
+// URL always matches the domain the app runs on.
+Route::get('/robots.txt', fn () => response(
+    "User-agent: *\nAllow: /\n\nDisallow: /backoffice\nDisallow: /admin\nDisallow: /cart\nDisallow: /orders\n\nSitemap: ".url('/sitemap.xml')."\n"
+))->header('Content-Type', 'text/plain; charset=UTF-8');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 // ---------- SELLER (penjual + admin, CRUD produk) ----------
@@ -85,6 +105,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/products/bulk-update', [AdminController::class, 'bulkUpdate'])->name('products.bulk-update');
     Route::patch('/products/{product}/approve', [AdminController::class, 'approve'])->name('products.approve');
     Route::patch('/products/{product}/reject', [AdminController::class, 'reject'])->name('products.reject');
+
+    // Editorial blog: buyers read it, the backoffice writes it.
+    Route::get('/articles', [AdminArticleController::class, 'index'])->name('articles');
+    Route::get('/articles/create', [AdminArticleController::class, 'create'])->name('articles.create');
+    Route::post('/articles', [AdminArticleController::class, 'store'])->name('articles.store');
+    Route::get('/articles/{article}/edit', [AdminArticleController::class, 'edit'])->name('articles.edit');
+    Route::put('/articles/{article}', [AdminArticleController::class, 'update'])->name('articles.update');
+    Route::patch('/articles/{article}/toggle', [AdminArticleController::class, 'toggle'])->name('articles.toggle');
+    Route::delete('/articles/{article}', [AdminArticleController::class, 'destroy'])->name('articles.destroy');
 
     // Platform money overview: escrow, commission, payouts.
     Route::get('/finance', [AdminFinanceController::class, 'index'])->name('finance');

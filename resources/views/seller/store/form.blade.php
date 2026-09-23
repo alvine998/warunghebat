@@ -51,7 +51,7 @@
             <p class="mt-1.5 text-xs font-semibold text-ink-500">Klik peta atau geser pin — atau tekan tombol lokasi. Koordinat tersimpan otomatis di kolom bawah.</p>
             <div class="mt-2 flex flex-col sm:flex-row gap-2">
                 <button type="button" id="use-my-location" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">📍 Gunakan lokasi saya</button>
-                <a id="open-osm" href="https://www.openstreetmap.org/#map=15/-6.2/106.8167" target="_blank" rel="noopener" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Lihat di OSM →</a>
+                <a id="open-gmaps" href="https://www.google.com/maps?q=-6.2,106.8167" target="_blank" rel="noopener" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Buka dengan Google Maps →</a>
             </div>
         </div>
 
@@ -119,7 +119,7 @@
     });
     var latInput = document.getElementById('store-latitude');
     var lngInput = document.getElementById('store-longitude');
-    var osmLink = document.getElementById('open-osm');
+    var gmapsLink = document.getElementById('open-gmaps');
     if (!latInput || !lngInput || typeof L === 'undefined') return;
 
     var DEFAULT = { lat: -6.2297, lng: 106.8294, zoom: 13 }; // Tebet, Jakarta
@@ -143,7 +143,7 @@
         lngInput.value = fixed[1];
         marker.setLatLng(latLng);
         if (moveMap) map.setView(latLng, Math.max(map.getZoom(), 15));
-        if (osmLink) osmLink.href = 'https://www.openstreetmap.org/#map=16/' + fixed[0] + '/' + fixed[1];
+        if (gmapsLink) gmapsLink.href = 'https://www.google.com/maps?q=' + fixed[0] + ',' + fixed[1];
     }
 
     map.on('click', function (e) { sync(e.latlng, false); });

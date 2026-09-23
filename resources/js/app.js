@@ -212,6 +212,26 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(cartConflictModal);
     };
 
+    // ---------- Product image zoom (store detail lightbox) ----------
+    const zoomModal = document.getElementById('modal-product-zoom');
+    const zoomImg = document.getElementById('product-zoom-img');
+    const zoomCaption = document.getElementById('product-zoom-caption');
+
+    document.querySelectorAll('[data-zoom-src]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            if (!zoomModal || !zoomImg) return;
+            zoomImg.src = trigger.dataset.zoomSrc;
+            zoomImg.alt = trigger.dataset.zoomAlt || '';
+            if (zoomCaption) zoomCaption.textContent = trigger.dataset.zoomCaption || '';
+            openModal(zoomModal);
+        });
+    });
+    // Close on backdrop / ✕ clicks — clicks inside the figure (image, caption) stay open.
+    zoomModal?.addEventListener('click', (e) => {
+        if (e.target.closest('figure')) return;
+        closeModal(zoomModal);
+    });
+
     document.querySelectorAll('[data-open-login]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); window.openLogin(); }));
     document.querySelectorAll('[data-open-register]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); window.openRegister(); }));
     document.querySelectorAll('[data-close-modal]').forEach((b) => b.addEventListener('click', () => window.closeAuthModals()));
@@ -223,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             window.closeAuthModals();
+            closeModal(zoomModal);
             closeMobileMenu();
         }
     });

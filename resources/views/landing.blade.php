@@ -164,7 +164,7 @@
             ['cookie','Jajanan','980 warung','bg-pink-500','Pasar & kekinian'],
             ['snowflake','Frozen','310 warung','bg-sky-500','Nugget & dimsum'],
         ] as $i => $c)
-        <a href="#warung" class="reveal group rounded-[24px] bg-white border border-ink-900/10 p-4 sm:p-5 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ $i*70 }}ms">
+        <a href="{{ route('category.show', array_merge(['category' => Str::slug($c[1])], $nearbyParams ?? [])) }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 p-4 sm:p-5 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ $i*70 }}ms">
             <span class="w-12 h-12 rounded-2xl {{ $c[3] }} grid place-items-center text-white shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform"><x-icon name="{{ $c[0] }}" class="w-6 h-6" /></span>
             <p class="font-extrabold text-[15px] mt-3">{{ $c[1] }}</p>
             <p class="text-[12px] font-bold text-leaf-600">{{ $c[2] }}</p>
@@ -322,6 +322,7 @@
                     <p>Mereka tak punya ruko besar. Tak punya modal raksasa. Yang mereka punya jauh lebih berharga: <strong class="text-white">resep keluarga, tangan yang tak kenal lelah, dan tetangga yang percaya.</strong></p>
                     <p>Kami membangun aplikasi ini dengan satu keyakinan sederhana — <strong class="text-brand-300">rumah kecil bukan halangan.</strong> Dengan satu HP, dapur dan teras rumahmu bisa menjadi toko yang dikunjungi ribuan tetangga.</p>
                 </div>
+                <a href="{{ route('about') }}" class="reveal mt-5 inline-flex items-center gap-2 font-extrabold text-sm text-brand-300 hover:text-brand-200 transition" style="--reveal-delay:200ms">Baca cerita lengkapnya →</a>
             </div>
 
             <div class="relative grid gap-3">
@@ -406,6 +407,30 @@
         </div>
     </div>
 </section>
+
+{{-- ================= ARTIKEL ================= --}}
+@if($articles->isNotEmpty())
+<section id="artikel" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+        <div>
+            <p class="reveal inline-flex text-[11px] font-extrabold tracking-[0.18em] text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3.5 py-1.5">📰 ARTIKEL</p>
+            <h2 class="reveal font-black tracking-tight text-3xl sm:text-5xl mt-3" style="--reveal-delay:80ms">Bacaan buat tetangga</h2>
+            <p class="reveal text-ink-500 font-medium text-[15px] mt-2 max-w-md" style="--reveal-delay:140ms">Tips belanja hemat, panduan kulakan, dan kabar seputar warung di sekitarmu.</p>
+        </div>
+        <a href="{{ route('articles.index') }}" class="reveal hidden sm:inline-flex font-extrabold text-sm underline underline-offset-8 decoration-brand-500 decoration-2 hover:text-brand-600">Semua artikel →</a>
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        @foreach($articles as $i => $article)
+        <x-article-card :article="$article" :index="$i" />
+        @endforeach
+    </div>
+
+    <p class="mt-6 text-center sm:hidden">
+        <a href="{{ route('articles.index') }}" class="inline-flex font-extrabold text-sm border-2 border-ink-900/10 rounded-full px-7 py-3.5">Semua artikel →</a>
+    </p>
+</section>
+@endif
 
 {{-- ================= FAQ ================= --}}
 <section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">

@@ -16,12 +16,33 @@ class AdminPaymentController extends Controller
     {
         $status = $request->string('status')->toString();
 
-        if (! in_array($status, Payment::STATUSES, true)) {
+        if ($status === 'all') {
+            $status = null;
+        } elseif (! in_array($status, Payment::STATUSES, true)) {
             $status = Payment::STATUS_PENDING;
         }
 
+        $search = trim((string) $request->input('search', ''));
+        $orderId = Order::idFromCode($search);
+
         $payments = Payment::with(['order.user', 'order.store', 'paymentMethod', 'verifier'])
-            ->where('status', $status)
+            ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($search !== '', function ($query) use ($search, $orderId): void {
+                $query->where(function ($query) use ($search, $orderId): void {
+                    $query->whereHas('paymentMethod', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('order', function ($query) use ($search): void {
+                            $query->where('warung_name', 'like', "%{$search}%")
+                                ->orWhereHas('user', function ($query) use ($search): void {
+                                    $query->where('name', 'like', "%{$search}%")
+                                        ->orWhere('email', 'like', "%{$search}%");
+                                });
+                        });
+
+                    if ($orderId) {
+                        $query->orWhere('order_id', $orderId);
+                    }
+                });
+            })
             ->latest('id')
             ->paginate(15)
             ->withQueryString();

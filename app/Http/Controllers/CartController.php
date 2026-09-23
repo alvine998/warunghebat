@@ -60,6 +60,10 @@ class CartController extends Controller
             return back()->with('error', 'Warung produk ini belum siap menerima pesanan.');
         }
 
+        if (! $store->is_open) {
+            return back()->with('error', 'Warung sedang tutup, belum bisa menerima pesanan.');
+        }
+
         $cart = session('cart');
         $cartIsArray = is_array($cart) && ! empty($cart['store_id']);
         $hasOtherStore = $cartIsArray && (int) $cart['store_id'] !== (int) $store->id;

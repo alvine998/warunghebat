@@ -12,6 +12,15 @@
     <a href="{{ route('admin.payment-methods.create') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">+ Tambah metode</a>
 </div>
 
+<form method="GET" action="{{ route('admin.payment-methods') }}" class="mt-4 flex flex-col sm:flex-row gap-2">
+    <label class="sr-only" for="method-search">Cari metode pembayaran</label>
+    <div class="flex flex-1 items-center gap-2 rounded-2xl bg-white border border-ink-900/10 px-4 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10">
+        <x-icon name="search" class="w-5 h-5 text-ink-400" />
+        <input id="method-search" name="search" value="{{ request('search') }}" type="search" placeholder="Cari nama metode, tipe, atau nomor rekening..." class="w-full bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-ink-400">
+    </div>
+    <button type="submit" class="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-extrabold text-white hover:bg-brand-600 transition">Cari</button>
+</form>
+
 <div class="mt-5 grid gap-2.5">
     @forelse($methods as $method)
         <div class="rounded-[24px] bg-white border border-ink-900/10 p-4 sm:p-5">
@@ -58,10 +67,15 @@
         </div>
     @empty
         <div class="rounded-[24px] bg-white border border-dashed border-ink-900/15 p-8 text-center">
-            <p class="text-3xl">🏦</p>
-            <p class="font-extrabold mt-2">Belum ada metode pembayaran</p>
-            <p class="text-sm font-medium text-ink-500 mt-1">Pembeli tidak bisa membayar sebelum kamu menambahkan rekening tujuan.</p>
-            <a href="{{ route('admin.payment-methods.create') }}" class="mt-4 inline-block text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">+ Tambah metode</a>
+            @if(request('search'))
+                <p class="font-extrabold">Tidak ada metode yang cocok dengan "{{ request('search') }}"</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain seperti nama bank, tipe, atau nomor rekening.</p>
+            @else
+                <p class="text-3xl">🏦</p>
+                <p class="font-extrabold mt-2">Belum ada metode pembayaran</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Pembeli tidak bisa membayar sebelum kamu menambahkan rekening tujuan.</p>
+                <a href="{{ route('admin.payment-methods.create') }}" class="mt-4 inline-block text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">+ Tambah metode</a>
+            @endif
         </div>
     @endforelse
 </div>
