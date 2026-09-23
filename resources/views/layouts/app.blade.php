@@ -60,6 +60,13 @@
 
             <div class="flex items-center gap-2">
                 @auth
+                    @php($cartCount = (int) collect(session('cart.items', []))->sum('qty'))
+                    <a href="{{ route('cart.index') }}" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold px-4 py-2.5 rounded-full hover:bg-ink-900/5 transition">
+                        🛒 Keranjang
+                        @if($cartCount > 0)
+                            <span class="grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-500 text-white text-[11px] font-black">{{ $cartCount }}</span>
+                        @endif
+                    </a>
                     @if(auth()->user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="hidden sm:inline-flex text-sm font-extrabold px-4 py-2.5 rounded-full bg-brand-500 text-white hover:bg-brand-600 transition">🛠️ Backoffice</a>
                     @endif
@@ -100,6 +107,10 @@
             </div>
             @else
             <div class="p-2 grid gap-2">
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="{{ route('cart.index') }}" class="text-center py-3 rounded-2xl bg-white/10 font-bold text-sm">🛒 Keranjang</a>
+                    <a href="{{ route('orders.index') }}" class="text-center py-3 rounded-2xl bg-white/10 font-bold text-sm">🧾 Pesanan</a>
+                </div>
                 @if(auth()->user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}" class="text-center py-3 rounded-2xl bg-brand-500 font-bold text-sm">🛠️ Buka Backoffice</a>
                 @else

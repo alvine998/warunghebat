@@ -1,0 +1,11 @@
+# Taste
+
+## Communication
+- Writes short, lowercase, code-switched (English + Indonesian) prompts with minimal punctuation, and expects the agent to explore the codebase and infer the missing details rather than ask for a full spec. Confidence: 0.55
+
+## Workflow
+- When asked to choose between designs, picks the agent's recommended option, preferring the pragmatic, dependency-light path (e.g. manual bank transfer + proof upload over adding a payment-gateway dependency). Confidence: 0.55
+- Prefers a feature delivered end-to-end over a partial/staged slice (chose the whole cart → checkout → payment verification → escrow wallet → withdrawal → payout chain). Confidence: 0.55
+
+## Coding style
+- Established project conventions to match: money stored as integer rupiah and displayed via `Rp {{ number_format($n, 0, ',', '.') }}`; inline `$request->validate([...], [Indonesian messages])` instead of FormRequests; business/lifecycle logic on models; PHPUnit feature tests with `RefreshDatabase` + factories; Pint for PHP formatting; `npm run build` after Blade/Tailwind changes; all user-facing copy (labels, validation, flash messages) in Indonesian. Confidence: 0.6

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\User;
+use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,21 +22,16 @@ class AdminController extends Controller
             'penjual' => User::where('role', 'penjual')->count(),
             'admins' => User::where('role', 'admin')->count(),
             'pending_products' => Product::where('status', 'pending')->count(),
+            'pending_payments' => Payment::where('status', Payment::STATUS_PENDING)->count(),
+            'pending_withdrawals' => Withdrawal::where('status', Withdrawal::STATUS_PENDING)->count(),
+            'escrow' => (int) Order::where('status', Order::STATUS_PAID)->sum('total'),
         ];
 
         $latestUsers = User::latest()->take(8)->get();
         $pendingProducts = Product::with('user')->where('status', 'pending')->latest()->take(5)->get();
+        $latestStores = Store::with('user')->withCount('products')->latest('id')->take(5)->get();
 
-        // Dummy warung rows until a Warung model exists.
-        $warungs = collect([
-            ['name' => 'Warung Bang Jago', 'owner' => 'Bang Jago', 'cat' => 'Makanan', 'orders' => 1240, 'status' => 'Aktif'],
-            ['name' => 'Kopi Hebat Tebet', 'owner' => 'Rina', 'cat' => 'Minuman', 'orders' => 986, 'status' => 'Aktif'],
-            ['name' => 'Sembako Bu RT', 'owner' => 'Bu RT', 'cat' => 'Sembako', 'orders' => 764, 'status' => 'Aktif'],
-            ['name' => 'Jajan Pasar Yu Ning', 'owner' => 'Yu Ning', 'cat' => 'Jajanan', 'orders' => 542, 'status' => 'Review'],
-            ['name' => 'Dapur Nusa Frozen', 'owner' => 'Nusa', 'cat' => 'Frozen', 'orders' => 318, 'status' => 'Aktif'],
-        ]);
-
-        return view('admin.dashboard', compact('stats', 'latestUsers', 'warungs', 'pendingProducts'));
+        return view('admin.dashboard', compact('stats', 'latestUsers', 'pendingProducts', 'latestStores'));
     }
 
     public function users(Request $request): View

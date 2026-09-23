@@ -7,7 +7,7 @@
     <div>
         <p class="flex items-center gap-2 text-[11px] font-extrabold tracking-[0.2em] text-brand-600"><x-icon name="chart" class="w-4 h-4" /> RINGKASAN</p>
         <h1 class="font-black tracking-tight text-3xl mt-1">Halo, {{ strtok(auth()->user()->name, ' ') }}</h1>
-        <p class="text-sm font-medium text-ink-500">Kondisi marketplace hari ini, Selasa 23 Sep 2026.</p>
+        <p class="text-sm font-medium text-ink-500">Kondisi marketplace hari ini.</p>
     </div>
     <a href="{{ route('admin.users') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Kelola Pengguna →</a>
 </div>
@@ -35,6 +35,24 @@
     <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Verifikasi →</a>
 </div>
 
+@if($stats['pending_payments'] > 0 || $stats['pending_withdrawals'] > 0)
+<div class="mt-3 rounded-[24px] bg-white border border-ink-900/10 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+    <div class="flex-1">
+        <p class="flex items-center gap-2 font-extrabold"><x-icon name="wallet" class="w-5 h-5" /> Perlu tindakan keuangan</p>
+        <p class="text-[13px] font-medium text-ink-500">
+            {{ number_format($stats['pending_payments'], 0, ',', '.') }} bukti transfer menunggu verifikasi • {{ number_format($stats['pending_withdrawals'], 0, ',', '.') }} penarikan menunggu diproses
+            @if($stats['escrow'] > 0)
+                • Rp {{ number_format($stats['escrow'], 0, ',', '.') }} dana ditahan
+            @endif
+        </p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <a href="{{ route('admin.payments') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">Verifikasi →</a>
+        <a href="{{ route('admin.withdrawals') }}" class="text-sm font-extrabold border border-ink-900/15 px-5 py-2.5 rounded-full hover:bg-ink-900 hover:text-white transition">Penarikan →</a>
+    </div>
+</div>
+@endif
+
 <div class="mt-4 grid gap-3.5 lg:grid-cols-2">
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-5 sm:p-6">
         <div class="flex items-center justify-between">
@@ -59,19 +77,21 @@
 
     <div class="rounded-[24px] bg-white border border-ink-900/10 p-5 sm:p-6">
         <div class="flex items-center justify-between">
-            <h2 class="font-extrabold text-lg">Warung populer</h2>
+            <h2 class="font-extrabold text-lg">Warung terbaru</h2>
             <a href="{{ route('admin.warungs') }}" class="text-[13px] font-extrabold text-brand-600">Kelola →</a>
         </div>
         <div class="mt-4 grid gap-2">
-            @foreach($warungs as $w)
+            @forelse($latestStores as $w)
             <div class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-2.5">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-extrabold truncate">{{ $w['name'] }}</p>
-                    <p class="text-xs font-semibold text-ink-500">{{ $w['owner'] }} • {{ $w['cat'] }} • {{ number_format($w['orders'], 0, ',', '.') }} pesanan</p>
+                    <p class="text-sm font-extrabold truncate">{{ $w->name }}</p>
+                    <p class="text-xs font-semibold text-ink-500 truncate">{{ $w->user?->name }} • {{ number_format($w->products_count, 0, ',', '.') }} produk</p>
                 </div>
-                <span class="text-[11px] font-extrabold rounded-full px-3 py-1.5 {{ $w['status'] === 'Aktif' ? 'bg-leaf-100 text-leaf-700' : 'bg-amber-100 text-amber-800' }}">{{ $w['status'] }}</span>
+                <span class="text-[11px] font-extrabold rounded-full px-3 py-1.5 {{ $w->is_open ? 'bg-leaf-100 text-leaf-700' : 'bg-amber-100 text-amber-800' }}">{{ $w->is_open ? 'Buka' : 'Tutup' }}</span>
             </div>
-            @endforeach
+            @empty
+            <p class="text-sm font-semibold text-ink-500">Belum ada warung.</p>
+            @endforelse
         </div>
     </div>
 </div>

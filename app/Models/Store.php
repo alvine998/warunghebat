@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Store extends Model
@@ -49,6 +50,17 @@ class Store extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'user_id', 'user_id');
+    }
+
+    /** Money released from escrow for this store's completed orders. */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     /** One store per seller; auto-provisioned on first access. */

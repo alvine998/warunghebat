@@ -170,9 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }).observe(marqueeBar);
     }
 
-    // ---------- Auth modals ----------
+    // ---------- Auth + cart-conflict modals ----------
     const loginModal = document.getElementById('modal-login');
     const registerModal = document.getElementById('modal-register');
+    const cartConflictModal = document.getElementById('modal-cart-conflict');
 
     function openModal(modal) {
         if (!modal) return;
@@ -192,21 +193,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.openLogin = () => {
         closeModal(registerModal);
+        closeModal(cartConflictModal);
         openModal(loginModal);
     };
     window.openRegister = () => {
         closeModal(loginModal);
+        closeModal(cartConflictModal);
         openModal(registerModal);
+    };
+    window.openCartConflict = () => {
+        closeModal(loginModal);
+        closeModal(registerModal);
+        openModal(cartConflictModal);
     };
     window.closeAuthModals = () => {
         closeModal(loginModal);
         closeModal(registerModal);
+        closeModal(cartConflictModal);
     };
 
     document.querySelectorAll('[data-open-login]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); window.openLogin(); }));
     document.querySelectorAll('[data-open-register]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); window.openRegister(); }));
     document.querySelectorAll('[data-close-modal]').forEach((b) => b.addEventListener('click', () => window.closeAuthModals()));
-    [loginModal, registerModal].forEach((m) => {
+    [loginModal, registerModal, cartConflictModal].forEach((m) => {
         m?.addEventListener('click', (e) => {
             if (e.target === m) window.closeAuthModals();
         });
@@ -217,6 +226,10 @@ document.addEventListener('DOMContentLoaded', () => {
             closeMobileMenu();
         }
     });
+    // Server flash for cross-store cart conflict — open once after redirect.
+    if (cartConflictModal?.hasAttribute('data-auto-open')) {
+        openModal(cartConflictModal);
+    }
 
     // ---------- Password toggles ----------
     document.querySelectorAll('[data-toggle-password]').forEach((btn) => {
