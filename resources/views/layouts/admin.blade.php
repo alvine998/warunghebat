@@ -33,6 +33,7 @@
             <a href="{{ route('admin.products') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="package" class="w-5 h-5" /> Produk</a>
 
             <p class="px-4 pt-4 pb-1 text-[10px] font-extrabold tracking-[0.18em] text-white/40">KEUANGAN</p>
+            <a href="{{ route('admin.finance') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('admin.finance*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="chart" class="w-5 h-5" /> Overview</a>
             <a href="{{ route('admin.payments') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('admin.payments*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="document" class="w-5 h-5" /> Pembayaran</a>
             <a href="{{ route('admin.orders') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('admin.orders*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="basket" class="w-5 h-5" /> Pesanan</a>
             <a href="{{ route('admin.withdrawals') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-2xl {{ request()->routeIs('admin.withdrawals*') ? 'bg-white text-ink-900' : 'hover:bg-white/10 text-white/80' }}"><x-icon name="ticket" class="w-5 h-5" /> Penarikan</a>
@@ -60,6 +61,7 @@
             <a href="{{ route('admin.users') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.users') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="users" class="w-5 h-5" /> Pengguna</a>
             <a href="{{ route('admin.warungs') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.warungs') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="store" class="w-5 h-5" /> Warung</a>
             <a href="{{ route('admin.products') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.products*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="package" class="w-5 h-5" /> Produk</a>
+            <a href="{{ route('admin.finance') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.finance*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="chart" class="w-5 h-5" /> Overview</a>
             <a href="{{ route('admin.payments') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.payments*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="document" class="w-5 h-5" /> Pembayaran</a>
             <a href="{{ route('admin.orders') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.orders*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="basket" class="w-5 h-5" /> Pesanan</a>
             <a href="{{ route('admin.withdrawals') }}" class="shrink-0 flex flex-col items-center gap-1 text-center py-2.5 px-3.5 rounded-xl {{ request()->routeIs('admin.withdrawals*') ? 'bg-white text-ink-900' : 'bg-white/10' }}"><x-icon name="ticket" class="w-5 h-5" /> Penarikan</a>
@@ -73,5 +75,6 @@
     </main>
 </div>
 @include('components.toasts')
+@stack('scripts')
 </body>
 </html>

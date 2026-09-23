@@ -1,0 +1,519 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Warung Hebat" [ref=e4] [cursor=pointer]:
+        - /url: http://127.0.0.1:8000
+        - generic [ref=e5]: W
+        - generic [ref=e7]:
+          - generic [ref=e8]: Warung Hebat
+          - generic [ref=e9]: BELANJA DEKAT • HIDUP HEBAT
+      - navigation [ref=e10]:
+        - link "Kategori" [ref=e11] [cursor=pointer]:
+          - /url: "#kategori"
+        - link "Cara Kerja" [ref=e12] [cursor=pointer]:
+          - /url: "#cara-kerja"
+        - link "Warung Terdekat" [ref=e13] [cursor=pointer]:
+          - /url: "#warung"
+        - link "Cerita Kami" [ref=e14] [cursor=pointer]:
+          - /url: "#cerita"
+        - link "Jadi Mitra" [ref=e15] [cursor=pointer]:
+          - /url: "#mitra"
+        - link "FAQ" [ref=e16] [cursor=pointer]:
+          - /url: "#faq"
+      - generic [ref=e17]:
+        - link "Masuk" [ref=e18] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/login
+        - link "Daftar Gratis" [ref=e19] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]: LIVE
+            - generic [ref=e27]: 📍 Tebet, Jaksel
+            - generic [ref=e28]: • 3 warung buka
+          - heading [level=1] [ref=e29]:
+            - text: Belanja dekat,
+            - generic [ref=e30]: hidup hebat.
+          - paragraph [ref=e33]:
+            - text: Marketplace digital buat semua — makanan, minuman, sembako & kebutuhan harian dari
+            - strong [ref=e34]: warung terdekatmu
+            - text: . Pesan dari HP, ambil atau diantar cepat.
+          - generic [ref=e35]:
+            - textbox "Cari nasi goreng, kopi susu, telur..." [ref=e39]
+            - link "Cari" [ref=e40] [cursor=pointer]:
+              - /url: "#warung"
+          - paragraph [ref=e41]: Coba ketik "gorengan", "kopi", atau "sembako"...
+          - generic [ref=e42]:
+            - link "Mulai Belanja →" [ref=e43] [cursor=pointer]:
+              - /url: http://127.0.0.1:8000/register
+            - link "🏪 Buka Warung" [ref=e44] [cursor=pointer]:
+              - /url: "#mitra"
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - term [ref=e47]: Warung mitra
+              - definition [ref=e48]: 34+
+              - definition [ref=e49]: Warung Mitra
+            - generic [ref=e50]:
+              - term [ref=e51]: Pesanan
+              - definition [ref=e52]: 3rb+
+              - definition [ref=e53]: Pesanan
+            - generic [ref=e54]:
+              - term [ref=e55]: Rating
+              - definition [ref=e56]: 0.1★
+              - definition [ref=e57]: Rating App
+        - generic [ref=e58]:
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - generic [ref=e63]:
+                  - paragraph [ref=e64]: 📍 Antar ke
+                  - paragraph [ref=e65]: Jl. Tebet Raya No. 12 ⌄
+                - generic [ref=e66]: S
+              - generic [ref=e67]: Mau jajan apa hari ini?
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - generic [ref=e70]: Semua
+                - generic [ref=e71]: 🍱 Makanan
+                - generic [ref=e72]: 🥤 Minuman
+              - generic [ref=e73]:
+                - generic [ref=e79]:
+                  - paragraph [ref=e80]: Nasi Goreng Tek-Tek
+                  - paragraph [ref=e81]: Warung Bang Jago • 200m
+                  - paragraph [ref=e82]: Rp 15rb
+                - generic [ref=e83]: +
+              - generic [ref=e84]:
+                - generic [ref=e91]:
+                  - paragraph [ref=e92]: Kopi Susu Gula Aren
+                  - paragraph [ref=e93]: Kopi Hebat • 350m
+                  - paragraph [ref=e94]: Rp 12rb
+                - generic [ref=e95]: +
+              - generic [ref=e96]:
+                - generic [ref=e106]:
+                  - paragraph [ref=e107]: Paket Sembako Hemat
+                  - paragraph [ref=e108]: Sembako Bu RT • 500m
+                  - paragraph [ref=e109]: Rp 58rb
+                - generic [ref=e110]: +
+              - generic [ref=e111]:
+                - generic [ref=e112]:
+                  - paragraph [ref=e113]: 3 item • 600m
+                  - paragraph [ref=e114]: Rp 85.000 • Antar 12 mnt
+                - generic [ref=e115]: Bayar →
+          - generic [ref=e120]:
+            - paragraph [ref=e121]: Abang OTW!
+            - paragraph [ref=e122]: 2 menit lagi sampai
+          - generic [ref=e127]:
+            - paragraph [ref=e128]: 4.9/5.0
+            - paragraph [ref=e129]: 12rb ulasan
+      - generic [ref=e130]:
+        - paragraph [ref=e131]: DIPERCAYA 2.450+ WARUNG DI 34 KOTA
+        - generic [ref=e132]:
+          - generic [ref=e133]: ✓ Warung Bang Jago
+          - generic [ref=e134]: ✓ Kopi Hebat
+          - generic [ref=e135]: ✓ Sembako Bu RT
+          - generic [ref=e136]: ✓ Dapur Nusa
+          - generic [ref=e137]: ✓ Jajan Pasar Yu Ning
+          - generic [ref=e138]: ✓ Ayam Geprek Mantul
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - generic [ref=e142]: MAKANAN
+        - generic [ref=e143]: ✦
+        - generic [ref=e144]: MINUMAN
+        - generic [ref=e145]: ✦
+        - generic [ref=e146]: SEMBAKO
+        - generic [ref=e147]: ✦
+        - generic [ref=e148]: HARIAN
+        - generic [ref=e149]: ✦
+        - generic [ref=e150]: JAJANAN
+        - generic [ref=e151]: ✦
+        - generic [ref=e152]: FROZEN
+        - generic [ref=e153]: ✦
+        - generic [ref=e154]: TERDEKAT
+        - generic [ref=e155]: ✦
+        - generic [ref=e156]: CEPAT
+        - generic [ref=e157]: ✦
+      - generic [ref=e158]:
+        - generic [ref=e159]: MAKANAN
+        - generic [ref=e160]: ✦
+        - generic [ref=e161]: MINUMAN
+        - generic [ref=e162]: ✦
+        - generic [ref=e163]: SEMBAKO
+        - generic [ref=e164]: ✦
+        - generic [ref=e165]: HARIAN
+        - generic [ref=e166]: ✦
+        - generic [ref=e167]: JAJANAN
+        - generic [ref=e168]: ✦
+        - generic [ref=e169]: FROZEN
+        - generic [ref=e170]: ✦
+        - generic [ref=e171]: TERDEKAT
+        - generic [ref=e172]: ✦
+        - generic [ref=e173]: CEPAT
+        - generic [ref=e174]: ✦
+    - generic [ref=e175]:
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - paragraph [ref=e178]: 🛍️ KATEGORI
+          - heading "Mau apa hari ini?" [level=2] [ref=e179]
+          - paragraph [ref=e180]: Semua kebutuhan harian ada — dijual tetanggamu sendiri, dikirim dari gang sebelah.
+        - link "Lihat semua →" [ref=e181] [cursor=pointer]:
+          - /url: "#warung"
+      - generic [ref=e182]:
+        - link [ref=e183] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e188]: Makanan
+          - paragraph [ref=e189]: 1.2rb warung
+          - paragraph [ref=e190]: Siap saji & masakan
+        - link [ref=e191] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e197]: Minuman
+          - paragraph [ref=e198]: 860 warung
+          - paragraph [ref=e199]: Kopi, jus & es
+        - link [ref=e200] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e208]: Sembako
+          - paragraph [ref=e209]: 640 warung
+          - paragraph [ref=e210]: Beras, telur, minyak
+        - link [ref=e211] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e216]: Harian
+          - paragraph [ref=e217]: 520 warung
+          - paragraph [ref=e218]: Sabun & tisu
+        - link [ref=e219] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e223]: Jajanan
+          - paragraph [ref=e224]: 980 warung
+          - paragraph [ref=e225]: Pasar & kekinian
+        - link [ref=e226] [cursor=pointer]:
+          - /url: "#warung"
+          - paragraph [ref=e231]: Frozen
+          - paragraph [ref=e232]: 310 warung
+          - paragraph [ref=e233]: Nugget & dimsum
+    - generic [ref=e235]:
+      - paragraph [ref=e236]: 🛵 CARA KERJA
+      - heading "Dari warung sebelah sampai ke tanganmu." [level=2] [ref=e237]
+      - paragraph [ref=e238]: Tanpa antre, tanpa jauh-jauh. Semua dari HP, dioptimasi buat layar kecil & sinyal pas-pasan.
+      - generic [ref=e239]:
+        - generic [ref=e240]:
+          - generic [ref=e241]: "01"
+          - paragraph [ref=e247]: Lokasi otomatis
+          - paragraph [ref=e248]: Nyalakan GPS — kami tampilkan warung buka dalam radius 500m–2km, urut dari yang paling dekat.
+        - generic [ref=e249]:
+          - generic [ref=e250]: "02"
+          - paragraph [ref=e259]: Pilih & bayar
+          - paragraph [ref=e260]: Keranjang sat-set, bayar via QRIS, e-wallet, COD atau transfer. Struk digital langsung masuk.
+        - generic [ref=e261]:
+          - generic [ref=e262]: "03"
+          - paragraph [ref=e267]: Antar / ambil
+          - paragraph [ref=e268]: Diantar abang dalam 10–20 menit, atau ambil sendiri biar lebih hemat + dapat poin.
+      - generic [ref=e269]:
+        - generic [ref=e270]: ⚡
+        - paragraph [ref=e271]:
+          - text: Rata-rata pesanan sampai dalam
+          - strong [ref=e272]: 14 menit
+          - text: — karena jaraknya dekat, ongkirnya pun ringan mulai Rp 2rb.
+        - link "Coba Sekarang" [ref=e273] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+    - generic [ref=e274]:
+      - generic [ref=e275]:
+        - generic [ref=e276]:
+          - paragraph [ref=e277]: 📍 NEARBY-FIRST
+          - heading "Warung terdekatmu" [level=2] [ref=e278]
+          - paragraph [ref=e279]: Jarak asli, ulasan asli, rasa tetangga.
+        - generic [ref=e280]:
+          - generic [ref=e281]: ◎ Radius 5 km
+          - button "📍 Gunakan lokasiku" [ref=e282]
+      - generic [ref=e283]:
+        - article [ref=e284]:
+          - generic [ref=e285]:
+            - img "Foto Warung Bu Siti" [ref=e286]
+            - generic [ref=e288]: 🛍️ 5 produk
+            - generic [ref=e289]: Buka
+          - generic [ref=e291]:
+            - paragraph [ref=e292]: Warung Bu Siti
+            - paragraph [ref=e293]: Harian • Sembako
+            - generic [ref=e294]:
+              - generic [ref=e295]: 📍 Jl. Tebet Barat Dalam No...
+              - link "Lihat" [ref=e296] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/warung-bu-siti
+        - article [ref=e297]:
+          - generic [ref=e298]:
+            - img "Foto Warung Bang Jago" [ref=e299]
+            - generic [ref=e301]: 🛍️ 5 produk
+            - generic [ref=e302]: Buka
+          - generic [ref=e304]:
+            - paragraph [ref=e305]: Warung Bang Jago
+            - paragraph [ref=e306]: Harian • Minuman
+            - generic [ref=e307]:
+              - generic [ref=e308]: 📍 Jl. Tebet Raya No. 12, J...
+              - link "Lihat" [ref=e309] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/warung-bang-jago
+        - article [ref=e310]:
+          - generic [ref=e311]:
+            - img "Foto Kedai Kopi Hebat" [ref=e312]
+            - generic [ref=e314]: 🛍️ 4 produk
+            - generic [ref=e315]: Buka
+          - generic [ref=e317]:
+            - paragraph [ref=e318]: Kedai Kopi Hebat
+            - paragraph [ref=e319]: Minuman
+            - generic [ref=e320]:
+              - generic [ref=e321]: 📍 Jl. Dr. Saharjo No. 45,...
+              - link "Lihat" [ref=e322] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/kedai-kopi-hebat
+        - article [ref=e323]:
+          - generic [ref=e324]:
+            - img "Foto Jajan Pasar Yu Ning" [ref=e325]
+            - generic [ref=e327]: 🛍️ 5 produk
+            - generic [ref=e328]: Tutup
+          - generic [ref=e330]:
+            - paragraph [ref=e331]: Jajan Pasar Yu Ning
+            - paragraph [ref=e332]: Jajanan
+            - generic [ref=e333]:
+              - generic [ref=e334]: 📍 Jl. Tebet Timur Dalam No...
+              - link "Lihat" [ref=e335] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/jajan-pasar-yu-ning
+      - paragraph [ref=e336]:
+        - link "Lihat 4 warung lainnya →" [ref=e337] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/warung?radius=5
+    - generic [ref=e339]:
+      - generic [ref=e340]:
+        - paragraph [ref=e341]: 💡 KENAPA WARUNG HEBAT
+        - heading "Didesain mobile-first untuk jajan sat-set." [level=2] [ref=e342]
+        - list [ref=e343]:
+          - listitem [ref=e344]:
+            - generic [ref=e345]: ⚡
+            - generic [ref=e346]:
+              - strong [ref=e347]: Ringan & cepat
+              - generic [ref=e348]: < 1 detik load di HP kentang, hemat kuota, bisa offline lihat katalog.
+          - listitem [ref=e349]:
+            - generic [ref=e350]: 📍
+            - generic [ref=e351]:
+              - strong [ref=e352]: Nearby beneran
+              - generic [ref=e353]: Algoritma kedekatan — bukan yang bayar iklan paling mahal yang muncul duluan.
+          - listitem [ref=e354]:
+            - generic [ref=e355]: 💰
+            - generic [ref=e356]:
+              - strong [ref=e357]: Harga warung asli
+              - generic [ref=e358]: Tanpa markup siluman. Yang kamu bayar = harga di etalase + ongkir transparan.
+          - listitem [ref=e359]:
+            - generic [ref=e360]: 🤝
+            - generic [ref=e361]:
+              - strong [ref=e362]: Pemberdayaan
+              - generic [ref=e363]: Komisi 0% untuk 3 bulan pertama. 92% uangmu langsung ke pemilik warung.
+      - generic [ref=e364]:
+        - generic [ref=e365]:
+          - paragraph [ref=e366]: ONGKIR HEMAT
+          - paragraph [ref=e367]: Rp 2rb
+          - paragraph [ref=e368]: untuk jarak < 1 km. 63% lebih murah dari ojol biasa.
+        - generic [ref=e371]:
+          - generic [ref=e372]:
+            - paragraph [ref=e373]: 0%
+            - paragraph [ref=e374]: komisi 3 bulan pertama buat mitra baru
+          - generic [ref=e375]:
+            - paragraph [ref=e376]: 14mnt
+            - paragraph [ref=e377]: rata-rata waktu antar pesanan
+        - generic [ref=e378]:
+          - generic [ref=e379]:
+            - generic [ref=e380]: S
+            - generic [ref=e381]: D
+            - generic [ref=e382]: R
+            - generic [ref=e383]: +
+          - paragraph [ref=e384]: Sari & 2.300+ tetanggamu udah jajan minggu ini 🧡
+    - generic [ref=e387]:
+      - generic [ref=e388]:
+        - paragraph [ref=e389]: CERITA KAMI
+        - heading "Tak perlu ruko besar untuk punya warung hebat." [level=2] [ref=e392]
+        - generic [ref=e393]:
+          - paragraph [ref=e394]:
+            - text: Warung Hebat lahir dari gang-gang kecil Indonesia — dari
+            - strong [ref=e395]: dapur Ibu
+            - text: yang masakannya selalu ludes di arisan, dari
+            - strong [ref=e396]: teras rumah Bapak
+            - text: yang jadi basecamp anak komplek, dari
+            - strong [ref=e397]: meja lipat depan kos
+            - text: yang tiap malam dipadati pembeli.
+          - paragraph [ref=e398]:
+            - text: "Mereka tak punya ruko besar. Tak punya modal raksasa. Yang mereka punya jauh lebih berharga:"
+            - strong [ref=e399]: resep keluarga, tangan yang tak kenal lelah, dan tetangga yang percaya.
+          - paragraph [ref=e400]:
+            - text: Kami membangun aplikasi ini dengan satu keyakinan sederhana —
+            - strong [ref=e401]: rumah kecil bukan halangan.
+            - text: Dengan satu HP, dapur dan teras rumahmu bisa menjadi toko yang dikunjungi ribuan tetangga.
+      - generic [ref=e402]:
+        - figure "Tim Warung Hebat Ditulis dari sebuah teras kecil di Tebet" [ref=e403]:
+          - text: “
+          - blockquote [ref=e404]: Setiap pesanan di sini bukan sekadar transaksi. Ia adalah uang jajan anak, biaya sekolah, dan mimpi-mimpi kecil yang kita jaga bersama.
+          - generic [ref=e409]:
+            - strong [ref=e410]: Tim Warung Hebat
+            - generic [ref=e411]: Ditulis dari sebuah teras kecil di Tebet
+        - generic [ref=e412]:
+          - generic [ref=e413]:
+            - paragraph [ref=e414]: 2.450+
+            - paragraph [ref=e415]: warung rumahan
+          - generic [ref=e416]:
+            - paragraph [ref=e417]: 92%
+            - paragraph [ref=e418]: sampai ke penjual
+          - generic [ref=e419]:
+            - paragraph [ref=e420]: "34"
+            - paragraph [ref=e421]: kota & terus tumbuh
+        - link "Rumahmu sudah cukup — buka warungmu →" [ref=e422] [cursor=pointer]:
+          - /url: "#mitra"
+    - generic [ref=e424]:
+      - generic [ref=e425]:
+        - paragraph [ref=e426]: 🏪 BUAT PEMILIK WARUNG
+        - heading "Punya dagangan? Jualan di sini, gratis." [level=2] [ref=e427]: Punya dagangan?Jualan di sini, gratis.
+        - paragraph [ref=e428]: Foto daganganmu, tentukan jam buka, terima pesanan dari HP. Tanpa sewa, tanpa ribet.
+        - list [ref=e429]:
+          - listitem [ref=e430]:
+            - generic [ref=e431]: ✓
+            - text: Daftar 5 menit, langsung tayang
+          - listitem [ref=e432]:
+            - generic [ref=e433]: ✓
+            - text: Dashboard WarungKu + struk otomatis
+          - listitem [ref=e434]:
+            - generic [ref=e435]: ✓
+            - text: Pelatihan digital + grup seller sedarah
+        - link "Daftar Jadi Mitra →" [ref=e436] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+      - generic [ref=e437]:
+        - generic [ref=e438]:
+          - paragraph [ref=e439]: 💬
+          - paragraph [ref=e440]: "\"Sejak gabung Warung Hebat, omzet gorengan saya naik 3x lipat. Yang beli orang-orang komplek sini juga, jadi kenal semua!\""
+          - generic [ref=e441]:
+            - generic [ref=e442]: "Y"
+            - generic [ref=e443]:
+              - paragraph [ref=e444]: Yu Ning
+              - paragraph [ref=e445]: Jajan Pasar Yu Ning • Jogja
+            - generic [ref=e446]: +212% omzet
+        - generic [ref=e447]:
+          - generic [ref=e448]:
+            - paragraph [ref=e449]: 5mnt
+            - paragraph [ref=e450]: waktu daftar sampai warungmu tayang
+          - generic [ref=e451]:
+            - paragraph [ref=e452]: 92%
+            - paragraph [ref=e453]: uang pesanan langsung ke pemilik warung
+    - generic [ref=e455]:
+      - heading "Kata tetangga 🧡" [level=2] [ref=e456]
+      - generic [ref=e457]:
+        - figure [ref=e458]:
+          - paragraph [ref=e459]: ⭐⭐⭐⭐⭐
+          - blockquote [ref=e460]: "\"Anak minta dimsum jam 9 malam, 15 menit sampai masih anget. Fix langganan!\""
+          - generic [ref=e461]:
+            - strong [ref=e462]: Sari Dewi
+            - text: • Ibu rumah tangga • Tebet
+        - figure [ref=e463]:
+          - paragraph [ref=e464]: ⭐⭐⭐⭐⭐
+          - blockquote [ref=e465]: "\"Nasi padang Rp 13rb + ongkir Rp 2rb. Dompet anak kos aman jaya.\""
+          - generic [ref=e466]:
+            - strong [ref=e467]: Rizky Pratama
+            - text: • Anak kos • Bandung
+        - figure [ref=e468]:
+          - paragraph [ref=e469]: ⭐⭐⭐⭐⭐
+          - blockquote [ref=e470]: "\"Awalnya gaptek, dibantuin sampai bisa. Sekarang tiap hari ada 20+ orderan masuk.\""
+          - generic [ref=e471]:
+            - strong [ref=e472]: Mama Mecha
+            - text: • Seller sembako • Surabaya
+    - generic [ref=e473]:
+      - paragraph [ref=e474]: ❓ FAQ
+      - heading "Masih kepo? Wajar." [level=2] [ref=e475]
+      - generic [ref=e476]:
+        - generic [ref=e477]:
+          - button "Apa itu Warung Hebat? ⌄" [ref=e478]:
+            - text: Apa itu Warung Hebat?
+            - generic [ref=e479]: ⌄
+          - paragraph [ref=e480]: "Marketplace digital yang menghubungkan pembeli dengan warung/toko kelontong/UMKM di sekitar mereka. Fokus kami: jarak dekat, harga jujur, dan pengalaman mobile-first yang ringan."
+        - generic [ref=e481]:
+          - button "Bagaimana cara pesan? ⌄" [ref=e482]:
+            - text: Bagaimana cara pesan?
+            - generic [ref=e483]: ⌄
+          - paragraph [ref=e484]: Daftar/masuk, nyalakan lokasi, pilih warung terdekat, masukkan ke keranjang, bayar via QRIS/e-wallet/COD, lalu pilih diantar atau ambil sendiri.
+        - generic [ref=e485]:
+          - button "Apakah harus daftar untuk belanja? ⌄" [ref=e486]:
+            - text: Apakah harus daftar untuk belanja?
+            - generic [ref=e487]: ⌄
+          - paragraph [ref=e488]: Iya, tapi gratis dan cuma butuh 30 detik — cukup nama, email & kata sandi. Tanpa daftar kamu tetap bisa jelajah katalog.
+        - generic [ref=e489]:
+          - button "Saya pemilik warung, berapa biayanya? ⌄" [ref=e490]:
+            - text: Saya pemilik warung, berapa biayanya?
+            - generic [ref=e491]: ⌄
+          - paragraph [ref=e492]: Gratis daftar + 0% komisi 3 bulan pertama. Setelah itu komisi flat kecil per transaksi, tanpa biaya sewa atau bulanan.
+        - generic [ref=e493]:
+          - button "Area mana saja yang dilayani? ⌄" [ref=e494]:
+            - text: Area mana saja yang dilayani?
+            - generic [ref=e495]: ⌄
+          - paragraph [ref=e496]: Kami mulai dari Jabodetabek, Bandung, Jogja, Semarang, Surabaya & Denpasar — dan tiap minggu nambah kota baru. Daftarkan emailmu biar dikabari saat kotamu dibuka.
+    - generic [ref=e498]:
+      - paragraph [ref=e499]: 🚀 GRATIS SELAMANYA BUAT PEMBELI
+      - heading "Laper jangan ditunda-tunda." [level=2] [ref=e500]: Laper janganditunda-tunda.
+      - paragraph [ref=e501]: Gabung 48.000+ tetangga yang udah jajan hemat dari warung terdekat.
+      - generic [ref=e502]:
+        - link "Daftar Gratis Sekarang →" [ref=e503] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+        - link "Saya Sudah Punya Akun" [ref=e504] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/login
+      - paragraph [ref=e505]: Gratis daftar • Batalkan kapan saja • CS 07.00–22.00 WIB
+  - contentinfo [ref=e506]:
+    - generic [ref=e507]:
+      - generic [ref=e508]:
+        - generic [ref=e509]:
+          - generic [ref=e510]:
+            - generic [ref=e511]: W
+            - generic [ref=e513]: Warung Hebat
+          - paragraph [ref=e514]: Marketplace digital mobile-first untuk makanan, minuman & kebutuhan harian dari warung-warung hebat di sekitarmu.
+          - generic [ref=e515]:
+            - link "Instagram" [ref=e516] [cursor=pointer]:
+              - /url: "#"
+            - link "TikTok" [ref=e521] [cursor=pointer]:
+              - /url: "#"
+            - link "X" [ref=e524] [cursor=pointer]:
+              - /url: "#"
+            - link "WhatsApp" [ref=e527] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=e530]:
+          - paragraph [ref=e531]: BELANJA
+          - list [ref=e532]:
+            - listitem [ref=e533]:
+              - link "Makanan" [ref=e534] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e535]:
+              - link "Minuman" [ref=e536] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e537]:
+              - link "Sembako" [ref=e538] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=e539]:
+              - link "Kebutuhan Harian" [ref=e540] [cursor=pointer]:
+                - /url: "#kategori"
+        - generic [ref=e541]:
+          - paragraph [ref=e542]: MITRA
+          - list [ref=e543]:
+            - listitem [ref=e544]:
+              - link "Buka Warung" [ref=e545] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=e546]:
+              - link "WarungKu App" [ref=e547] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=e548]:
+              - link "Biaya & Komisi" [ref=e549] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e550]:
+              - link "Cerita Mitra" [ref=e551] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e552]:
+          - paragraph [ref=e553]: BANTUAN
+          - list [ref=e554]:
+            - listitem [ref=e555]:
+              - link "FAQ" [ref=e556] [cursor=pointer]:
+                - /url: "#faq"
+            - listitem [ref=e557]:
+              - link "Hubungi Kami" [ref=e558] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/hubungi-kami
+            - listitem [ref=e559]:
+              - link "Syarat & Ketentuan" [ref=e560] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/syarat-ketentuan
+            - listitem [ref=e561]:
+              - link "Kebijakan Privasi" [ref=e562] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/kebijakan-privasi
+      - generic [ref=e563]:
+        - paragraph [ref=e564]: © 2026 Warung Hebat.
+        - paragraph [ref=e565]: Lebih Mudah dan Terjangkau

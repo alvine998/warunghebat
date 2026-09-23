@@ -234,33 +234,7 @@
 
     <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         @forelse($stores as $i => $w)
-        @php
-            $dist = $w->distance_km ?? null;
-            $distLabel = $dist !== null ? ($dist < 1 ? round($dist * 1000).'m' : number_format($dist, 1).' km') : null;
-            $etaLabel = $dist !== null ? max(5, (int) round($dist * 8 + 5)).' mnt' : null;
-            $topCats = $w->products->pluck('category')->filter()->unique()->take(2)->values();
-            $catLine = $topCats->isNotEmpty() ? $topCats->join(' • ') : ($w->description ? \Str::limit($w->description, 42) : 'Warung tetangga');
-        @endphp
-        <article data-store-name="{{ $w->name }}" data-store-cat="{{ $catLine }} {{ $w->address }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 hover:-translate-y-1 transition-all duration-300" style="--reveal-delay:{{ ($i%3)*90 }}ms">
-            <div class="h-28 relative flex items-center justify-center {{ $w->image_path ? '' : 'bg-gradient-to-br '.($i%3==0?'from-brand-100 via-cream-100 to-brand-200':($i%3==1?'from-leaf-100 via-cream-100 to-leaf-100':'from-cream-200 via-cream-100 to-brand-100')) }}">
-                @if($w->image_path)
-                    <img src="{{ $w->image_url }}" alt="Foto {{ $w->name }}" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-ink-900/40 to-transparent"></div>
-                @else
-                    <span class="text-5xl group-hover:scale-125 group-hover:-rotate-6 transition-transform duration-300">🏪</span>
-                @endif
-                <span class="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-extrabold bg-white/90 backdrop-blur rounded-full px-3 py-1.5">🛍️ {{ $w->approved_products_count }} produk</span>
-                <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[11px] font-extrabold {{ $w->is_open?'bg-leaf-500 text-white':'bg-amber-400 text-ink-900' }} rounded-full px-3 py-1.5"><span class="w-1.5 h-1.5 rounded-full {{ $w->is_open?'bg-white animate-pulse':'bg-ink-900' }}"></span>{{ $w->is_open ? 'Buka' : 'Tutup' }}</span>
-            </div>
-            <div class="p-4">
-                <p class="font-extrabold text-[16px]">{{ $w->name }}</p>
-                <p class="text-[13px] font-medium text-ink-500">{{ $catLine }}</p>
-                <div class="flex items-center justify-between mt-3">
-                    <span class="text-[12px] font-bold text-ink-700 bg-cream-100 rounded-full px-3 py-1.5">📍 {{ $distLabel ? $distLabel.($etaLabel ? ' • '.$etaLabel : '') : ($w->address ? \Str::limit($w->address, 24) : 'Lokasi menyusul') }}</span>
-                    <a href="{{ route('store.show', $w) }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-4 py-2 rounded-full group-hover:bg-brand-500 transition">Lihat</a>
-                </div>
-            </div>
-        </article>
+        <x-store-card :store="$w" :index="$i" />
         @empty
         <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
             <p class="text-4xl">🏪</p>
@@ -277,33 +251,11 @@
     </div>
 
     <p class="reveal text-center mt-7">
-        <a href="#kategori" class="inline-flex items-center gap-2 font-extrabold text-sm border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-7 py-3.5 transition">Lihat {{ $totalStores ?? 0 }} warung lainnya →</a>
+        <a href="{{ route('store.index', $nearbyParams ?? []) }}" class="inline-flex items-center gap-2 font-extrabold text-sm border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-7 py-3.5 transition">Lihat {{ $totalStores ?? 0 }} warung lainnya →</a>
     </p>
 </section>
 
-@push('scripts')
-<script>
-(function () {
-    var btn = document.getElementById('locate-btn');
-    var status = document.getElementById('locate-status');
-    if (!btn || !navigator.geolocation) { if (btn && !navigator.geolocation) btn.style.display = 'none'; return; }
-    function say(msg) { if (status) { status.classList.remove('hidden'); status.textContent = msg; } }
-    btn.addEventListener('click', function () {
-        btn.disabled = true;
-        say('⏳ Mencari lokasimu...');
-        navigator.geolocation.getCurrentPosition(function (pos) {
-            var url = new URL(window.location.href);
-            url.searchParams.set('lat', pos.coords.latitude.toFixed(6));
-            url.searchParams.set('lng', pos.coords.longitude.toFixed(6));
-            window.location.href = url.toString().split('#')[0] + '#warung';
-        }, function () {
-            btn.disabled = false;
-            say('Tidak bisa mendapatkan lokasimu. Pastikan izin lokasi diaktifkan.');
-        }, { enableHighAccuracy: true, timeout: 8000 });
-    });
-})();
-</script>
-@endpush
+@include('components.locate-script', ['locateHash' => '#warung'])
 
 {{-- ================= KEUNGGULAN ================= --}}
 <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">

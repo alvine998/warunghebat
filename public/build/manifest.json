@@ -34,7 +34,7 @@
     "isDynamicEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-BRjOKCgZ.css",
+    "file": "assets/app-DIkRW22y.css",
     "name": "app",
     "names": [
       "app.css"
@@ -50,5 +50,11 @@
     "dynamicImports": [
       "node_modules/lenis/dist/lenis.mjs"
     ]
+  },
+  "resources/js/charts.js": {
+    "file": "assets/charts-BcfVA-_j.js",
+    "name": "charts",
+    "src": "resources/js/charts.js",
+    "isEntry": true
   }
 }

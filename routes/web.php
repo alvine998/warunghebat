@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminPaymentMethodController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/warung', [HomeController::class, 'nearby'])->name('store.index');
 Route::get('/w/{store}', [StoreController::class, 'show'])->name('store.show');
 
 // ---------- BUYER (cart, checkout, orders) ----------
@@ -83,6 +85,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/products/bulk-update', [AdminController::class, 'bulkUpdate'])->name('products.bulk-update');
     Route::patch('/products/{product}/approve', [AdminController::class, 'approve'])->name('products.approve');
     Route::patch('/products/{product}/reject', [AdminController::class, 'reject'])->name('products.reject');
+
+    // Platform money overview: escrow, commission, payouts.
+    Route::get('/finance', [AdminFinanceController::class, 'index'])->name('finance');
 
     // Payment methods buyers can transfer into (bank / QRIS / e-wallet).
     Route::get('/payment-methods', [AdminPaymentMethodController::class, 'index'])->name('payment-methods');

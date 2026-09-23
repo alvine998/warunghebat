@@ -1,0 +1,153 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3]:
+      - link "Warung Hebat" [ref=f1e4] [cursor=pointer]:
+        - /url: http://127.0.0.1:8000
+        - generic [ref=f1e5]: W
+        - generic [ref=f1e7]:
+          - generic [ref=f1e8]: Warung Hebat
+          - generic [ref=f1e9]: BELANJA DEKAT • HIDUP HEBAT
+      - navigation [ref=f1e10]:
+        - link "Kategori" [ref=f1e11] [cursor=pointer]:
+          - /url: "#kategori"
+        - link "Cara Kerja" [ref=f1e12] [cursor=pointer]:
+          - /url: "#cara-kerja"
+        - link "Warung Terdekat" [ref=f1e13] [cursor=pointer]:
+          - /url: "#warung"
+        - link "Cerita Kami" [ref=f1e14] [cursor=pointer]:
+          - /url: "#cerita"
+        - link "Jadi Mitra" [ref=f1e15] [cursor=pointer]:
+          - /url: "#mitra"
+        - link "FAQ" [ref=f1e16] [cursor=pointer]:
+          - /url: "#faq"
+      - generic [ref=f1e17]:
+        - link "Masuk" [ref=f1e18] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/login
+        - link "Daftar Gratis" [ref=f1e19] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/register
+  - main [ref=f1e20]:
+    - generic [ref=f1e21]:
+      - link "← Warung terdekat" [ref=f1e22] [cursor=pointer]:
+        - /url: http://127.0.0.1:8000#warung
+      - generic [ref=f1e23]:
+        - generic [ref=f1e24]:
+          - paragraph [ref=f1e25]: 📍 NEARBY-FIRST
+          - heading "Semua warung terdekat" [level=1] [ref=f1e26]
+          - paragraph [ref=f1e27]: Jarak asli, ulasan asli, rasa tetangga. Nyalakan lokasi buat urut dari yang paling dekat.
+        - generic [ref=f1e28]:
+          - generic [ref=f1e29]: ◎ Radius 5 km
+          - button "📍 Gunakan lokasiku" [ref=f1e30]
+      - generic [ref=f1e31]:
+        - article [ref=f1e32]:
+          - generic [ref=f1e33]:
+            - img "Foto Warung Bu Siti" [ref=f1e34]
+            - generic [ref=f1e36]: 🛍️ 5 produk
+            - generic [ref=f1e37]: Buka
+          - generic [ref=f1e39]:
+            - paragraph [ref=f1e40]: Warung Bu Siti
+            - paragraph [ref=f1e41]: Harian • Sembako
+            - generic [ref=f1e42]:
+              - generic [ref=f1e43]: 📍 Jl. Tebet Barat Dalam No...
+              - link "Lihat" [ref=f1e44] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/warung-bu-siti
+        - article [ref=f1e45]:
+          - generic [ref=f1e46]:
+            - img "Foto Warung Bang Jago" [ref=f1e47]
+            - generic [ref=f1e49]: 🛍️ 5 produk
+            - generic [ref=f1e50]: Buka
+          - generic [ref=f1e52]:
+            - paragraph [ref=f1e53]: Warung Bang Jago
+            - paragraph [ref=f1e54]: Harian • Minuman
+            - generic [ref=f1e55]:
+              - generic [ref=f1e56]: 📍 Jl. Tebet Raya No. 12, J...
+              - link "Lihat" [ref=f1e57] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/warung-bang-jago
+        - article [ref=f1e58]:
+          - generic [ref=f1e59]:
+            - img "Foto Kedai Kopi Hebat" [ref=f1e60]
+            - generic [ref=f1e62]: 🛍️ 4 produk
+            - generic [ref=f1e63]: Buka
+          - generic [ref=f1e65]:
+            - paragraph [ref=f1e66]: Kedai Kopi Hebat
+            - paragraph [ref=f1e67]: Minuman
+            - generic [ref=f1e68]:
+              - generic [ref=f1e69]: 📍 Jl. Dr. Saharjo No. 45,...
+              - link "Lihat" [ref=f1e70] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/kedai-kopi-hebat
+        - article [ref=f1e71]:
+          - generic [ref=f1e72]:
+            - img "Foto Jajan Pasar Yu Ning" [ref=f1e73]
+            - generic [ref=f1e75]: 🛍️ 5 produk
+            - generic [ref=f1e76]: Tutup
+          - generic [ref=f1e78]:
+            - paragraph [ref=f1e79]: Jajan Pasar Yu Ning
+            - paragraph [ref=f1e80]: Jajanan
+            - generic [ref=f1e81]:
+              - generic [ref=f1e82]: 📍 Jl. Tebet Timur Dalam No...
+              - link "Lihat" [ref=f1e83] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/w/jajan-pasar-yu-ning
+  - contentinfo [ref=f1e84]:
+    - generic [ref=f1e85]:
+      - generic [ref=f1e86]:
+        - generic [ref=f1e87]:
+          - generic [ref=f1e88]:
+            - generic [ref=f1e89]: W
+            - generic [ref=f1e91]: Warung Hebat
+          - paragraph [ref=f1e92]: Marketplace digital mobile-first untuk makanan, minuman & kebutuhan harian dari warung-warung hebat di sekitarmu.
+          - generic [ref=f1e93]:
+            - link "Instagram" [ref=f1e94] [cursor=pointer]:
+              - /url: "#"
+            - link "TikTok" [ref=f1e99] [cursor=pointer]:
+              - /url: "#"
+            - link "X" [ref=f1e102] [cursor=pointer]:
+              - /url: "#"
+            - link "WhatsApp" [ref=f1e105] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=f1e108]:
+          - paragraph [ref=f1e109]: BELANJA
+          - list [ref=f1e110]:
+            - listitem [ref=f1e111]:
+              - link "Makanan" [ref=f1e112] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=f1e113]:
+              - link "Minuman" [ref=f1e114] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=f1e115]:
+              - link "Sembako" [ref=f1e116] [cursor=pointer]:
+                - /url: "#kategori"
+            - listitem [ref=f1e117]:
+              - link "Kebutuhan Harian" [ref=f1e118] [cursor=pointer]:
+                - /url: "#kategori"
+        - generic [ref=f1e119]:
+          - paragraph [ref=f1e120]: MITRA
+          - list [ref=f1e121]:
+            - listitem [ref=f1e122]:
+              - link "Buka Warung" [ref=f1e123] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=f1e124]:
+              - link "WarungKu App" [ref=f1e125] [cursor=pointer]:
+                - /url: "#mitra"
+            - listitem [ref=f1e126]:
+              - link "Biaya & Komisi" [ref=f1e127] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=f1e128]:
+              - link "Cerita Mitra" [ref=f1e129] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=f1e130]:
+          - paragraph [ref=f1e131]: BANTUAN
+          - list [ref=f1e132]:
+            - listitem [ref=f1e133]:
+              - link "FAQ" [ref=f1e134] [cursor=pointer]:
+                - /url: "#faq"
+            - listitem [ref=f1e135]:
+              - link "Hubungi Kami" [ref=f1e136] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/hubungi-kami
+            - listitem [ref=f1e137]:
+              - link "Syarat & Ketentuan" [ref=f1e138] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/syarat-ketentuan
+            - listitem [ref=f1e139]:
+              - link "Kebijakan Privasi" [ref=f1e140] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/kebijakan-privasi
+      - generic [ref=f1e141]:
+        - paragraph [ref=f1e142]: © 2026 Warung Hebat.
+        - paragraph [ref=f1e143]: Lebih Mudah dan Terjangkau

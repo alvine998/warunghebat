@@ -4,12 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function index(Request $request): View
+    {
+        [$params, $nearby] = $this->nearbyStores($request);
+
+        return view('landing', [
+            'stores' => $nearby->take(6),
+            'nearbyParams' => array_filter(
+                ['lat' => $params['lat'], 'lng' => $params['lng'], 'radius' => $params['radius']],
+                fn ($value) => $value !== null
+            ),
+            'totalStores' => Store::count(),
+            'openStores' => Store::where('is_open', true)->count(),
+            'userLat' => $params['lat'],
+            'userLng' => $params['lng'],
+            'radius' => $params['radius'],
+        ]);
+    }
+
+    public function nearby(Request $request): View
+    {
+        [$params, $nearby] = $this->nearbyStores($request);
+
+        $perPage = 12;
+        $currentPage = Paginator::resolveCurrentPage('page');
+        $stores = new LengthAwarePaginator(
+            $nearby->forPage($currentPage, $perPage)->values(),
+            $nearby->count(),
+            $perPage,
+            $currentPage,
+            ['path' => Paginator::resolveCurrentPath(), 'pageName' => 'page']
+        );
+
+        return view('store.index', [
+            'stores' => $stores->withQueryString(),
+            'userLat' => $params['lat'],
+            'userLng' => $params['lng'],
+            'radius' => $params['radius'],
+        ]);
+    }
+
+    /**
+     * @return array{0: array{lat: float|null, lng: float|null, radius: float, search: string}, 1: Collection<int, Store>}
+     */
+    private function nearbyStores(Request $request): array
     {
         $validated = $request->validate([
             'lat' => ['nullable', 'numeric', 'between:-90,90'],
@@ -22,6 +67,7 @@ class HomeController extends Controller
         $lng = isset($validated['lng']) ? (float) $validated['lng'] : null;
         $radius = isset($validated['radius']) ? (float) $validated['radius'] : 5.0;
         $search = isset($validated['q']) ? trim($validated['q']) : '';
+        $params = ['lat' => $lat, 'lng' => $lng, 'radius' => $radius, 'search' => $search];
 
         $query = Store::query()
             ->with([
@@ -66,14 +112,7 @@ class HomeController extends Controller
             ? $sorted->filter(fn (Store $store) => $store->distance_km === null || $store->distance_km <= $radius)
             : $sorted;
 
-        return view('landing', [
-            'stores' => $nearby->take(6),
-            'totalStores' => Store::count(),
-            'openStores' => Store::where('is_open', true)->count(),
-            'userLat' => $lat,
-            'userLng' => $lng,
-            'radius' => $radius,
-        ]);
+        return [$params, $nearby];
     }
 
     public static function haversineKm(float $lat1, float $lng1, float $lat2, float $lng2): float

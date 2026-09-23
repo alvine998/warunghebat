@@ -47,7 +47,8 @@
         </p>
     </div>
     <div class="flex flex-wrap gap-2">
-        <a href="{{ route('admin.payments') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">Verifikasi →</a>
+        <a href="{{ route('admin.finance') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">Overview →</a>
+        <a href="{{ route('admin.payments') }}" class="text-sm font-extrabold border border-ink-900/15 px-5 py-2.5 rounded-full hover:bg-ink-900 hover:text-white transition">Verifikasi →</a>
         <a href="{{ route('admin.withdrawals') }}" class="text-sm font-extrabold border border-ink-900/15 px-5 py-2.5 rounded-full hover:bg-ink-900 hover:text-white transition">Penarikan →</a>
     </div>
 </div>
