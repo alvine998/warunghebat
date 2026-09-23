@@ -12,8 +12,8 @@
         <div class="relative z-10">
             <div class="reveal inline-flex items-center gap-2 rounded-full bg-white border border-ink-900/10 shadow-sm pl-1.5 pr-4 py-1.5 text-[12px] font-bold mb-5">
                 <span class="inline-flex items-center gap-1 bg-leaf-500 text-white rounded-full px-2.5 py-1 text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> LIVE</span>
-                <span class="text-ink-700">📍 <span id="hero-location">Tebet, Jaksel</span></span>
-                <span class="text-ink-500 font-semibold hidden sm:inline">• 128 warung buka</span>
+                <span class="text-ink-700">📍 <span id="hero-location">@if(isset($userLat) && isset($userLng)) Lokasimu • radius {{ rtrim(rtrim(number_format($radius ?? 5, 1), '0'), '.') }} km @else Tebet, Jaksel @endif</span></span>
+                <span class="text-ink-500 font-semibold hidden sm:inline">• {{ $openStores ?? 0 }} warung buka</span>
             </div>
 
             <h1 class="reveal font-black tracking-tight leading-[0.95] text-[44px] sm:text-6xl lg:text-[76px]" style="--reveal-delay:80ms">
@@ -217,49 +217,93 @@
         <div>
             <p class="reveal inline-flex text-[11px] font-extrabold tracking-[0.18em] text-leaf-700 bg-leaf-100 border border-leaf-500/20 rounded-full px-3.5 py-1.5">📍 NEARBY-FIRST</p>
             <h2 class="reveal font-black tracking-tight text-3xl sm:text-5xl mt-3" style="--reveal-delay:80ms">Warung terdekatmu</h2>
-            <p class="reveal text-ink-500 font-medium text-[15px] mt-2" style="--reveal-delay:140ms">Jarak asli, ulasan asli, rasa tetangga.</p>
+            <p class="reveal text-ink-500 font-medium text-[15px] mt-2" style="--reveal-delay:140ms">
+                @if(isset($userLat) && isset($userLng))
+                    Diurut dari jarakmu • radius {{ rtrim(rtrim(number_format($radius ?? 5, 1), '0'), '.') }} km.
+                @else
+                    Jarak asli, ulasan asli, rasa tetangga.
+                @endif
+            </p>
         </div>
-        <div class="reveal flex items-center gap-2 text-[13px] font-bold" style="--reveal-delay:200ms">
-            <span class="inline-flex items-center gap-1.5 bg-ink-900 text-white rounded-full pl-3 pr-4 py-2">◎ Radius 1 km <span class="text-brand-300">⌄</span></span>
-            <span class="inline-flex items-center gap-1.5 bg-white border border-ink-900/15 rounded-full px-4 py-2">⭐ 4.5+</span>
+        <div class="reveal flex flex-wrap items-center gap-2 text-[13px] font-bold" style="--reveal-delay:200ms">
+            <span class="inline-flex items-center gap-1.5 bg-ink-900 text-white rounded-full pl-3 pr-4 py-2">◎ Radius {{ rtrim(rtrim(number_format($radius ?? 5, 1), '0'), '.') }} km</span>
+            <button id="locate-btn" type="button" class="inline-flex items-center gap-1.5 bg-white border border-ink-900/15 rounded-full px-4 py-2 hover:border-ink-900 transition">📍 {{ isset($userLat) ? 'Perbarui lokasiku' : 'Gunakan lokasiku' }}</button>
         </div>
     </div>
+    <p id="locate-status" class="hidden mb-4 text-[13px] font-bold text-ink-500" role="status"></p>
 
     <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-        @foreach([
-            ['Warung Bang Jago','Nasi goreng • Ayam geprek','200m • 8 mnt','4.9','🍳','Buka','Makanan'],
-            ['Kopi Hebat Tebet','Kopi susu • Matcha • Roti','350m • 10 mnt','4.8','🧋','Buka','Minuman'],
-            ['Sembako Bu RT','Beras • Telur • Minyak','500m • 12 mnt','4.9','🧺','Buka','Sembako'],
-            ['Jajan Pasar Yu Ning','Klepon • Lemper • Pastel','650m • 14 mnt','4.7','🍩','Buka','Jajanan'],
-            ['Dapur Nusa Frozen','Dimsum • Nugget • Kebab','800m • 15 mnt','4.8','❄️','Ramai','Frozen'],
-            ['Toko Harian Berkah','Sabun • Tisu • Detergen','900m • 16 mnt','4.6','🧼','Buka','Harian'],
-        ] as $i => $w)
-        <article data-store-name="{{ $w[0] }}" data-store-cat="{{ $w[6] }} {{ $w[1] }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 hover:-translate-y-1 transition-all duration-300" style="--reveal-delay:{{ ($i%3)*90 }}ms">
-            <div class="h-28 bg-gradient-to-br {{ $i%3==0?'from-brand-100 via-cream-100 to-brand-200':($i%3==1?'from-leaf-100 via-cream-100 to-leaf-100':'from-cream-200 via-cream-100 to-brand-100') }} relative flex items-center justify-center">
-                <span class="text-5xl group-hover:scale-125 group-hover:-rotate-6 transition-transform duration-300">{{ $w[4] }}</span>
-                <span class="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-extrabold bg-white/90 backdrop-blur rounded-full px-3 py-1.5">⭐ {{ $w[3] }}</span>
-                <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[11px] font-extrabold {{ $w[5]=='Buka'?'bg-leaf-500 text-white':'bg-amber-400 text-ink-900' }} rounded-full px-3 py-1.5"><span class="w-1.5 h-1.5 rounded-full {{ $w[5]=='Buka'?'bg-white animate-pulse':'bg-ink-900' }}"></span>{{ $w[5] }}</span>
+        @forelse($stores as $i => $w)
+        @php
+            $dist = $w->distance_km ?? null;
+            $distLabel = $dist !== null ? ($dist < 1 ? round($dist * 1000).'m' : number_format($dist, 1).' km') : null;
+            $etaLabel = $dist !== null ? max(5, (int) round($dist * 8 + 5)).' mnt' : null;
+            $topCats = $w->products->pluck('category')->filter()->unique()->take(2)->values();
+            $catLine = $topCats->isNotEmpty() ? $topCats->join(' • ') : ($w->description ? \Str::limit($w->description, 42) : 'Warung tetangga');
+        @endphp
+        <article data-store-name="{{ $w->name }}" data-store-cat="{{ $catLine }} {{ $w->address }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 hover:-translate-y-1 transition-all duration-300" style="--reveal-delay:{{ ($i%3)*90 }}ms">
+            <div class="h-28 relative flex items-center justify-center {{ $w->image_path ? '' : 'bg-gradient-to-br '.($i%3==0?'from-brand-100 via-cream-100 to-brand-200':($i%3==1?'from-leaf-100 via-cream-100 to-leaf-100':'from-cream-200 via-cream-100 to-brand-100')) }}">
+                @if($w->image_path)
+                    <img src="{{ $w->image_url }}" alt="Foto {{ $w->name }}" loading="lazy" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-ink-900/40 to-transparent"></div>
+                @else
+                    <span class="text-5xl group-hover:scale-125 group-hover:-rotate-6 transition-transform duration-300">🏪</span>
+                @endif
+                <span class="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-extrabold bg-white/90 backdrop-blur rounded-full px-3 py-1.5">🛍️ {{ $w->approved_products_count }} produk</span>
+                <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[11px] font-extrabold {{ $w->is_open?'bg-leaf-500 text-white':'bg-amber-400 text-ink-900' }} rounded-full px-3 py-1.5"><span class="w-1.5 h-1.5 rounded-full {{ $w->is_open?'bg-white animate-pulse':'bg-ink-900' }}"></span>{{ $w->is_open ? 'Buka' : 'Tutup' }}</span>
             </div>
             <div class="p-4">
-                <p class="font-extrabold text-[16px]">{{ $w[0] }}</p>
-                <p class="text-[13px] font-medium text-ink-500">{{ $w[1] }}</p>
+                <p class="font-extrabold text-[16px]">{{ $w->name }}</p>
+                <p class="text-[13px] font-medium text-ink-500">{{ $catLine }}</p>
                 <div class="flex items-center justify-between mt-3">
-                    <span class="text-[12px] font-bold text-ink-700 bg-cream-100 rounded-full px-3 py-1.5">📍 {{ $w[2] }}</span>
-                    @guest
-                    <button data-open-register class="text-[13px] font-extrabold bg-ink-900 text-white px-4 py-2 rounded-full group-hover:bg-brand-500 transition">+ Keranjang</button>
-                    @else
-                    <a href="{{ route('dashboard') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-4 py-2 rounded-full group-hover:bg-brand-500 transition">+ Keranjang</a>
-                    @endguest
+                    <span class="text-[12px] font-bold text-ink-700 bg-cream-100 rounded-full px-3 py-1.5">📍 {{ $distLabel ? $distLabel.($etaLabel ? ' • '.$etaLabel : '') : ($w->address ? \Str::limit($w->address, 24) : 'Lokasi menyusul') }}</span>
+                    <a href="{{ route('store.show', $w) }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-4 py-2 rounded-full group-hover:bg-brand-500 transition">Lihat</a>
                 </div>
             </div>
         </article>
-        @endforeach
+        @empty
+        <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
+            <p class="text-4xl">🏪</p>
+            <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
+            <p class="text-sm font-medium text-ink-500 mt-1">Coba perbesar radius, matikan lokasi, atau cari nama warung / alamat.</p>
+            <div class="mt-4 flex justify-center gap-2">
+                <a href="{{ route('home') }}#warung" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
+                @guest
+                <a href="{{ route('register') }}" data-open-register class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Buka warung pertama →</a>
+                @endguest
+            </div>
+        </div>
+        @endforelse
     </div>
 
     <p class="reveal text-center mt-7">
-        <a href="#kategori" class="inline-flex items-center gap-2 font-extrabold text-sm border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-7 py-3.5 transition">Lihat 128 warung lainnya →</a>
+        <a href="#kategori" class="inline-flex items-center gap-2 font-extrabold text-sm border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-7 py-3.5 transition">Lihat {{ $totalStores ?? 0 }} warung lainnya →</a>
     </p>
 </section>
+
+@push('scripts')
+<script>
+(function () {
+    var btn = document.getElementById('locate-btn');
+    var status = document.getElementById('locate-status');
+    if (!btn || !navigator.geolocation) { if (btn && !navigator.geolocation) btn.style.display = 'none'; return; }
+    function say(msg) { if (status) { status.classList.remove('hidden'); status.textContent = msg; } }
+    btn.addEventListener('click', function () {
+        btn.disabled = true;
+        say('⏳ Mencari lokasimu...');
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            var url = new URL(window.location.href);
+            url.searchParams.set('lat', pos.coords.latitude.toFixed(6));
+            url.searchParams.set('lng', pos.coords.longitude.toFixed(6));
+            window.location.href = url.toString().split('#')[0] + '#warung';
+        }, function () {
+            btn.disabled = false;
+            say('Tidak bisa mendapatkan lokasimu. Pastikan izin lokasi diaktifkan.');
+        }, { enableHighAccuracy: true, timeout: 8000 });
+    });
+})();
+</script>
+@endpush
 
 {{-- ================= KEUNGGULAN ================= --}}
 <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">

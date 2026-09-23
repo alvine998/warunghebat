@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
+    /** @use HasFactory<ProductFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'name',
@@ -50,7 +55,7 @@ class Product extends Model
             return null;
         }
 
-        return asset('storage/' . ltrim($this->image_path, '/'));
+        return asset('storage/'.ltrim($this->image_path, '/'));
     }
 
     public function isPending(): bool

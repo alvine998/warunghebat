@@ -4,13 +4,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/w/{store}', [StoreController::class, 'show'])->name('store.show');
 
 // ---------- USER SIDE (public) ----------
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

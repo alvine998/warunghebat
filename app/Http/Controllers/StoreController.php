@@ -7,8 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class StoreController extends Controller
@@ -16,6 +14,18 @@ class StoreController extends Controller
     protected function resolveStore(): Store
     {
         return Store::resolveFor(Auth::user());
+    }
+
+    public function show(Store $store): View
+    {
+        $store->load([
+            'user:id,name',
+            'products' => fn ($query) => $query->where('status', 'approved')->latest('id'),
+        ]);
+
+        return view('store.show', [
+            'store' => $store,
+        ]);
     }
 
     public function toggle(): RedirectResponse
@@ -47,7 +57,6 @@ class StoreController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:80'],
-            'slug' => ['required', 'string', 'max:80', 'alpha_dash', Rule::unique('stores', 'slug')->ignore($store->id)],
             'description' => ['nullable', 'string', 'max:1000'],
             'address' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -59,9 +68,6 @@ class StoreController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
             'name.required' => 'Nama warung wajib diisi.',
-            'slug.required' => 'Slug warung wajib diisi.',
-            'slug.alpha_dash' => 'Slug hanya boleh huruf, angka, strip, dan underscore.',
-            'slug.unique' => 'Slug ini sudah dipakai warung lain.',
             'phone.regex' => 'Nomor HP/WA tidak valid.',
             'latitude.numeric' => 'Latitude harus berupa angka.',
             'latitude.between' => 'Latitude harus di antara -90 dan 90.',
@@ -84,7 +90,7 @@ class StoreController extends Controller
 
         $store->update([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['slug']),
+            'slug' => Store::uniqueSlug($validated['name'], $store->id),
             'description' => $validated['description'] ?? null,
             'address' => $validated['address'] ?? null,
             'latitude' => $validated['latitude'] ?? null,

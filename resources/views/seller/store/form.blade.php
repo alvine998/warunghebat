@@ -31,12 +31,8 @@
 
         <div>
             <label class="text-[13px] font-extrabold">Nama warung *</label>
-            <input name="name" required maxlength="80" value="{{ old('name', $store->name) }}" placeholder="cth. Warung Bang Jago" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
-        </div>
-
-        <div>
-            <label class="text-[13px] font-extrabold">Slug * <span class="font-semibold text-ink-500">(unik, untuk URL warungmu)</span></label>
-            <input name="slug" required maxlength="80" value="{{ old('slug', $store->slug) }}" placeholder="cth. warung-bang-jago" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+            <input id="store-name" name="name" required maxlength="80" value="{{ old('name', $store->name) }}" placeholder="cth. Warung Bang Jago" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+            <p class="mt-1.5 text-xs font-semibold text-ink-500">URL warungmu: <span class="font-extrabold text-ink-900">/w/<span id="store-slug-preview">{{ $store->slug }}</span></span> (otomatis dari nama)</p>
         </div>
 
         <div>
@@ -111,6 +107,16 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function () {
+    // Live slug preview mirrors name.
+    var nameInput = document.getElementById('store-name');
+    var slugPreview = document.getElementById('store-slug-preview');
+    function slugify(s) {
+        return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 75) || 'warung';
+    }
+    nameInput?.addEventListener('input', function () {
+        if (slugPreview) slugPreview.textContent = slugify(nameInput.value);
+    });
     var latInput = document.getElementById('store-latitude');
     var lngInput = document.getElementById('store-longitude');
     var osmLink = document.getElementById('open-osm');
