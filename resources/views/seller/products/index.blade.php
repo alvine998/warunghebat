@@ -18,7 +18,7 @@
     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
             <p class="text-[11px] font-extrabold tracking-[0.2em] text-leaf-700">🏪 PRODUK SAYA</p>
-            <h1 class="font-black tracking-tight text-3xl lg:text-4xl mt-1">Kelola produk</h1>
+            <h1 class="font-black tracking-tight text-2xl sm:text-3xl lg:text-4xl mt-1">Kelola produk</h1>
             <p class="text-sm font-medium text-ink-500 mt-1">Produk baru & hasil edit menunggu verifikasi admin sebelum tayang.</p>
         </div>
         <div class="hidden lg:flex items-center gap-2 text-[13px] font-bold text-ink-500">
@@ -27,11 +27,11 @@
         </div>
     </div>
 
-    <div class="mt-5 flex flex-wrap gap-2 text-[13px] font-extrabold">
-        <a href="{{ route('seller.products.index') }}" class="px-4 py-2 rounded-full {{ !request('status') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
-        <a href="{{ route('seller.products.index', ['status' => 'pending']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'pending' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">⏳ Pending ({{ $counts['pending'] }})</a>
-        <a href="{{ route('seller.products.index', ['status' => 'approved']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'approved' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">✅ Tayang ({{ $counts['approved'] }})</a>
-        <a href="{{ route('seller.products.index', ['status' => 'rejected']) }}" class="px-4 py-2 rounded-full {{ request('status') === 'rejected' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">❌ Ditolak ({{ $counts['rejected'] }})</a>
+    <div class="mt-5 flex flex-wrap gap-2 text-[11px] sm:text-[13px] font-extrabold">
+        <a href="{{ route('seller.products.index') }}" class="px-3 sm:px-4 py-2 rounded-full {{ !request('status') ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">Semua ({{ $counts['all'] }})</a>
+        <a href="{{ route('seller.products.index', ['status' => 'pending']) }}" class="px-3 sm:px-4 py-2 rounded-full {{ request('status') === 'pending' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">⏳ Pending ({{ $counts['pending'] }})</a>
+        <a href="{{ route('seller.products.index', ['status' => 'approved']) }}" class="px-3 sm:px-4 py-2 rounded-full {{ request('status') === 'approved' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">✅ Tayang ({{ $counts['approved'] }})</a>
+        <a href="{{ route('seller.products.index', ['status' => 'rejected']) }}" class="px-3 sm:px-4 py-2 rounded-full {{ request('status') === 'rejected' ? 'bg-ink-900 text-white' : 'bg-white border border-ink-900/10' }}">❌ Ditolak ({{ $counts['rejected'] }})</a>
     </div>
 
     @if($products->count())

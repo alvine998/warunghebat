@@ -47,15 +47,15 @@
 
         <div>
             <label class="text-[13px] font-extrabold">Lokasi warung <span class="font-semibold text-ink-500">(klik peta untuk menandai)</span></label>
-            <div id="store-map" class="mt-1.5 w-full h-64 rounded-2xl border border-ink-900/15 z-0"></div>
+            <div id="store-map" class="mt-1.5 w-full h-48 sm:h-64 rounded-2xl border border-ink-900/15 z-0"></div>
             <p class="mt-1.5 text-xs font-semibold text-ink-500">Klik peta atau geser pin — atau tekan tombol lokasi. Koordinat tersimpan otomatis di kolom bawah.</p>
-            <div class="mt-2 flex gap-2">
+            <div class="mt-2 flex flex-col sm:flex-row gap-2">
                 <button type="button" id="use-my-location" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">📍 Gunakan lokasi saya</button>
                 <a id="open-osm" href="https://www.openstreetmap.org/#map=15/-6.2/106.8167" target="_blank" rel="noopener" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Lihat di OSM →</a>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
                 <label class="text-[13px] font-extrabold">Latitude</label>
                 <input id="store-latitude" name="latitude" type="number" step="any" min="-90" max="90" value="{{ old('latitude', $store->latitude) }}" placeholder="cth. -6.2297" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
@@ -71,7 +71,7 @@
             <input name="phone" maxlength="20" value="{{ old('phone', $store->phone) }}" placeholder="cth. 081234567890" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
                 <label class="text-[13px] font-extrabold">Jam buka</label>
                 <input name="open_time" type="time" value="{{ old('open_time', $store->open_time ? substr((string) $store->open_time, 0, 5) : '') }}" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
