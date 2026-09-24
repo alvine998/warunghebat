@@ -40,7 +40,9 @@
     </div>
 
     @if(auth()->user()->role === 'penjual')
-        @php($kyc = $verification ?? null)
+        @php
+            $kyc = $verification ?? null;
+        @endphp
         @if(! $kyc)
             <div class="mt-5 rounded-[28px] bg-amber-50 border border-amber-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
                 <div class="flex-1">
@@ -111,28 +113,33 @@
                 </div>
             </div>
             <div class="mt-4 grid gap-2.5">
-                @forelse($recentOrders as $o)
                 @php
-                    $tone = match ($o->status) {
-                        'completed', 'paid' => 'bg-leaf-100 text-leaf-700',
-                        'cancelled' => 'bg-red-100 text-red-700',
-                        'waiting_verification' => 'bg-amber-100 text-amber-800',
-                        default => 'bg-brand-100 text-brand-700',
-                    };
+                    $hasRecentOrders = $recentOrders->isNotEmpty();
                 @endphp
+                @if($hasRecentOrders)
+                @foreach($recentOrders as $o)
+                    @php
+                        $tone = match ($o->status) {
+                            'completed', 'paid' => 'bg-leaf-100 text-leaf-700',
+                            'cancelled' => 'bg-red-100 text-red-700',
+                            'waiting_verification' => 'bg-amber-100 text-amber-800',
+                            default => 'bg-brand-100 text-brand-700',
+                        };
+                    @endphp
                 <a href="{{ route('orders.show', $o) }}" class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-3 hover:shadow-lg hover:shadow-ink-900/5 transition">
                     <span class="w-11 h-11 rounded-xl bg-cream-100 grid place-items-center text-xl">{{ $o->icon }}</span>
                     <div class="flex-1 min-w-0"><p class="text-sm font-extrabold truncate">{{ $o->item_name }}</p><p class="text-xs font-semibold text-ink-500 truncate">{{ $o->warung_name }} • {{ $o->created_at->diffForHumans() }}</p></div>
                     <div class="text-right shrink-0"><p class="text-sm font-black">Rp {{ number_format($o->total, 0, ',', '.') }}</p><span class="text-[11px] font-extrabold rounded-full px-2.5 py-1 {{ $tone }}">{{ $o->statusLabel() }}</span></div>
                 </a>
-                @empty
+                @endforeach
+                @else
                 <div class="rounded-2xl border border-dashed border-ink-900/15 p-6 text-center">
                     <p class="text-2xl">🍽️</p>
                     <p class="mt-1 text-sm font-extrabold">Belum ada pesanan</p>
                     <p class="text-xs font-semibold text-ink-500">Yuk jajan di warung terdekat dan kumpulkan poin.</p>
                     <a href="{{ route('home') }}#warung" class="mt-3 inline-block text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Cari Warung →</a>
                 </div>
-                @endforelse
+                @endif
             </div>
         </div>
         </div>
@@ -175,7 +182,7 @@
                     <a href="{{ route('home') }}#warung" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">📍 Terdekat</a>
                     <a href="{{ route('home') }}#kategori" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">🛍️ Kategori</a>
                     <a href="#" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">🎁 Voucher</a>
-                    <a href="#" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">💬 Bantuan</a>
+                    <a href="{{ route('contact') }}" class="text-center text-[13px] font-extrabold rounded-2xl bg-cream-100 py-3 hover:bg-ink-900 hover:text-white transition">💬 Bantuan</a>
                 </div>
             </div>
         </div>
