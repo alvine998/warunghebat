@@ -339,23 +339,27 @@
     </div>
     <p id="locate-status" class="hidden mb-4 text-[13px] font-bold text-ink-500" role="status"></p>
 
-    <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-        @forelse($stores as $i => $w)
-        <x-store-card :store="$w" :index="$i" />
-        @empty
-        <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
-            <p class="text-4xl">🏪</p>
-            <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
-            <p class="text-sm font-medium text-ink-500 mt-1">Coba perbesar radius, matikan lokasi, atau cari nama warung / alamat.</p>
-            <div class="mt-4 flex justify-center gap-2">
-                <a href="{{ route('home') }}#warung" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
-                @guest
-                <a href="{{ route('register') }}" data-open-register class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Buka warung pertama →</a>
-                @endguest
+    <x-nearby-tabs :stores="$stores" :user-lat="$userLat ?? null" :user-lng="$userLng ?? null" prefix="home-warung">
+        <x-slot:list>
+            <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+                @forelse($stores as $i => $w)
+                <x-store-card :store="$w" :index="$i" />
+                @empty
+                <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
+                    <p class="text-4xl">🏪</p>
+                    <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
+                    <p class="text-sm font-medium text-ink-500 mt-1">Coba perbesar radius, matikan lokasi, atau cari nama warung / alamat.</p>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <a href="{{ route('home') }}#warung" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
+                        @guest
+                        <a href="{{ route('register') }}" data-open-register class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Buka warung pertama →</a>
+                        @endguest
+                    </div>
+                </div>
+                @endforelse
             </div>
-        </div>
-        @endforelse
-    </div>
+        </x-slot:list>
+    </x-nearby-tabs>
 
     <p class="reveal text-center mt-7">
         <a href="{{ route('store.index', $nearbyParams ?? []) }}" class="inline-flex items-center gap-2 font-extrabold text-sm border-2 border-ink-900/10 hover:border-ink-900 rounded-full px-7 py-3.5 transition">Lihat {{ $totalStores ?? 0 }} warung lainnya →</a>

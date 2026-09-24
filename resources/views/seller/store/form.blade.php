@@ -46,9 +46,9 @@
         </div>
 
         <div>
-            <label class="text-[13px] font-extrabold">Lokasi warung <span class="font-semibold text-ink-500">(klik peta untuk menandai)</span></label>
+            <label class="text-[13px] font-extrabold">Lokasi warung * <span class="font-semibold text-ink-500">(klik peta untuk menandai)</span></label>
             <div id="store-map" class="mt-1.5 w-full h-48 sm:h-64 rounded-2xl border border-ink-900/15 z-0"></div>
-            <p class="mt-1.5 text-xs font-semibold text-ink-500">Klik peta atau geser pin — atau tekan tombol lokasi. Koordinat tersimpan otomatis di kolom bawah.</p>
+            <p class="mt-1.5 text-xs font-semibold text-ink-500">Wajib diisi: klik peta atau geser pin — atau tekan tombol lokasi. Koordinat tersimpan otomatis di kolom bawah.</p>
             <div class="mt-2 flex flex-col sm:flex-row gap-2">
                 <button type="button" id="use-my-location" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">📍 Gunakan lokasi saya</button>
                 <a id="open-gmaps" href="https://www.google.com/maps?q=-6.2,106.8167" target="_blank" rel="noopener" class="text-[13px] font-extrabold px-4 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">Buka dengan Google Maps →</a>
@@ -57,12 +57,18 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-                <label class="text-[13px] font-extrabold">Latitude</label>
-                <input id="store-latitude" name="latitude" type="number" step="any" min="-90" max="90" value="{{ old('latitude', $store->latitude) }}" placeholder="cth. -6.2297" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                <label class="text-[13px] font-extrabold">Latitude *</label>
+                <input id="store-latitude" name="latitude" type="number" step="any" min="-90" max="90" required value="{{ old('latitude', $store->latitude) }}" placeholder="cth. -6.2297" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                @error('latitude')
+                    <p class="mt-1 text-[13px] font-bold text-red-600">{{ $message }}</p>
+                @enderror
             </div>
             <div>
-                <label class="text-[13px] font-extrabold">Longitude</label>
-                <input id="store-longitude" name="longitude" type="number" step="any" min="-180" max="180" value="{{ old('longitude', $store->longitude) }}" placeholder="cth. 106.8294" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                <label class="text-[13px] font-extrabold">Longitude *</label>
+                <input id="store-longitude" name="longitude" type="number" step="any" min="-180" max="180" required value="{{ old('longitude', $store->longitude) }}" placeholder="cth. 106.8294" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                @error('longitude')
+                    <p class="mt-1 text-[13px] font-bold text-red-600">{{ $message }}</p>
+                @enderror
             </div>
         </div>
 

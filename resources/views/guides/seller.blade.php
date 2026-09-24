@@ -74,7 +74,7 @@
         <ol class="mt-4 grid gap-2.5 text-[14px] font-medium text-ink-700 leading-relaxed list-decimal list-inside marker:font-extrabold">
             <li>Dari dashboard penjual, buka <strong>Pengaturan Warung</strong> (atau menu <strong>Warung Saya</strong>).</li>
             <li>Isi <strong>nama warung</strong> (maks. 80 karakter — mis. “Gorengan Bang Jago”), <strong>deskripsi</strong> singkat yang menjual (maks. 1.000 karakter), dan <strong>alamat lengkap</strong> dengan patokan.</li>
-            <li>Isi <strong>titik lokasi (latitude & longitude)</strong> — ini yang menentukan warungmu muncul di “terdekat” siapa. Makin akurat, makin tepat sasaran.</li>
+            <li>Isi <strong>titik lokasi (latitude & longitude) — wajib</strong> — ini yang menentukan warungmu muncul di “terdekat” siapa dan tampil di peta. Klik peta atau tekan “Gunakan lokasi saya”. Makin akurat, makin tepat sasaran.</li>
             <li>Isi <strong>nomor HP/WA aktif</strong>, <strong>jam buka & jam tutup</strong> (format JJ:MM, mis. 07:00–21:00).</li>
             <li>Upload <strong>foto warung</strong>: JPG, PNG, atau WebP, <strong>maks. 2 MB</strong>. Foto terang dari depan paling dipercaya pembeli.</li>
             <li>Klik <strong>Simpan</strong>. Link warungmu (slug) dibuat otomatis dari nama warung dan bisa dibagikan ke mana saja.</li>

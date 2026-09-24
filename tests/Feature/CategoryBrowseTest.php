@@ -38,6 +38,39 @@ class CategoryBrowseTest extends TestCase
         $this->get('/kategori/MAKANAN')->assertOk()->assertSee('Nasi Uduk');
     }
 
+    public function test_category_page_search_filters_products_and_preserves_radius(): void
+    {
+        $store = $this->storeFor('Warung Bang Jago');
+        Product::factory()->for($store->user)->create(['name' => 'Nasi Uduk', 'category' => 'Makanan']);
+        Product::factory()->for($store->user)->create(['name' => 'Ayam Geprek', 'category' => 'Makanan']);
+        Product::factory()->for($store->user)->create(['name' => 'Nasi Uduk Minuman', 'category' => 'Minuman']);
+
+        $this->get('/kategori/makanan?q=Uduk&radius=5')
+            ->assertOk()
+            ->assertSee('Nasi Uduk')
+            ->assertDontSee('Ayam Geprek')
+            ->assertDontSee('Nasi Uduk Minuman')
+            ->assertSee('id="category-q"', false)
+            ->assertSee('name="radius" value="5"', false)
+            ->assertSee(route('category.show', ['category' => 'makanan', 'radius' => 5]))
+            ->assertSee('1 hasil untuk “Uduk”');
+    }
+
+    public function test_category_search_pagination_keeps_keyword_and_radius(): void
+    {
+        $store = $this->storeFor('Warung Bang Jago');
+        Product::factory()->count(13)->for($store->user)->create([
+            'name' => 'Nasi Uduk',
+            'category' => 'Makanan',
+        ]);
+
+        $this->get('/kategori/makanan?q=Uduk&radius=5')
+            ->assertOk()
+            ->assertSee('q=Uduk', false)
+            ->assertSee('radius=5', false)
+            ->assertSee('page=2', false);
+    }
+
     public function test_category_page_hides_other_categories_and_unapproved_products(): void
     {
         $store = $this->storeFor('Warung Bang Jago');

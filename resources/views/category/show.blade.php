@@ -27,6 +27,19 @@
     </div>
     <p id="locate-status" class="hidden mb-4 text-[13px] font-bold text-ink-500" role="status"></p>
 
+    <form method="GET" action="{{ route('category.show', ['category' => Str::slug($category)]) }}" role="search" class="mb-5 bg-white rounded-[22px] border border-ink-900/10 shadow-sm p-2 flex items-center gap-2 max-w-xl">
+        <span class="pl-3 text-ink-500"><x-icon name="search" class="w-5 h-5" /></span>
+        <label class="sr-only" for="category-q">Cari produk {{ Str::lower($category) }}</label>
+        <input id="category-q" name="q" type="search" autocomplete="off" value="{{ $q }}" placeholder="Cari produk {{ Str::lower($category) }}..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
+        @if($userLat !== null)<input type="hidden" name="lat" value="{{ $userLat }}">@endif
+        @if($userLng !== null)<input type="hidden" name="lng" value="{{ $userLng }}">@endif
+        <input type="hidden" name="radius" value="{{ $radius }}">
+        <button type="submit" class="shrink-0 bg-ink-900 text-white text-sm font-extrabold px-5 py-3 rounded-2xl hover:bg-brand-600 transition">Cari</button>
+    </form>
+    @if($q !== '')
+        <p class="mb-4 text-[13px] font-bold text-ink-500" role="status">{{ $products->total() }} hasil untuk “{{ $q }}” <a href="{{ route('category.show', array_filter(['category' => Str::slug($category), 'lat' => $userLat, 'lng' => $userLng, 'radius' => $radius], fn ($value) => $value !== null)) }}" class="ml-1 underline underline-offset-4 decoration-brand-500 hover:text-brand-600">bersihkan ✕</a></p>
+    @endif
+
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
         @forelse($products as $i => $p)
         @php($store = $p->user->store)
@@ -83,8 +96,8 @@
         @empty
         <div class="col-span-full rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
             <p class="text-4xl">🛍️</p>
-            <p class="font-extrabold text-lg mt-2">Belum ada {{ $category }} di sekitar sini</p>
-            <p class="text-sm font-medium text-ink-500 mt-1">Coba perbesar radius, matikan lokasi, atau lihat warung terdekat dulu.</p>
+            <p class="font-extrabold text-lg mt-2">{{ $q !== '' ? 'Tidak ada hasil untuk “'.$q.'”' : 'Belum ada '.$category.' di sekitar sini' }}</p>
+            <p class="text-sm font-medium text-ink-500 mt-1">{{ $q !== '' ? 'Coba kata kunci lain atau bersihkan pencarian.' : 'Coba perbesar radius, matikan lokasi, atau lihat warung terdekat dulu.' }}</p>
             <div class="mt-4 flex flex-wrap justify-center gap-2">
                 <a href="{{ route('store.index', array_filter(['lat' => $userLat, 'lng' => $userLng, 'radius' => $radius], fn ($value) => $value !== null)) }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat warung terdekat</a>
                 <a href="{{ route('home') }}#kategori" class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Kategori lain</a>

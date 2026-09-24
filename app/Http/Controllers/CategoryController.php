@@ -17,6 +17,7 @@ class CategoryController extends Controller
     public function show(Request $request, string $category): View
     {
         $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:120'],
             'lat' => ['nullable', 'numeric', 'between:-90,90'],
             'lng' => ['nullable', 'numeric', 'between:-180,180'],
             'radius' => ['nullable', 'numeric', 'min:0.1', 'max:50'],
@@ -32,10 +33,15 @@ class CategoryController extends Controller
         $radius = isset($validated['radius']) ? (float) $validated['radius'] : 5.0;
         $hasCoords = $lat !== null && $lng !== null;
 
+        $q = isset($validated['q']) ? trim($validated['q']) : '';
+
         $products = Product::query()
             ->with(['user:id,name', 'user.store:id,user_id,name,slug,is_open,latitude,longitude'])
             ->where('status', 'approved')
             ->where('category', $name)
+            ->when($q !== '', fn ($query) => $query->where(fn ($query) => $query
+                ->where('name', 'like', "%{$q}%")
+                ->orWhere('description', 'like', "%{$q}%")))
             ->whereHas('user.store')
             ->latest('id')
             ->take(150)
@@ -74,6 +80,7 @@ class CategoryController extends Controller
 
         return view('category.show', [
             'category' => $name,
+            'q' => $q,
             'products' => $products->withQueryString(),
             'storeCount' => $nearby->map(fn (Product $product) => $product->user->store->id)->unique()->count(),
             'userLat' => $lat,

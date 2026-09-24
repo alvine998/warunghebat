@@ -20,6 +20,8 @@ class StoreSlugTest extends TestCase
 
         $this->actingAs($seller)->put(route('seller.store.update'), [
             'name' => 'Warung Bang Jago',
+            'latitude' => -6.2297,
+            'longitude' => 106.8294,
         ])->assertSessionHasNoErrors();
 
         $this->assertSame('warung-bang-jago', $seller->store()->first()->slug);
@@ -34,8 +36,8 @@ class StoreSlugTest extends TestCase
         Store::resolveFor($a);
         Store::resolveFor($b);
 
-        $this->actingAs($a)->put(route('seller.store.update'), ['name' => 'Warung Sama']);
-        $this->actingAs($b)->put(route('seller.store.update'), ['name' => 'Warung Sama']);
+        $this->actingAs($a)->put(route('seller.store.update'), ['name' => 'Warung Sama', 'latitude' => -6.2297, 'longitude' => 106.8294]);
+        $this->actingAs($b)->put(route('seller.store.update'), ['name' => 'Warung Sama', 'latitude' => -6.2352, 'longitude' => 106.8498]);
 
         $slugs = Store::whereIn('user_id', [$a->id, $b->id])->orderBy('id')->pluck('slug')->all();
 
