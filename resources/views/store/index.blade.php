@@ -40,23 +40,21 @@
 
     <x-nearby-tabs :stores="$stores" :user-lat="$userLat ?? null" :user-lng="$userLng ?? null" prefix="semua-warung">
         <x-slot:list>
-            <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-                @forelse($stores as $i => $w)
-                <x-store-card :store="$w" :index="$i" />
-                @empty
-                <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
-                    <p class="text-4xl">🏪</p>
-                    <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
-                    <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain di kolom pencarian di atas, perbesar radius, atau matikan lokasi.</p>
-                    <div class="mt-4 flex justify-center gap-2">
-                        <a href="{{ route('store.index') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
-                        @guest
-                        <a href="{{ route('register') }}" data-open-register class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Buka warung pertama →</a>
-                        @endguest
-                    </div>
+            @forelse($stores as $i => $w)
+            <x-store-card :store="$w" :index="$i" />
+            @empty
+            <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
+                <p class="text-4xl">🏪</p>
+                <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
+                <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain di kolom pencarian di atas, perbesar radius, atau matikan lokasi.</p>
+                <div class="mt-4 flex justify-center gap-2">
+                    <a href="{{ route('store.index') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
+                    @guest
+                    <a href="{{ route('register') }}" data-open-register class="text-[13px] font-extrabold border-2 border-ink-900/10 px-5 py-2.5 rounded-full">Buka warung pertama →</a>
+                    @endguest
                 </div>
-                @endforelse
             </div>
+            @endforelse
         </x-slot:list>
         <x-slot:footer>
             @if($stores->hasPages())
