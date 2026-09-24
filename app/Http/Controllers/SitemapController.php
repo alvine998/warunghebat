@@ -21,6 +21,9 @@ class SitemapController extends Controller
             ['loc' => route('store.index'), 'changefreq' => 'daily', 'priority' => '0.9'],
             ['loc' => route('articles.index'), 'changefreq' => 'weekly', 'priority' => '0.7'],
             ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => route('guides.index'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('guides.buyer'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('guides.seller'), 'changefreq' => 'monthly', 'priority' => '0.7'],
         ];
 
         foreach (Product::CATEGORIES as $category) {

@@ -58,6 +58,7 @@
                 <a href="#cara-kerja" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cara Kerja</a>
                 <a href="#warung" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Warung Terdekat</a>
                 <a href="{{ route('articles.index') }}" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Artikel</a>
+                <a href="{{ route('guides.index') }}" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Panduan</a>
                 <a href="#cerita" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cerita Kami</a>
                 <a href="#mitra" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Jadi Mitra</a>
                 <a href="#faq" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">FAQ</a>
@@ -103,6 +104,7 @@
                 <a href="#warung" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="map-pin" class="w-5 h-5 text-brand-300" /> Warung Terdekat</a>
                 <a href="#cerita" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="heart-solid" class="w-5 h-5 text-brand-300" /> Cerita Kami</a>
                 <a href="#mitra" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="store" class="w-5 h-5 text-brand-300" /> Jadi Mitra</a>
+                <a href="{{ route('guides.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> Panduan</a>
                 <a href="#faq" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> FAQ</a>
             </nav>
             @guest
@@ -185,6 +187,9 @@
                 <div>
                     <p class="font-extrabold text-sm tracking-widest text-white/40 mb-4">BANTUAN</p>
                     <ul class="space-y-2.5 text-sm font-semibold text-white/80">
+                        <li><a href="{{ route('guides.index') }}" class="hover:text-brand-300">Panduan</a></li>
+                        <li><a href="{{ route('guides.buyer') }}" class="hover:text-brand-300">Panduan Pembeli</a></li>
+                        <li><a href="{{ route('guides.seller') }}" class="hover:text-brand-300">Panduan Penjual</a></li>
                         <li><a href="{{ route('articles.index') }}" class="hover:text-brand-300">Artikel</a></li>
                         <li><a href="{{ route('about') }}" class="hover:text-brand-300">Tentang Kami</a></li>
                         <li><a href="#faq" class="hover:text-brand-300">FAQ</a></li>

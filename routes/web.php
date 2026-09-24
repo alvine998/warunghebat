@@ -76,6 +76,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // ---------- INFO PAGES ----------
 Route::get('/syarat-ketentuan', fn () => view('legal.terms'))->name('terms');
 Route::get('/kebijakan-privasi', fn () => view('legal.privacy'))->name('privacy');
+Route::get('/panduan', fn () => view('guides.index'))->name('guides.index');
+Route::get('/panduan/pembeli', fn () => view('guides.buyer'))->name('guides.buyer');
+Route::get('/panduan/penjual', fn () => view('guides.seller'))->name('guides.seller');
 Route::get('/hubungi-kami', [ContactController::class, 'show'])->name('contact');
 Route::post('/hubungi-kami', [ContactController::class, 'send'])->name('contact.send');
 
