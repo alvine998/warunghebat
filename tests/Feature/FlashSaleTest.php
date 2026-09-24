@@ -166,6 +166,15 @@ class FlashSaleTest extends TestCase
         $this->get('/sitemap.xml')->assertOk()->assertSee(route('promo.index'), false);
     }
 
+    public function test_promo_page_forwards_warung_fragment_to_home(): void
+    {
+        $this->get(route('promo.index'))
+            ->assertOk()
+            ->assertSee("window.location.hash === '#warung'", false)
+            ->assertSee('window.location.replace('.json_encode(route('home').'#warung').')', false)
+            ->assertSee('<a href="'.route('home').'#warung"', false);
+    }
+
     /** @return array{0: Store, 1: Product} */
     private function storeWithPromoProduct(int $price, int $discount): array
     {

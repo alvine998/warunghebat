@@ -100,6 +100,14 @@
 </section>
 
 @include('components.locate-script', ['locateHash' => ''])
+
+@push('scripts')
+<script>
+    if (window.location.hash === '#warung') {
+        window.location.replace(@json(route('home').'#warung'));
+    }
+</script>
+@endpush
 @endsection
 
 @include('components.cart-conflict-modal')
