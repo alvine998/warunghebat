@@ -12,7 +12,7 @@
 
     // Private areas keep out of search results; buyer flows have no SEO value.
     $seoRobots = $seoRobots ?? (request()->routeIs(
-        'cart.*', 'checkout.*', 'orders.*', 'dashboard', 'login', 'register', 'admin.*', 'seller.*'
+        'cart.*', 'checkout.*', 'orders.*', 'dashboard', 'login', 'register', 'password.*', 'admin.*', 'seller.*'
     ) ? 'noindex, nofollow' : 'index, follow');
 @endphp
 <meta name="description" content="{{ $seoDescription }}">

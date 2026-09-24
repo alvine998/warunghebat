@@ -59,6 +59,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
+// Lupa kata sandi: kirim tautan reset lewat email, lalu buat kata sandi baru.
+Route::middleware('guest')->group(function () {
+    Route::get('/lupa-kata-sandi', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/lupa-kata-sandi', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-kata-sandi/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-kata-sandi', [AuthController::class, 'resetPassword'])->name('password.update');
+});
+
 // ---------- ADMIN BACKOFFICE SIDE (URL-only, not linked from public UI) ----------
 Route::get('/backoffice/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 Route::post('/backoffice/login', [AuthController::class, 'adminLogin']);

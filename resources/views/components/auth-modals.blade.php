@@ -31,7 +31,7 @@
                     </label>
                     <label class="flex items-center justify-between text-[13px] font-semibold text-ink-700">
                         <span class="inline-flex items-center gap-2"><input type="checkbox" name="remember" class="w-4 h-4 accent-[#F95D0B] rounded"> Ingat saya</span>
-                        <a href="#" class="text-brand-600">Lupa sandi?</a>
+                        <a href="{{ route('password.request') }}" class="text-brand-600">Lupa sandi?</a>
                     </label>
                     <button class="w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition">Masuk →</button>
                 </form>

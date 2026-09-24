@@ -51,8 +51,9 @@
                         <button type="button" data-toggle-password="#admin-login-password" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 grid place-items-center rounded-xl hover:bg-ink-900/5 text-ink-500" aria-label="Lihat sandi">👁</button>
                     </span>
                 </label>
-                <label class="flex items-center text-[13px] font-bold text-ink-700">
+                <label class="flex items-center justify-between text-[13px] font-bold text-ink-700">
                     <span class="inline-flex items-center gap-2"><input type="checkbox" name="remember" class="w-4 h-4 accent-[#F95D0B]"> Ingat saya di perangkat ini</span>
+                    <a href="{{ route('password.request') }}" class="text-brand-600">Lupa sandi?</a>
                 </label>
                 <button class="w-full py-4 rounded-2xl bg-brand-500 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition shadow-xl shadow-brand-500/30">Masuk Backoffice →</button>
                 <p class="rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-[12px] font-bold p-3.5">🔒 Halaman ini hanya untuk akun dengan peran <strong>admin</strong>. Akun pembeli/penjual akan ditolak.</p>
