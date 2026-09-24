@@ -70,7 +70,7 @@
 
     <div class="mt-5 grid gap-3.5 lg:grid-cols-[1fr_380px]">
         <div class="grid gap-3.5 content-start">
-        @if(auth()->user()->canSell() && ! empty($storeStats ?? null))
+        @if(auth()->user()->role === 'penjual' && auth()->user()->isKycVerified() && ! empty($storeStats ?? null))
         <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
             <div class="flex items-center justify-between gap-3 flex-wrap">
                 <div>
@@ -79,13 +79,18 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="{{ route('seller.store.edit') }}" class="text-[13px] font-extrabold px-4 py-2 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">⚙️ Pengaturan</a>
-                    <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-brand-600">Kelola produk →</a>
+                    <div class="flex items-center gap-3">
+                        @if(auth()->user()->role === 'penjual' && auth()->user()->isKycVerified())
+                            <a href="{{ route('seller.transactions.index') }}" class="text-[13px] font-extrabold text-brand-600">Transaksi →</a>
+                        @endif
+                        <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-brand-600">Kelola produk →</a>
+                    </div>
                 </div>
             </div>
             @include('seller.store._stats')
         </div>
         @endif
-        @if(auth()->user()->canSell() && ! empty($finance ?? null))
+        @if(auth()->user()->role === 'penjual' && auth()->user()->isKycVerified() && ! empty($finance ?? null))
         <div class="rounded-[28px] bg-white border border-ink-900/10 p-6">
             <div class="flex items-center justify-between gap-3 flex-wrap">
                 <div>
@@ -145,17 +150,19 @@
                 @endif
             </div>
             @endif
-            @if(auth()->user()->canSell())
+            @if(auth()->user()->role === 'penjual' && auth()->user()->isKycVerified())
             <div class="rounded-[28px] bg-ink-900 text-white p-6">
                 <p class="font-extrabold">Kelola produkmu 📦</p>
                 <p class="text-[13px] font-medium text-white/70 mt-1">Tambah, edit, dan pantau status verifikasi admin.</p>
                 <div class="mt-4 flex gap-2 flex-wrap">
                     <a href="{{ route('seller.products.index') }}" class="bg-white text-ink-900 text-sm font-extrabold px-5 py-2.5 rounded-full">Kelola →</a>
-                    <a href="{{ route('seller.products.create') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">+ Tambah</a>
+                    <a href="{{ route('seller.transactions.index') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">Transaksi</a>
+                    <a href="{{ route('seller.transactions.create') }}" class="bg-brand-500 text-white text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-brand-600 transition">+ Catat penjualan</a>
+                    <a href="{{ route('seller.products.create') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">+ Tambah produk</a>
                     <a href="{{ route('seller.store.edit') }}" class="bg-white/10 border border-white/15 text-sm font-extrabold px-5 py-2.5 rounded-full hover:bg-white/20 transition">⚙️ Warung</a>
                 </div>
             </div>
-            @else
+            @elseif(! auth()->user()->canSell())
             <div class="rounded-[28px] bg-leaf-600 text-white p-6">
                 <p class="font-extrabold">Mau buka warung? 🏪</p>
                 <p class="text-[13px] font-medium text-white/75 mt-1">Daftar jadi mitra gratis, 0% komisi 3 bulan pertama.</p>

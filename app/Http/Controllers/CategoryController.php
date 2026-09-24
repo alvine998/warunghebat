@@ -41,7 +41,7 @@ class CategoryController extends Controller
             ->where('category', $name)
             ->when($q !== '', fn ($query) => $query->where(fn ($query) => $query
                 ->where('name', 'like', "%{$q}%")
-                ->orWhere('description', 'like', "%{$q}%")))
+                ->orWhereHas('user.store', fn ($store) => $store->where('name', 'like', "%{$q}%"))))
             ->whereHas('user.store')
             ->latest('id')
             ->take(150)

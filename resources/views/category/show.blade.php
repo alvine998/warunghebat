@@ -29,8 +29,8 @@
 
     <form method="GET" action="{{ route('category.show', ['category' => Str::slug($category)]) }}" role="search" class="mb-5 bg-white rounded-[22px] border border-ink-900/10 shadow-sm p-2 flex items-center gap-2 max-w-xl">
         <span class="pl-3 text-ink-500"><x-icon name="search" class="w-5 h-5" /></span>
-        <label class="sr-only" for="category-q">Cari produk {{ Str::lower($category) }}</label>
-        <input id="category-q" name="q" type="search" autocomplete="off" value="{{ $q }}" placeholder="Cari produk {{ Str::lower($category) }}..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
+        <label class="sr-only" for="category-q">Cari produk atau warung {{ Str::lower($category) }}</label>
+        <input id="category-q" name="q" type="search" autocomplete="off" value="{{ $q }}" placeholder="Cari produk atau warung..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
         @if($userLat !== null)<input type="hidden" name="lat" value="{{ $userLat }}">@endif
         @if($userLng !== null)<input type="hidden" name="lng" value="{{ $userLng }}">@endif
         <input type="hidden" name="radius" value="{{ $radius }}">

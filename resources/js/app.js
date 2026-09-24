@@ -475,6 +475,21 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(cartConflictModal);
     };
 
+    // Register role radios drive the "Daftar dengan Google" link's ?role so a
+    // brand-new Google account is created with the chosen role.
+    document.querySelectorAll('[data-google-role]').forEach((link) => {
+        const form = link.closest('form');
+        if (!form) return;
+        const sync = () => {
+            const checked = form.querySelector('input[name="role"]:checked');
+            const url = new URL(link.href);
+            url.searchParams.set('role', checked ? checked.value : 'pembeli');
+            link.href = url.toString();
+        };
+        form.querySelectorAll('input[name="role"]').forEach((radio) => radio.addEventListener('change', sync));
+        sync();
+    });
+
     // ---------- Product image zoom (store detail lightbox) ----------
     const zoomModal = document.getElementById('modal-product-zoom');
     const zoomImg = document.getElementById('product-zoom-img');

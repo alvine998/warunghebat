@@ -17,6 +17,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PwaController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SellerTransactionController;
 use App\Http\Controllers\SellerVerificationController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
@@ -65,6 +67,11 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+
+// "Masuk dengan Google" (Socialite). The callback links an existing account by
+// email or registers a new one — pembeli by default, penjual when chosen on /register.
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
 // Lupa kata sandi: kirim tautan reset lewat email, lalu buat kata sandi baru.
 Route::middleware('guest')->group(function () {
@@ -130,6 +137,9 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
             Route::put('/store', [StoreController::class, 'update'])->name('store.update');
             Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
             Route::post('/wallet/withdrawals', [WalletController::class, 'store'])->name('wallet.withdraw');
+            Route::get('/transactions', [SellerTransactionController::class, 'index'])->name('transactions.index');
+            Route::get('/transactions/create', [SellerTransactionController::class, 'create'])->name('transactions.create');
+            Route::post('/transactions', [SellerTransactionController::class, 'store'])->name('transactions.store');
         });
         Route::patch('/store/toggle', [StoreController::class, 'toggle'])->name('store.toggle');
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');

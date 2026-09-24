@@ -16,9 +16,7 @@ class AuthController extends Controller
     /** Where to send a user after auth, based on role. */
     protected function redirectFor(User $user): string
     {
-        return $user->isAdmin()
-            ? route('admin.dashboard')
-            : route('dashboard');
+        return $user->homeRoute();
     }
 
     // ---------- USER SIDE ----------
@@ -75,9 +73,17 @@ class AuthController extends Controller
             return redirect()->to($this->redirectFor(Auth::user()));
         }
 
+        $rawPhone = trim((string) $request->input('phone'));
+        $phone = preg_match('/^[+0-9\s\-()]*$/', $rawPhone) === 1
+            ? preg_replace('/\D/', '', $rawPhone)
+            : $rawPhone;
+        $phone = str_starts_with($phone, '62') ? '0'.substr($phone, 2) : $phone;
+        $request->merge(['phone' => $phone !== '' ? $phone : null]);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'min:8', 'max:15', 'regex:/^[0-9]+$/', 'unique:users,phone'],
             'password' => ['required', 'confirmed', PasswordRule::min(8)],
             'role' => ['nullable', 'in:pembeli,penjual'],
         ], [
@@ -92,6 +98,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
             'password' => $validated['password'],
             'role' => $validated['role'] ?? 'pembeli',
         ]);

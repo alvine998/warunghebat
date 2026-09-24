@@ -58,11 +58,12 @@
                     <a href="{{ route('password.request') }}" class="text-brand-600">Lupa kata sandi?</a>
                 </label>
                 <button class="w-full py-4 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition shadow-xl shadow-ink-900/20">Masuk →</button>
+                @if(config('services.google.client_id') && config('services.google.client_secret'))
                 <div class="flex items-center gap-3 text-[11px] font-extrabold text-ink-500 tracking-widest"><span class="flex-1 h-px bg-ink-900/10"></span>ATAU<span class="flex-1 h-px bg-ink-900/10"></span></div>
-                <div class="grid grid-cols-2 gap-2.5">
-                    <button type="button" class="py-3 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition">G Google</button>
-                    <button type="button" class="py-3 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition">◉ WhatsApp</button>
-                </div>
+                <a href="{{ route('auth.google.redirect') }}" class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition">
+                    <x-google-icon /> Masuk dengan Google
+                </a>
+                @endif
             </form>
             <p class="text-center mt-6"><a href="{{ route('home') }}" class="text-[13px] font-bold text-ink-500 hover:text-ink-900">← Kembali ke beranda</a></p>
         </div>

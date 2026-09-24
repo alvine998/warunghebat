@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'points'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'role', 'points', 'google_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -23,6 +23,18 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /** Google accounts have no local password until they set one. */
+    public function hasPassword(): bool
+    {
+        return $this->password !== null && $this->password !== '';
+    }
+
+    /** Where this user lands after signing in. */
+    public function homeRoute(): string
+    {
+        return $this->isAdmin() ? route('admin.dashboard') : route('dashboard');
     }
 
     public function isSeller(): bool
@@ -44,6 +56,11 @@ class User extends Authenticatable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function inStoreTransactions(): HasMany
+    {
+        return $this->hasMany(InStoreTransaction::class, 'buyer_user_id');
     }
 
     public function favorites(): HasMany

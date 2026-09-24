@@ -46,6 +46,10 @@
                     <span class="text-[13px] font-bold">Email</span>
                     <input name="email" type="email" required value="{{ old('email') }}" placeholder="kamu@email.com" class="w-full rounded-2xl border border-ink-900/15 bg-white px-4 py-3.5 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
                 </label>
+                <label class="grid gap-1.5">
+                    <span class="text-[13px] font-bold">Nomor HP (opsional)</span>
+                    <input name="phone" type="tel" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" class="w-full rounded-2xl border border-ink-900/15 bg-white px-4 py-3.5 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                </label>
                 <div class="grid sm:grid-cols-2 gap-3.5">
                     <label class="grid gap-1.5">
                         <span class="text-[13px] font-bold">Kata sandi</span>
@@ -78,6 +82,12 @@
                     </div>
                 </div>
                 <button class="w-full py-4 rounded-2xl bg-brand-500 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition shadow-xl shadow-brand-500/30">Daftar Gratis →</button>
+                @if(config('services.google.client_id') && config('services.google.client_secret'))
+                <div class="flex items-center gap-3 text-[11px] font-extrabold text-ink-500 tracking-widest"><span class="flex-1 h-px bg-ink-900/10"></span>ATAU<span class="flex-1 h-px bg-ink-900/10"></span></div>
+                <a data-google-role href="{{ route('auth.google.redirect', ['role' => 'pembeli']) }}" class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition">
+                    <x-google-icon /> Daftar dengan Google
+                </a>
+                @endif
                 <p class="text-[11px] text-center text-ink-500 font-medium leading-relaxed">Dengan mendaftar, kamu setuju dengan <a href="{{ route('terms') }}" class="underline font-bold">Syarat & Ketentuan</a> dan <a href="{{ route('privacy') }}" class="underline font-bold">Kebijakan Privasi</a> Warung Hebat.</p>
             </form>
             <p class="text-center mt-6"><a href="{{ route('home') }}" class="text-[13px] font-bold text-ink-500 hover:text-ink-900">← Kembali ke beranda</a></p>

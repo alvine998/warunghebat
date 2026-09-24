@@ -34,6 +34,9 @@
                         <a href="{{ route('password.request') }}" class="text-brand-600">Lupa sandi?</a>
                     </label>
                     <button class="w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition">Masuk →</button>
+                    @if(config('services.google.client_id') && config('services.google.client_secret'))
+                    <a href="{{ route('auth.google.redirect') }}" class="w-full flex items-center justify-center gap-2.5 py-3 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition"><x-google-icon /> Masuk dengan Google</a>
+                    @endif
                 </form>
                 <p class="text-center text-[13px] font-semibold text-ink-500 mt-4">Belum punya akun? <button data-open-register class="text-brand-600 font-extrabold">Daftar gratis</button></p>
                 <p class="text-center mt-3"><a href="{{ route('login') }}" class="text-xs font-semibold text-ink-500 underline underline-offset-4">Buka halaman login penuh</a></p>
@@ -82,6 +85,9 @@
                         </label>
                     </div>
                     <button class="w-full py-3.5 rounded-2xl bg-brand-500 text-white font-extrabold text-[15px] hover:bg-brand-600 active:scale-[.99] transition shadow-lg shadow-brand-500/30">Daftar Gratis →</button>
+                    @if(config('services.google.client_id') && config('services.google.client_secret'))
+                    <a data-google-role href="{{ route('auth.google.redirect', ['role' => 'pembeli']) }}" class="w-full flex items-center justify-center gap-2.5 py-3 rounded-2xl bg-white border-2 border-ink-900/10 font-extrabold text-sm hover:border-ink-900 transition"><x-google-icon /> Daftar dengan Google</a>
+                    @endif
                     <p class="text-[11px] text-center text-ink-500 font-medium leading-relaxed">Dengan mendaftar, kamu setuju dengan <a href="{{ route('terms') }}" class="underline">Syarat & Ketentuan</a> dan <a href="{{ route('privacy') }}" class="underline">Kebijakan Privasi</a>.</p>
                 </form>
                 <p class="text-center text-[13px] font-semibold text-ink-500 mt-3">Sudah punya akun? <button data-open-login class="text-brand-600 font-extrabold">Masuk</button></p>

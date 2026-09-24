@@ -37,6 +37,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Google OAuth (Socialite)
+    |--------------------------------------------------------------------------
+    |
+    | "Sign in with Google" for pembeli & penjual. Create an OAuth 2.0 Client
+    | in Google Cloud Console (Credentials) and add the redirect URI
+    | <APP_URL>/auth/google/callback. Empty values hide the button.
+    |
+    */
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Firebase Cloud Messaging (Web Push)
     |--------------------------------------------------------------------------
     |

@@ -63,6 +63,11 @@ class Store extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function inStoreTransactions(): HasMany
+    {
+        return $this->hasMany(InStoreTransaction::class);
+    }
+
     /** Star ratings buyers left after completed orders (one per order). */
     public function ratings(): HasMany
     {
