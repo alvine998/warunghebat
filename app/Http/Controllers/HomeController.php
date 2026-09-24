@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,9 +17,25 @@ class HomeController extends Controller
     {
         [$params, $nearby] = $this->nearbyStores($request);
 
+        $flashSale = Product::query()
+            ->withActivePromo()
+            ->with(['user:id,name', 'user.store:id,user_id,name,slug,is_open'])
+            ->whereHas('user.store', fn ($query) => $query->where('is_open', true))
+            ->orderByRaw('(price - discount_price) * 100.0 / price DESC')
+            ->take(8)
+            ->get();
+
+        // Countdown runs to the earliest promo deadline; promos without a
+        // deadline share the end of today.
+        $flashSaleEndsAt = $flashSale->map(fn (Product $product) => $product->promo_ends_at)
+            ->filter()
+            ->min() ?? now()->endOfDay();
+
         return view('landing', [
             'stores' => $nearby->take(6),
             'articles' => Article::query()->published()->with('author:id,name')->latest('published_at')->take(3)->get(),
+            'flashSale' => $flashSale,
+            'flashSaleEndsAt' => $flashSaleEndsAt->toIso8601String(),
             'nearbyParams' => array_filter(
                 ['lat' => $params['lat'], 'lng' => $params['lng'], 'radius' => $params['radius']],
                 fn ($value) => $value !== null

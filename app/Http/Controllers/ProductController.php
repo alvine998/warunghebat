@@ -52,6 +52,9 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
+            'discount_price' => ['nullable', 'integer', 'min:0', 'lt:price'],
+            'promo_starts_at' => ['nullable', 'date'],
+            'promo_ends_at' => ['nullable', 'date', 'after_or_equal:promo_starts_at'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'category' => ['required', 'string', 'in:'.implode(',', Product::CATEGORIES)],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
@@ -59,6 +62,8 @@ class ProductController extends Controller
             'name.required' => 'Nama produk wajib diisi.',
             'price.required' => 'Harga wajib diisi.',
             'price.min' => 'Harga tidak boleh negatif.',
+            'discount_price.lt' => 'Harga promo harus lebih kecil dari harga normal.',
+            'promo_ends_at.after_or_equal' => 'Akhir promo tidak boleh sebelum awal promo.',
             'stock.required' => 'Stok wajib diisi.',
             'category.in' => 'Kategori tidak valid.',
             'image.required' => 'Foto produk wajib diunggah (1 foto).',
@@ -73,6 +78,9 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],
+            'discount_price' => $validated['discount_price'] ?? null,
+            'promo_starts_at' => $validated['promo_starts_at'] ?? null,
+            'promo_ends_at' => $validated['promo_ends_at'] ?? null,
             'stock' => $validated['stock'],
             'category' => $validated['category'],
             'image_path' => $imagePath,
@@ -109,6 +117,9 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:2000'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000000'],
+            'discount_price' => ['nullable', 'integer', 'min:0', 'lt:price'],
+            'promo_starts_at' => ['nullable', 'date'],
+            'promo_ends_at' => ['nullable', 'date', 'after_or_equal:promo_starts_at'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'category' => ['required', 'string', 'in:'.implode(',', Product::CATEGORIES)],
             'image' => $imageRule,
@@ -116,6 +127,8 @@ class ProductController extends Controller
             'name.required' => 'Nama produk wajib diisi.',
             'price.required' => 'Harga wajib diisi.',
             'price.min' => 'Harga tidak boleh negatif.',
+            'discount_price.lt' => 'Harga promo harus lebih kecil dari harga normal.',
+            'promo_ends_at.after_or_equal' => 'Akhir promo tidak boleh sebelum awal promo.',
             'stock.required' => 'Stok wajib diisi.',
             'category.in' => 'Kategori tidak valid.',
             'image.required' => 'Foto produk wajib diunggah (1 foto).',
@@ -137,6 +150,9 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],
+            'discount_price' => $validated['discount_price'] ?? null,
+            'promo_starts_at' => $validated['promo_starts_at'] ?? null,
+            'promo_ends_at' => $validated['promo_ends_at'] ?? null,
             'stock' => $validated['stock'],
             'category' => $validated['category'],
             'image_path' => $imagePath,
@@ -165,7 +181,7 @@ class ProductController extends Controller
     protected function sanitizeNumeric(Request $request): void
     {
         // Inputs are displayed with thousand separators ("15.000"); keep only digits.
-        foreach (['price', 'stock'] as $key) {
+        foreach (['price', 'discount_price', 'stock'] as $key) {
             if ($request->filled($key)) {
                 $request->merge([$key => preg_replace('/\D/', '', (string) $request->input($key))]);
             }

@@ -144,6 +144,109 @@
     </div>
 </div>
 
+{{-- ================= FLASH SALE & PROMO ================= --}}
+@if(($flashSale ?? collect())->isNotEmpty())
+<section id="flash-sale" class="bg-ink-900 text-white relative overflow-hidden grain scroll-mt-20">
+    <div class="hidden sm:block absolute -top-32 left-1/4 w-96 h-96 bg-brand-500/25 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 relative">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <p class="reveal inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[0.18em] text-white bg-brand-500 rounded-full px-3.5 py-1.5">⚡ FLASH SALE</p>
+                <h2 class="reveal font-black tracking-tight text-3xl sm:text-5xl mt-3" style="--reveal-delay:80ms">Serbu sebelum kehabisan.</h2>
+                <p class="reveal text-white/60 font-medium text-[15px] mt-2 max-w-md" style="--reveal-delay:140ms">Diskon beneran dari warung terdekat — harga coret otomatis kepotong di keranjang.</p>
+            </div>
+            <div class="reveal flex items-center gap-2" style="--reveal-delay:200ms" data-countdown="{{ $flashSaleEndsAt }}" role="timer" aria-label="Hitung mundur akhir flash sale">
+                <span class="text-[12px] font-extrabold text-white/60 mr-1">BERAKHIR DALAM</span>
+                <span data-cd-h class="min-w-12 text-center font-black text-xl sm:text-2xl tabular-nums bg-white/10 border border-white/15 rounded-2xl px-3 py-2">00</span>
+                <span class="font-black text-brand-400 text-xl">:</span>
+                <span data-cd-m class="min-w-12 text-center font-black text-xl sm:text-2xl tabular-nums bg-white/10 border border-white/15 rounded-2xl px-3 py-2">00</span>
+                <span class="font-black text-brand-400 text-xl">:</span>
+                <span data-cd-s class="min-w-12 text-center font-black text-xl sm:text-2xl tabular-nums bg-white/10 border border-white/15 rounded-2xl px-3 py-2">00</span>
+            </div>
+        </div>
+
+        <div class="reveal mt-8 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:overflow-visible" style="--reveal-delay:240ms">
+            @foreach($flashSale as $i => $p)
+            @php($store = $p->user->store)
+            <article class="snap-start shrink-0 w-[200px] sm:w-auto flex flex-col rounded-[24px] bg-white text-ink-900 overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-500/20 transition-all duration-300">
+                <a href="{{ route('store.show', $store) }}" class="relative block">
+                    @if($p->image_path)
+                        <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" loading="lazy" class="w-full h-32 sm:h-36 object-cover">
+                    @else
+                        <div class="w-full h-32 sm:h-36 bg-cream-100 grid place-items-center text-3xl">📷</div>
+                    @endif
+                    <span class="absolute top-2 left-2 text-[11px] font-black text-white bg-brand-500 rounded-full px-2.5 py-1 shadow-lg">−{{ $p->discountPercent() }}%</span>
+                </a>
+                <div class="flex flex-1 flex-col p-3 sm:p-4">
+                    <p class="font-extrabold text-[13px] sm:text-[15px] leading-snug line-clamp-2 min-h-[2.1em]">{{ $p->name }}</p>
+                    <p class="mt-1 truncate text-[11px] font-extrabold text-ink-500">🏪 {{ $store->name }}</p>
+                    <div class="mt-2 flex flex-wrap items-baseline gap-x-2">
+                        <p class="font-black text-[15px] sm:text-lg text-brand-600 leading-tight">Rp {{ number_format($p->effectivePrice(), 0, ',', '.') }}</p>
+                        <p class="text-[11px] sm:text-[12px] font-bold text-ink-500 line-through">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                    </div>
+                    @if($p->stock <= 5)
+                        <p class="mt-1.5 text-[11px] font-extrabold text-red-700">🔥 Sisa {{ $p->stock }} pcs!</p>
+                    @endif
+                    <div class="mt-auto pt-2.5">
+                        @if($p->stock > 0)
+                            @auth
+                            <form method="POST" action="{{ route('cart.store') }}">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $p->id }}">
+                                <button type="submit" class="w-full min-h-11 py-2.5 px-2 rounded-full bg-ink-900 text-white text-[12px] sm:text-[13px] font-extrabold hover:bg-brand-500 active:scale-[.98] transition">+ Keranjang</button>
+                            </form>
+                            @else
+                            <button type="button" data-open-login class="w-full min-h-11 py-2.5 px-2 rounded-full bg-ink-900 text-white text-[12px] sm:text-[13px] font-extrabold hover:bg-brand-500 active:scale-[.98] transition">+ Keranjang</button>
+                            @endauth
+                        @endif
+                    </div>
+                </div>
+            </article>
+            @endforeach
+        </div>
+
+        <div class="reveal mt-6 grid gap-2.5 sm:grid-cols-3" style="--reveal-delay:300ms">
+            @foreach([
+                ['🚚','Ongkir hemat','Mulai Rp 2rb untuk jarak dekat — makin dekat warungnya, makin murah.'],
+                ['💵','Bisa COD','Bayar tunai saat pesanan sampai, tanpa upload bukti apa pun.'],
+                ['🛍️','Ambil sendiri','Skip ongkir sepenuhnya, sekalian sapa pemilik warung.'],
+            ] as $perk)
+            <div class="flex items-center gap-3 rounded-2xl bg-white/[.06] border border-white/10 px-4 py-3.5">
+                <span class="text-2xl shrink-0">{{ $perk[0] }}</span>
+                <p class="text-[13px] leading-snug"><strong>{{ $perk[1] }}.</strong> <span class="text-white/60 font-medium">{{ $perk[2] }}</span></p>
+            </div>
+            @endforeach
+        </div>
+
+        <p class="reveal text-center mt-7" style="--reveal-delay:340ms">
+            <a href="{{ route('promo.index') }}" class="inline-flex items-center gap-2 font-extrabold text-sm bg-brand-500 hover:bg-brand-600 rounded-full px-7 py-3.5 shadow-xl shadow-brand-500/30 transition">Lihat semua promo →</a>
+        </p>
+    </div>
+</section>
+
+@push('scripts')
+<script>
+(function () {
+    var el = document.querySelector('[data-countdown]');
+    if (!el) return;
+    var target = new Date(el.dataset.countdown).getTime();
+    var h = el.querySelector('[data-cd-h]');
+    var m = el.querySelector('[data-cd-m]');
+    var s = el.querySelector('[data-cd-s]');
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+        var left = Math.max(0, target - Date.now());
+        h.textContent = pad(Math.floor(left / 3600000));
+        m.textContent = pad(Math.floor(left % 3600000 / 60000));
+        s.textContent = pad(Math.floor(left % 60000 / 1000));
+    }
+    tick();
+    setInterval(tick, 1000);
+})();
+</script>
+@endpush
+@endif
+
 {{-- ================= KATEGORI ================= --}}
 <section id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
     <div class="flex items-end justify-between gap-4 mb-7">

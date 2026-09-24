@@ -105,6 +105,7 @@
                 <a href="#cerita" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="heart-solid" class="w-5 h-5 text-brand-300" /> Cerita Kami</a>
                 <a href="#mitra" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="store" class="w-5 h-5 text-brand-300" /> Jadi Mitra</a>
                 <a href="{{ route('guides.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> Panduan</a>
+                <a href="{{ route('promo.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="star-solid" class="w-5 h-5 text-brand-300" /> Promo</a>
                 <a href="#faq" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> FAQ</a>
             </nav>
             @guest
@@ -168,6 +169,7 @@
                 <div>
                     <p class="font-extrabold text-sm tracking-widest text-white/40 mb-4">BELANJA</p>
                     <ul class="space-y-2.5 text-sm font-semibold text-white/80">
+                        <li><a href="{{ route('promo.index') }}" class="hover:text-brand-300">⚡ Promo & Flash Sale</a></li>
                         <li><a href="{{ route('category.show', ['category' => 'makanan']) }}" class="hover:text-brand-300">Makanan</a></li>
                         <li><a href="{{ route('category.show', ['category' => 'minuman']) }}" class="hover:text-brand-300">Minuman</a></li>
                         <li><a href="{{ route('category.show', ['category' => 'sembako']) }}" class="hover:text-brand-300">Sembako</a></li>

@@ -41,6 +41,36 @@
             </div>
         </div>
 
+        <div class="rounded-2xl bg-brand-50 border border-brand-200 p-4 grid gap-3">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <p class="text-[13px] font-extrabold">⚡ Harga promo <span class="font-semibold text-ink-500">(opsional)</span></p>
+                @if($product->exists && $product->hasActivePromo())
+                    <span class="text-[11px] font-extrabold text-white bg-brand-500 rounded-full px-3 py-1">Promo aktif −{{ $product->discountPercent() }}%</span>
+                @endif
+            </div>
+            <div>
+                <label class="text-[13px] font-extrabold">Harga promo (Rp) <span class="font-semibold text-ink-500">— harus lebih kecil dari harga normal</span></label>
+                <input name="discount_price" type="text" inputmode="numeric" autocomplete="off" data-numeric data-max="1000000000" value="{{ old('discount_price', $product->discount_price ?? '') }}" placeholder="cth. 12000 (kosongkan = tanpa promo)" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                @error('discount_price')
+                    <p class="mt-1 text-[13px] font-bold text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="text-[13px] font-extrabold">Mulai promo <span class="font-semibold text-ink-500">(opsional)</span></label>
+                    <input name="promo_starts_at" type="datetime-local" value="{{ old('promo_starts_at', $product->promo_starts_at?->format('Y-m-d\TH:i')) }}" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                </div>
+                <div>
+                    <label class="text-[13px] font-extrabold">Berakhir <span class="font-semibold text-ink-500">(opsional)</span></label>
+                    <input name="promo_ends_at" type="datetime-local" value="{{ old('promo_ends_at', $product->promo_ends_at?->format('Y-m-d\TH:i')) }}" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+                    @error('promo_ends_at')
+                        <p class="mt-1 text-[13px] font-bold text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+            <p class="text-[12px] font-medium text-ink-500">Tanpa tanggal = promo jalan terus sampai kamu hapus harganya. Harga promo ikut verifikasi admin seperti harga normal.</p>
+        </div>
+
         <div>
             <label class="text-[13px] font-extrabold">Kategori *</label>
             <select name="category" required class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">

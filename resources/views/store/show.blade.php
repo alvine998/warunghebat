@@ -121,7 +121,13 @@
                             <p class="hidden sm:block text-[13px] font-medium text-ink-500 leading-snug mt-1 line-clamp-2">{{ $p->description }}</p>
                         @endif
                         <div class="mt-2 sm:mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                            <p class="font-black text-[13px] sm:text-[16px] text-brand-600 leading-tight">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                            @if($p->hasActivePromo())
+                                <span class="text-[10px] sm:text-[11px] font-black text-white bg-brand-500 rounded-full px-2 py-0.5 whitespace-nowrap">−{{ $p->discountPercent() }}%</span>
+                                <p class="font-black text-[13px] sm:text-[16px] text-brand-600 leading-tight">Rp {{ number_format($p->effectivePrice(), 0, ',', '.') }}</p>
+                                <p class="text-[11px] sm:text-[12px] font-bold text-ink-500 line-through leading-tight">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                            @else
+                                <p class="font-black text-[13px] sm:text-[16px] text-brand-600 leading-tight">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                            @endif
                             @if($p->stock > 0)
                                 <span class="text-[10px] sm:text-[11px] font-extrabold text-leaf-700 bg-leaf-100 rounded-full px-2 py-0.5 whitespace-nowrap">Stok {{ $p->stock }}</span>
                             @else

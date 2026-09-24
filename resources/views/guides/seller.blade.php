@@ -98,6 +98,7 @@
             <li>Tulis <strong>deskripsi</strong> seperlunya (maks. 2.000 karakter): isi, porsi, level pedas, atau catatan alergi.</li>
             <li>Upload <strong>1 foto produk</strong> — <strong>wajib</strong>, format JPG/PNG/WebP <strong>maks. 2 MB</strong>. Foto asli daganganmu, bukan dari internet.</li>
             <li>Klik <strong>Simpan</strong>. Produk masuk antre verifikasi (langkah 4).</li>
+            <li>Mau ikut <strong>flash sale</strong>? Isi <strong>Harga promo</strong> (harus lebih kecil dari harga normal) dan opsional isi <strong>Mulai/Berakhir promo</strong>. Produk yang disetujui otomatis tampil di Flash Sale beranda dengan label −% dan hitung mundur.</li>
         </ol>
         <div class="mt-4 rounded-2xl bg-amber-50 border border-amber-200 p-4 text-[13px] font-medium text-amber-900 leading-relaxed">
             📸 <strong>Foto yang lolos & laku:</strong> terang, fokus ke makanan, tanpa watermark, tanpa teks promo menutupi produk. Produk difoto ulang tiap ada perubahan tampilan — sekalian update stoknya.

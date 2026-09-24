@@ -96,7 +96,7 @@ class CartController extends Controller
         $items[$product->id] = [
             'product_id' => $product->id,
             'name' => $product->name,
-            'price' => $product->price,
+            'price' => $product->effectivePrice(),
             'qty' => $currentQty + 1,
         ];
 
@@ -130,7 +130,7 @@ class CartController extends Controller
         $qty = min($validated['qty'], $product->stock);
 
         $cart['items'][$product->id]['qty'] = $qty;
-        $cart['items'][$product->id]['price'] = $product->price;
+        $cart['items'][$product->id]['price'] = $product->effectivePrice();
         $this->putCart($cart);
 
         return back()->with(
@@ -182,7 +182,7 @@ class CartController extends Controller
             }
 
             $cart['items'][$id]['qty'] = min($item['qty'], $product->stock);
-            $cart['items'][$id]['price'] = $product->price;
+            $cart['items'][$id]['price'] = $product->effectivePrice();
         }
 
         if ($removed) {

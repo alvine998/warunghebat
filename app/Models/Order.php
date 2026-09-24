@@ -251,7 +251,7 @@ class Order extends Model
                 return [
                     'product' => $product,
                     'qty' => $qty,
-                    'subtotal' => $product->price * $qty,
+                    'subtotal' => $product->effectivePrice() * $qty,
                 ];
             });
 
@@ -272,7 +272,7 @@ class Order extends Model
                 $order->items()->create([
                     'product_id' => $line['product']->id,
                     'name' => $line['product']->name,
-                    'price' => $line['product']->price,
+                    'price' => $line['product']->effectivePrice(),
                     'qty' => $line['qty'],
                     'subtotal' => $line['subtotal'],
                 ]);

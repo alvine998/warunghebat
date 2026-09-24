@@ -70,7 +70,13 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 py-4 font-black whitespace-nowrap">Rp {{ number_format($p->price, 0, ',', '.') }}</td>
+                    <td class="px-4 py-4 font-black whitespace-nowrap">Rp {{ number_format($p->price, 0, ',', '.') }}
+                        @if($p->hasActivePromo())
+                            <span class="mt-1 block text-[11px] font-extrabold text-white bg-brand-500 rounded-full px-2.5 py-1 w-fit">⚡ Rp {{ number_format($p->discount_price, 0, ',', '.') }} (−{{ $p->discountPercent() }}%)</span>
+                        @elseif($p->discount_price !== null)
+                            <span class="mt-1 block text-[11px] font-extrabold text-amber-800 bg-amber-100 rounded-full px-2.5 py-1 w-fit">Promo tidak aktif</span>
+                        @endif
+                    </td>
                     <td class="px-4 py-4 font-bold whitespace-nowrap">
                         {{ number_format($p->stock, 0, ',', '.') }}
                         @if($p->stock <= 5)
@@ -116,6 +122,11 @@
                 </div>
                 <p class="text-[11px] font-bold text-ink-500">{{ $p->category }} • {{ $p->updated_at?->diffForHumans() }}</p>
                 <p class="text-sm font-black">Rp {{ number_format($p->price, 0, ',', '.') }} <span class="font-bold text-ink-500">• Stok: {{ $p->stock }}</span></p>
+                @if($p->hasActivePromo())
+                <p class="text-[12px] font-extrabold text-white bg-brand-500 rounded-full px-3 py-1 w-fit">⚡ Promo Rp {{ number_format($p->discount_price, 0, ',', '.') }} (−{{ $p->discountPercent() }}%)</p>
+                @elseif($p->discount_price !== null)
+                <p class="text-[12px] font-extrabold text-amber-800 bg-amber-100 rounded-full px-3 py-1 w-fit">Promo tidak aktif</p>
+                @endif
                 @if($p->status === 'rejected' && $p->rejection_reason)
                 <p class="text-[13px] font-semibold text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2">Alasan admin: {{ $p->rejection_reason }}</p>
                 @endif

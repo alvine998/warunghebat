@@ -46,7 +46,16 @@
                             </form>
                         </div>
 
-                        <p class="mt-1 text-[12px] font-bold text-ink-500">Rp {{ number_format($item['price'], 0, ',', '.') }} <span class="text-ink-500/70">/ pcs</span></p>
+                        <p class="mt-1 text-[12px] font-bold text-ink-500">
+                            @if($product?->hasActivePromo())
+                                <span class="line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                <span class="text-brand-600">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
+                                <span class="text-white bg-brand-500 rounded-full px-2 py-0.5 text-[10px] font-black">−{{ $product->discountPercent() }}%</span>
+                            @else
+                                Rp {{ number_format($item['price'], 0, ',', '.') }}
+                            @endif
+                            <span class="text-ink-500/70">/ pcs</span>
+                        </p>
 
                         <div class="mt-2.5 flex items-center justify-between gap-2 flex-wrap">
                             <form method="POST" action="{{ route('cart.update', $item['product_id']) }}" class="flex items-center gap-1.5">

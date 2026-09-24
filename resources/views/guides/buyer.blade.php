@@ -112,6 +112,7 @@
             <li>Foto atau screenshot bukti transfer, lalu <strong>upload di halaman yang sama</strong>: format <strong>JPG, PNG, atau WebP, maksimal 2 MB</strong>. Klik kirim.</li>
             <li>Status berubah menjadi <strong>Menunggu verifikasi</strong>. Admin memeriksa bukti bayarmu — biasanya dalam hitungan jam kerja.</li>
             <li>Kalau memilih <strong>COD</strong>, lewati upload bukti: siapkan uang tunai pas dan bayar saat pesanan diterima.</li>
+            <li>Produk berlabel <strong>−% (flash sale)</strong> otomatis dihitung dengan harga promonya di keranjang — tanpa kode voucher, tanpa syarat tambahan.</li>
         </ol>
         <div class="mt-4 overflow-x-auto rounded-2xl border border-ink-900/10">
             <table class="w-full text-[13px] min-w-[520px]">

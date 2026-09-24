@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PwaController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
@@ -29,6 +30,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/warung', [HomeController::class, 'nearby'])->name('store.index');
 Route::get('/w/{store}', [StoreController::class, 'show'])->name('store.show');
 Route::get('/kategori/{category}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
 
 // Editorial content: blog index + detail, plus the company page.
 Route::get('/artikel', [ArticleController::class, 'index'])->name('articles.index');
