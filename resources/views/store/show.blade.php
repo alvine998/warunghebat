@@ -27,6 +27,14 @@
                 <div class="min-w-0">
                     <h1 class="font-black tracking-tight text-[26px] sm:text-4xl leading-tight break-words">{{ $store->name }}</h1>
                     <p class="text-[13px] font-semibold text-ink-500 mt-1 break-words">{{ $store->user?->name ?? 'Penjual warung' }}</p>
+                    <p class="mt-2 inline-flex items-center gap-1.5 text-[12px] font-extrabold rounded-full px-3 py-1.5 {{ $store->ratingAverage() !== null ? 'bg-amber-100 text-amber-800' : 'bg-cream-100 text-ink-500' }}">
+                        @if($store->ratingAverage() !== null)
+                            <span aria-hidden="true">★</span> {{ $store->rating_label }}
+                            <span class="font-bold text-ink-500">({{ $store->ratingCount() }} penilaian)</span>
+                        @else
+                            Belum ada rating
+                        @endif
+                    </p>
                 </div>
             </div>
 
@@ -257,3 +265,27 @@
 </script>
 @endpush
 @endif
+
+@push('head')
+<script type="application/ld+json">
+{!! json_encode(array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'Store',
+    'name' => $store->name,
+    'url' => route('store.show', $store),
+    'image' => $store->image_url,
+    'description' => $store->description,
+    'telephone' => $store->phone,
+    'address' => $store->address ? [
+        '@type' => 'PostalAddress',
+        'streetAddress' => $store->address,
+        'addressCountry' => 'ID',
+    ] : null,
+    'geo' => ($store->latitude !== null && $store->longitude !== null) ? [
+        '@type' => 'GeoCoordinates',
+        'latitude' => (float) $store->latitude,
+        'longitude' => (float) $store->longitude,
+    ] : null,
+]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush

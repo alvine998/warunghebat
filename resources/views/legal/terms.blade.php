@@ -25,7 +25,7 @@
             ['09', 'Ulasan & Konten', 'Ulasan harus jujur berdasarkan pengalaman nyata. Dengan mengunggah foto/ulasan, kamu memberi kami lisensi non-eksklusif untuk menampilkannya di Platform. Konten yang melanggar akan dihapus.'],
             ['10', 'Batasan Tanggung Jawab', 'Platform berperan sebagai perantara antara Pembeli dan Mitra. Kualitas dan keamanan barang menjadi tanggung jawab Mitra sebagai penjual. Tanggung jawab kami terbatas pada nilai transaksi yang bersangkutan, kecuali diwajibkan lain oleh hukum yang berlaku.'],
             ['11', 'Perubahan Ketentuan', 'Kami dapat memperbarui halaman ini sewaktu-waktu. Perubahan penting akan diumumkan lewat email atau notifikasi aplikasi. Penggunaan berkelanjutan setelah perubahan berarti kamu menyetujuinya.'],
-            ['12', 'Hukum & Kontak', 'Syarat ini tunduk pada hukum Republik Indonesia. Sengketa diselesaikan musyawarah dulu; jika buntu, melalui pengadilan yang berwenang. Pertanyaan? Hubungi kami via halaman Hubungi Kami atau email halo@warunghebat.id.'],
+            ['12', 'Hukum & Kontak', 'Syarat ini tunduk pada hukum Republik Indonesia. Sengketa diselesaikan musyawarah dulu; jika buntu, melalui pengadilan yang berwenang. Pertanyaan? Hubungi kami via halaman Hubungi Kami atau email '.$officialEmail.'.'],
         ] as $i => $s)
         <article class="reveal rounded-[24px] bg-white border border-ink-900/10 p-5 sm:p-6" style="--reveal-delay:{{ ($i%4)*60 }}ms">
             <div class="flex items-center gap-3">

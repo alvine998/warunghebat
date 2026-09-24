@@ -21,10 +21,18 @@ class StoreController extends Controller
         $store->load([
             'user:id,name',
             'products' => fn ($query) => $query->where('status', 'approved')->latest('id'),
+            'ratings.user:id,name',
         ]);
+
+        // Aggregates for the rating badge — avoids N+1 on ratingAverage().
+        $store->loadCount('ratings')->loadAvg('ratings', 'rating');
 
         return view('store.show', [
             'store' => $store,
+            'seoTitle' => $store->name.' — Warung Hebat',
+            'seoDescription' => $store->description
+                ?: 'Lihat etalase, harga, jam buka, dan lokasi '.$store->name.($store->address ? ' di '.$store->address : '').'. Pesan dari HP, diantar atau ambil sendiri.',
+            'seoImage' => $store->image_url,
         ]);
     }
 

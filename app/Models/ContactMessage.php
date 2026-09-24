@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['name', 'email', 'subject', 'message'])]
 class ContactMessage extends Model
 {
-    //
+    public const SUBJECTS = ['Pesanan', 'Pembayaran', 'Mitra', 'Bantuan Teknis', 'Lainnya'];
 }

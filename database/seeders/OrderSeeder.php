@@ -142,6 +142,36 @@ class OrderSeeder extends Seeder
                 'status' => Order::STATUS_CANCELLED,
                 'days_ago' => 5,
             ],
+            // Repeat buyers: same user + same store on separate transactions,
+            // so each order earns its own rating later.
+            [
+                'buyer' => 'dewi@example.com',
+                'store' => 'warung-bang-jago',
+                'items' => [['Es Teh Manis', 1]],
+                'status' => Order::STATUS_COMPLETED,
+                'days_ago' => 10,
+            ],
+            [
+                'buyer' => 'dewi@example.com',
+                'store' => 'warung-bang-jago',
+                'items' => [['Mie Ayam Bangka', 1]],
+                'status' => Order::STATUS_COMPLETED,
+                'days_ago' => 14,
+            ],
+            [
+                'buyer' => 'agus@example.com',
+                'store' => 'kedai-kopi-hebat',
+                'items' => [['Kopi Susu Gula Aren', 1]],
+                'status' => Order::STATUS_COMPLETED,
+                'days_ago' => 7,
+            ],
+            [
+                'buyer' => 'test@example.com',
+                'store' => 'warung-bu-siti',
+                'items' => [['Minyak Goreng 2L', 1]],
+                'status' => Order::STATUS_COMPLETED,
+                'days_ago' => 6,
+            ],
         ];
     }
 }

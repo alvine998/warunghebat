@@ -78,7 +78,9 @@ class HomeController extends Controller
             ])
             ->withCount([
                 'products as approved_products_count' => fn ($query) => $query->where('status', 'approved'),
-            ]);
+                'ratings',
+            ])
+            ->withAvg('ratings', 'rating');
 
         if ($search !== '') {
             $query->where(function ($query) use ($search): void {

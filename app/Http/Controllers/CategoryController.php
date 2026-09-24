@@ -79,6 +79,8 @@ class CategoryController extends Controller
             'userLat' => $lat,
             'userLng' => $lng,
             'radius' => $radius,
+            'seoTitle' => $name.' dari Warung Terdekat — Warung Hebat',
+            'seoDescription' => 'Belanja '.$name.' dari warung di sekitarmu: lihat harga, stok, dan jarak tiap warung. Pesan dari HP, diantar atau ambil sendiri.',
         ]);
     }
 }

@@ -13,22 +13,24 @@
     <div class="mt-8 grid gap-3.5 lg:grid-cols-[380px_1fr]">
         {{-- Info channels --}}
         <div class="grid gap-3 content-start">
-            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="reveal rounded-[24px] bg-leaf-600 text-white p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all">
+            <a href="{{ $csWhatsappLink }}" target="_blank" rel="noopener" class="reveal rounded-[24px] bg-leaf-600 text-white p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all">
                 <span class="w-12 h-12 shrink-0 rounded-2xl bg-white/20 grid place-items-center text-2xl">✆</span>
-                <span><strong class="block">WhatsApp CS</strong><span class="block text-[13px] font-semibold text-white/75">+62 812-3456-7890 • 07.00–22.00 WIB</span></span>
+                <span><strong class="block">WhatsApp CS</strong><span class="block text-[13px] font-semibold text-white/75">{{ $csWhatsappDisplay }} • {{ $operationalHours }}</span></span>
             </a>
-            <a href="mailto:halo@warunghebat.id" class="reveal rounded-[24px] bg-white border border-ink-900/10 p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all" style="--reveal-delay:80ms">
+            <a href="mailto:{{ $officialEmail }}" class="reveal rounded-[24px] bg-white border border-ink-900/10 p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all" style="--reveal-delay:80ms">
                 <span class="w-12 h-12 shrink-0 rounded-2xl bg-brand-100 grid place-items-center text-2xl">✉️</span>
-                <span><strong class="block text-[15px]">halo@warunghebat.id</strong><span class="block text-[13px] font-semibold text-ink-500">Email resmi • balasan 1×24 jam</span></span>
+                <span><strong class="block text-[15px]">{{ $officialEmail }}</strong><span class="block text-[13px] font-semibold text-ink-500">Email resmi • balasan 1×24 jam</span></span>
             </a>
             <div class="reveal rounded-[24px] bg-white border border-ink-900/10 p-5 flex items-center gap-4" style="--reveal-delay:140ms">
                 <span class="w-12 h-12 shrink-0 rounded-2xl bg-cream-200 grid place-items-center text-2xl">📍</span>
-                <span><strong class="block text-[15px]">Kantor Kami</strong><span class="block text-[13px] font-semibold text-ink-500">Jl. Tebet Raya No. 12, Jakarta Selatan</span></span>
+                <span><strong class="block text-[15px]">Kantor Kami</strong><span class="block text-[13px] font-semibold text-ink-500">{{ $officeAddress }}</span></span>
             </div>
             <div class="reveal rounded-[24px] bg-ink-900 text-white p-5" style="--reveal-delay:200ms">
                 <p class="text-[11px] font-extrabold tracking-[0.2em] text-white/40">JAM OPERASIONAL</p>
-                <p class="font-extrabold mt-1">Senin–Sabtu • 07.00–22.00 WIB</p>
-                <p class="text-[13px] font-semibold text-white/60">Minggu & tanggal merah: slow response 🙏</p>
+                <p class="font-extrabold mt-1">{{ $operationalDays }} • {{ $operationalHours }}</p>
+                @if($operationalNote !== '')
+                    <p class="text-[13px] font-semibold text-white/60">{{ $operationalNote }} 🙏</p>
+                @endif
             </div>
         </div>
 
@@ -51,7 +53,7 @@
                 <label class="grid gap-1.5">
                     <span class="text-[13px] font-bold">Topik</span>
                     <select name="subject" required class="w-full rounded-2xl border border-ink-900/15 bg-cream-50 px-4 py-3.5 text-[15px] font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
-                        @foreach(['Pesanan','Pembayaran','Mitra','Bantuan Teknis','Lainnya'] as $t)
+                        @foreach(\App\Models\ContactMessage::SUBJECTS as $t)
                             <option value="{{ $t }}" @selected(old('subject') === $t)>{{ $t }}</option>
                         @endforeach
                     </select>

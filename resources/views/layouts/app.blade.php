@@ -50,6 +50,7 @@
                 <a href="#kategori" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Kategori</a>
                 <a href="#cara-kerja" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cara Kerja</a>
                 <a href="#warung" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Warung Terdekat</a>
+                <a href="{{ route('articles.index') }}" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Artikel</a>
                 <a href="#cerita" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cerita Kami</a>
                 <a href="#mitra" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Jadi Mitra</a>
                 <a href="#faq" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">FAQ</a>
@@ -140,19 +141,29 @@
                     </div>
                     <p class="text-white/60 text-sm leading-relaxed max-w-xs">Marketplace digital mobile-first untuk makanan, minuman & kebutuhan harian dari warung-warung hebat di sekitarmu.</p>
                     <div class="flex gap-2 mt-5">
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="Instagram"><x-icon name="instagram" class="w-5 h-5" /></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="TikTok"><x-icon name="logo-tiktok" class="w-[18px] h-[18px]" /></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="X"><x-icon name="logo-x" class="w-4 h-4" /></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="WhatsApp"><x-icon name="phone" class="w-5 h-5" /></a>
+                        @if(($socialLinks['instagram'] ?? '') !== '')
+                            <a href="{{ $socialLinks['instagram'] }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="Instagram"><x-icon name="instagram" class="w-5 h-5" /></a>
+                        @endif
+                        @if(($socialLinks['tiktok'] ?? '') !== '')
+                            <a href="{{ $socialLinks['tiktok'] }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="TikTok"><x-icon name="logo-tiktok" class="w-[18px] h-[18px]" /></a>
+                        @endif
+                        @if(($socialLinks['x'] ?? '') !== '')
+                            <a href="{{ $socialLinks['x'] }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="X"><x-icon name="logo-x" class="w-4 h-4" /></a>
+                        @endif
+                        <a href="{{ $socialLinks['whatsapp'] ?? 'https://wa.me/6281234567890' }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="WhatsApp"><x-icon name="phone" class="w-5 h-5" /></a>
+                        @if(($socialLinks['email'] ?? '') !== '')
+                            <a href="mailto:{{ $socialLinks['email'] }}" class="w-10 h-10 rounded-full bg-white/10 grid place-items-center hover:bg-brand-500 transition" aria-label="Email"><x-icon name="mail" class="w-5 h-5" /></a>
+                        @endif
                     </div>
                 </div>
                 <div>
                     <p class="font-extrabold text-sm tracking-widest text-white/40 mb-4">BELANJA</p>
                     <ul class="space-y-2.5 text-sm font-semibold text-white/80">
-                        <li><a href="#kategori" class="hover:text-brand-300">Makanan</a></li>
-                        <li><a href="#kategori" class="hover:text-brand-300">Minuman</a></li>
-                        <li><a href="#kategori" class="hover:text-brand-300">Sembako</a></li>
-                        <li><a href="#kategori" class="hover:text-brand-300">Kebutuhan Harian</a></li>
+                        <li><a href="{{ route('category.show', ['category' => 'makanan']) }}" class="hover:text-brand-300">Makanan</a></li>
+                        <li><a href="{{ route('category.show', ['category' => 'minuman']) }}" class="hover:text-brand-300">Minuman</a></li>
+                        <li><a href="{{ route('category.show', ['category' => 'sembako']) }}" class="hover:text-brand-300">Sembako</a></li>
+                        <li><a href="{{ route('category.show', ['category' => 'harian']) }}" class="hover:text-brand-300">Kebutuhan Harian</a></li>
+                        <li><a href="{{ route('store.index') }}" class="hover:text-brand-300">Semua warung terdekat</a></li>
                     </ul>
                 </div>
                 <div>
@@ -167,6 +178,8 @@
                 <div>
                     <p class="font-extrabold text-sm tracking-widest text-white/40 mb-4">BANTUAN</p>
                     <ul class="space-y-2.5 text-sm font-semibold text-white/80">
+                        <li><a href="{{ route('articles.index') }}" class="hover:text-brand-300">Artikel</a></li>
+                        <li><a href="{{ route('about') }}" class="hover:text-brand-300">Tentang Kami</a></li>
                         <li><a href="#faq" class="hover:text-brand-300">FAQ</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-brand-300">Hubungi Kami</a></li>
                         <li><a href="{{ route('terms') }}" class="hover:text-brand-300">Syarat & Ketentuan</a></li>

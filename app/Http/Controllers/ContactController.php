@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactMessage;
+use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -11,7 +12,15 @@ class ContactController extends Controller
 {
     public function show(): View
     {
-        return view('contact');
+        return view('contact', [
+            'csWhatsappLink' => Setting::waLink(),
+            'csWhatsappDisplay' => Setting::waDisplay(),
+            'officialEmail' => Setting::officialEmail(),
+            'officeAddress' => Setting::officeAddress(),
+            'operationalDays' => Setting::operationalDays(),
+            'operationalHours' => Setting::operationalHours(),
+            'operationalNote' => Setting::operationalNote(),
+        ]);
     }
 
     public function send(Request $request): RedirectResponse
@@ -19,7 +28,7 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255'],
-            'subject' => ['required', 'in:Pesanan,Pembayaran,Mitra,Bantuan Teknis,Lainnya'],
+            'subject' => ['required', 'in:'.implode(',', ContactMessage::SUBJECTS)],
             'message' => ['required', 'string', 'min:10', 'max:2000'],
         ], [
             'name.required' => 'Nama wajib diisi.',

@@ -17,7 +17,12 @@
         <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[11px] font-extrabold {{ $store->is_open ? 'bg-leaf-500 text-white' : 'bg-amber-400 text-ink-900' }} rounded-full px-3 py-1.5"><span class="w-1.5 h-1.5 rounded-full {{ $store->is_open ? 'bg-white animate-pulse' : 'bg-ink-900' }}"></span>{{ $store->is_open ? 'Buka' : 'Tutup' }}</span>
     </div>
     <div class="p-4">
-        <p class="font-extrabold text-[16px]">{{ $store->name }}</p>
+        <div class="flex items-start justify-between gap-2">
+            <p class="font-extrabold text-[16px]">{{ $store->name }}</p>
+            <span class="shrink-0 text-[11px] font-extrabold rounded-full px-2 py-1 {{ $store->ratingAverage() !== null ? 'bg-amber-100 text-amber-800' : 'bg-cream-100 text-ink-500' }}" title="{{ $store->ratingCount() }} penilaian">
+                {{ $store->ratingAverage() !== null ? '★ '.$store->rating_label : 'Belum ada rating' }}
+            </span>
+        </div>
         <p class="text-[13px] font-medium text-ink-500">{{ $catLine }}</p>
         <div class="flex items-center justify-between mt-3">
             <span class="text-[12px] font-bold text-ink-700 bg-cream-100 rounded-full px-3 py-1.5">📍 {{ $distLabel ? $distLabel.($etaLabel ? ' • '.$etaLabel : '') : ($store->address ? \Str::limit($store->address, 24) : 'Lokasi menyusul') }}</span>

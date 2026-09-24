@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminArticleController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminFinanceController;
+use App\Http\Controllers\AdminInquiryController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminPaymentMethodController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/proof', [OrderController::class, 'uploadProof'])->name('orders.proof');
+    Route::post('/orders/{order}/rate', [OrderController::class, 'rate'])->name('orders.rate');
 });
 
 // ---------- USER SIDE (public) ----------
@@ -72,7 +74,7 @@ Route::post('/hubungi-kami', [ContactController::class, 'send'])->name('contact.
 // URL always matches the domain the app runs on.
 Route::get('/robots.txt', fn () => response(
     "User-agent: *\nAllow: /\n\nDisallow: /backoffice\nDisallow: /admin\nDisallow: /cart\nDisallow: /orders\n\nSitemap: ".url('/sitemap.xml')."\n"
-))->header('Content-Type', 'text/plain; charset=UTF-8');
+)->header('Content-Type', 'text/plain; charset=UTF-8'));
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
@@ -141,6 +143,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals');
     Route::patch('/withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
     Route::patch('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+
+    // Inquiries from the "Hubungi Kami" form, grouped by topic.
+    Route::get('/inquiries', [AdminInquiryController::class, 'index'])->name('inquiries');
 
     // Platform settings: withdrawal limits and commission.
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings');

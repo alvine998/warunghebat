@@ -26,13 +26,46 @@ class OrderController extends Controller
     {
         $this->authorizeBuyer($order);
 
-        $order->load(['items.product', 'store', 'latestPayment.paymentMethod']);
+        $order->load(['items.product', 'store', 'latestPayment.paymentMethod', 'rating']);
 
         return view('orders.show', [
             'order' => $order,
             'latestPayment' => $order->latestPayment,
             'paymentMethods' => PaymentMethod::active()->get(),
         ]);
+    }
+
+    /** One star rating per completed order (1 transaction = 1 rating). */
+    public function rate(Request $request, Order $order): RedirectResponse
+    {
+        $this->authorizeBuyer($order);
+
+        if ($order->rating()->exists()) {
+            return back()->with('error', 'Pesanan ini sudah kamu beri penilaian.');
+        }
+
+        if (! $order->isCompleted()) {
+            return back()->with('error', 'Penilaian hanya bisa diberikan setelah pesanan selesai.');
+        }
+
+        $validated = $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:500'],
+        ], [
+            'rating.required' => 'Pilih jumlah bintang dulu.',
+            'rating.min' => 'Penilaian minimal 1 bintang.',
+            'rating.max' => 'Penilaian maksimal 5 bintang.',
+            'comment.max' => 'Komentar maksimal 500 karakter.',
+        ]);
+
+        $order->rating()->create([
+            'user_id' => $order->user_id,
+            'store_id' => $order->store_id,
+            'rating' => (int) $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+        ]);
+
+        return back()->with('success', 'Terima kasih! Penilaianmu terkirim.');
     }
 
     /** Uploads the transfer receipt that the admin will verify. */

@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             PaymentMethodSeeder::class,
             OrderSeeder::class,
             PaymentSeeder::class,
+            StoreRatingSeeder::class,
             WalletSeeder::class,
             WithdrawalSeeder::class,
         ]);

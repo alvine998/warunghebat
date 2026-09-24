@@ -474,3 +474,36 @@
     </div>
 </section>
 @endsection
+
+@push('head')
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'Organization',
+            '@id' => route('home').'#organization',
+            'name' => 'Warung Hebat',
+            'url' => route('home'),
+            'logo' => ['@type' => 'ImageObject', 'url' => asset('og-image.png'), 'width' => 1200, 'height' => 630],
+            'description' => 'Marketplace digital yang menghubungkan pembeli dengan warung, toko kelontong, dan UMKM di sekitar mereka.',
+            'areaServed' => ['@type' => 'Country', 'name' => 'Indonesia'],
+            'contactPoint' => ['@type' => 'ContactPoint', 'contactType' => 'customer support', 'url' => route('contact')],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => route('home').'#website',
+            'url' => route('home'),
+            'name' => 'Warung Hebat',
+            'inLanguage' => 'id-ID',
+            'publisher' => ['@id' => route('home').'#organization'],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => ['@type' => 'EntryPoint', 'urlTemplate' => route('store.index').'?q={search_term_string}'],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ],
+    ],
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush

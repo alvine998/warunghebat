@@ -46,6 +46,53 @@
         @endif
     </div>
 
+    {{-- ===== RATING: one per completed order ===== --}}
+    @if($order->isCompleted() && $order->store)
+        <div class="mt-3 rounded-[28px] bg-white border border-ink-900/10 p-4 sm:p-5">
+            @if($order->rating)
+                <p class="font-extrabold">Penilaianmu</p>
+                <p class="mt-1.5 text-[22px] leading-none tracking-wider text-amber-400" aria-label="Penilaian {{ $order->rating->rating }} dari 5">
+                    @for($i = 1; $i <= 5; $i++)
+                        <span class="{{ $i <= $order->rating->rating ? '' : 'text-ink-900/15' }}">★</span>
+                    @endfor
+                </p>
+                @if($order->rating->comment)
+                    <p class="mt-2 text-[13px] font-medium text-ink-700">{{ $order->rating->comment }}</p>
+                @endif
+                <p class="mt-1.5 text-[12px] font-semibold text-ink-500">Dikirim {{ $order->rating->created_at->diffForHumans() }}</p>
+            @elseif($order->canBeRated())
+                <p class="font-extrabold">Beri penilaian warung</p>
+                <p class="mt-0.5 text-[12px] font-semibold text-ink-500">1 pesanan = 1 penilaian. Nilai pengalamanmu di {{ $order->warung_name }}.</p>
+
+                <form method="POST" action="{{ route('orders.rate', $order) }}" class="mt-3">
+                    @csrf
+                    <fieldset>
+                        <legend class="sr-only">Bintang 1 sampai 5</legend>
+                        <div class="flex items-center gap-1">
+                            @for($star = 1; $star <= 5; $star++)
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="rating" value="{{ $star }}" required class="peer sr-only">
+                                    <span class="inline-flex items-center justify-center w-11 h-11 text-[28px] leading-none text-ink-900/15 peer-checked:text-amber-400 peer-focus-visible:ring-4 peer-focus-visible:ring-brand-500/30 transition select-none" aria-label="{{ $star }} bintang">★</span>
+                                </label>
+                            @endfor
+                        </div>
+                    </fieldset>
+
+                    <label for="rating-comment" class="sr-only">Komentar (opsional)</label>
+                    <textarea id="rating-comment" name="comment" rows="2" maxlength="500" placeholder="Komentar (opsional)..." class="mt-2 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[13px] font-semibold placeholder:text-ink-500/60 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition resize-none"></textarea>
+                    @error('rating')
+                        <p class="mt-1 text-[12px] font-bold text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('comment')
+                        <p class="mt-1 text-[12px] font-bold text-red-600">{{ $message }}</p>
+                    @enderror
+
+                    <button class="mt-2 w-full min-h-11 rounded-full bg-ink-900 text-white text-[13px] font-extrabold hover:bg-brand-500 active:scale-[.98] transition">Kirim penilaian</button>
+                </form>
+            @endif
+        </div>
+    @endif
+
     {{-- ===== PAYMENT: METHOD + PROOF ===== --}}
     @if($order->status === 'pending_payment')
         @if($latestPayment?->isRejected())

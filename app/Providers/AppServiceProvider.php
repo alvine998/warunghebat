@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\View as ViewInstance;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('layouts.app', function (ViewInstance $view): void {
+            $view->with('socialLinks', Setting::socialLinks());
+        });
+
+        View::composer(['legal.terms', 'legal.privacy'], function (ViewInstance $view): void {
+            $view->with('officialEmail', Setting::officialEmail());
+        });
     }
 }

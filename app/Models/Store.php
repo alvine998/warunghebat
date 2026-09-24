@@ -63,6 +63,46 @@ class Store extends Model
         return $this->hasMany(Order::class);
     }
 
+    /** Star ratings buyers left after completed orders (one per order). */
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(StoreRating::class);
+    }
+
+    /**
+     * Average star rating, or null when the store has none yet.
+     * Prefers the `ratings_avg_rating` attribute from withAvg() to avoid N+1.
+     */
+    public function ratingAverage(): ?float
+    {
+        if (array_key_exists('ratings_avg_rating', $this->attributes)) {
+            return $this->attributes['ratings_avg_rating'] !== null
+                ? (float) $this->attributes['ratings_avg_rating']
+                : null;
+        }
+
+        $avg = $this->ratings()->avg('rating');
+
+        return $avg !== null ? (float) $avg : null;
+    }
+
+    public function ratingCount(): int
+    {
+        if (array_key_exists('ratings_count', $this->attributes)) {
+            return (int) $this->attributes['ratings_count'];
+        }
+
+        return $this->ratings()->count();
+    }
+
+    /** Display label: "4.5" when rated, "Belum ada rating" otherwise. */
+    public function getRatingLabelAttribute(): string
+    {
+        $average = $this->ratingAverage();
+
+        return $average === null ? 'Belum ada rating' : number_format($average, 1, ',', '.');
+    }
+
     /** One store per seller; auto-provisioned on first access. */
     public static function resolveFor(User $user): Store
     {

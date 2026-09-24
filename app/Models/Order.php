@@ -97,6 +97,12 @@ class Order extends Model
         return $this->hasOne(Payment::class)->latestOfMany();
     }
 
+    /** The buyer's rating for this store — at most one per order. */
+    public function rating(): HasOne
+    {
+        return $this->hasOne(StoreRating::class);
+    }
+
     public function code(): string
     {
         return 'WH-'.str_pad((string) $this->getKey(), 5, '0', STR_PAD_LEFT);
@@ -136,6 +142,20 @@ class Order extends Model
     public function canBeCancelled(): bool
     {
         return in_array($this->status, self::CANCELLABLE_STATUSES, true);
+    }
+
+    /** Completed orders can be rated once; later transactions rate again. */
+    public function canBeRated(): bool
+    {
+        if (! $this->isCompleted() || $this->store_id === null) {
+            return false;
+        }
+
+        if ($this->relationLoaded('rating')) {
+            return $this->rating === null;
+        }
+
+        return ! $this->rating()->exists();
     }
 
     public function markAwaitingVerification(): void
