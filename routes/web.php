@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PwaController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\WalletController;
@@ -69,6 +70,12 @@ Route::get('/syarat-ketentuan', fn () => view('legal.terms'))->name('terms');
 Route::get('/kebijakan-privasi', fn () => view('legal.privacy'))->name('privacy');
 Route::get('/hubungi-kami', [ContactController::class, 'show'])->name('contact');
 Route::post('/hubungi-kami', [ContactController::class, 'send'])->name('contact.send');
+
+// PWA: installable manifest and offline fallback. sw.js is served straight
+// from public/ by the web server (Laravel's front controller never runs for
+// existing files, which also keeps the worker's scope at "/").
+Route::get('/manifest.webmanifest', [PwaController::class, 'manifest'])->name('pwa.manifest');
+Route::get('/offline', [PwaController::class, 'offline'])->name('pwa.offline');
 
 // Crawler files. robots.txt is served here (not from public/) so the sitemap
 // URL always matches the domain the app runs on.

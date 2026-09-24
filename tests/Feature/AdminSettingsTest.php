@@ -33,6 +33,61 @@ class AdminSettingsTest extends TestCase
         $this->assertSame(0, Setting::count());
     }
 
+    public function test_settings_page_splits_sections_into_tabs(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->get(route('admin.settings'))->assertOk();
+
+        $response->assertSee('role="tablist"', false)->assertSee('data-active="keuangan"', false);
+
+        foreach (['keuangan' => 'Keuangan', 'kontak' => 'Kontak', 'jam' => 'Jam Layanan', 'sosial' => 'Media Sosial'] as $key => $label) {
+            $response->assertSee('id="tab-'.$key.'"', false)
+                ->assertSee('id="panel-'.$key.'"', false)
+                ->assertSee($label);
+        }
+
+        // Only the first tab is open; the other panels start hidden.
+        $response->assertDontSee('data-tab-panel="keuangan" class="grid gap-3.5" hidden', false)
+            ->assertSee('data-tab-panel="kontak" class="grid gap-3.5" hidden', false);
+    }
+
+    public function test_all_settings_fields_stay_in_the_single_form(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->get(route('admin.settings'))->assertOk();
+
+        foreach ([
+            'withdrawal_min', 'withdrawal_max', 'commission_percent',
+            'cs_whatsapp', 'official_email', 'office_address',
+            'operational_days', 'operational_hours', 'operational_note',
+            'social_instagram', 'social_tiktok', 'social_x',
+        ] as $field) {
+            $response->assertSee('name="'.$field.'"', false);
+        }
+    }
+
+    public function test_settings_page_opens_the_tab_holding_the_first_error(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        // Sessions are JSON-serialized here, so a flashed error bag is stored in
+        // this array shape and marshalled back into a ViewErrorBag on read.
+        $this->actingAs($admin)
+            ->withSession(['errors' => [
+                'default' => [
+                    'format' => ':message',
+                    'messages' => ['cs_whatsapp' => ['Nomor WhatsApp harus diawali 62 dan berisi 10–16 digit angka.']],
+                ],
+            ]])
+            ->get(route('admin.settings'))
+            ->assertOk()
+            ->assertSee('data-active="kontak"', false)
+            ->assertDontSee('data-tab-panel="kontak" class="grid gap-3.5" hidden', false)
+            ->assertSee('data-tab-panel="keuangan" class="grid gap-3.5" hidden', false);
+    }
+
     public function test_admin_can_save_the_withdrawal_limits_and_commission(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);

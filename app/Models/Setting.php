@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
@@ -181,10 +182,18 @@ class Setting extends Model
     /** @return array<string, string|null> */
     public static function allValues(): array
     {
-        return Cache::rememberForever(
-            self::CACHE_KEY,
-            fn (): array => static::query()->pluck('value', 'key')->all(),
-        );
+        // View composers read settings on every public page, so a missing
+        // table (fresh checkout, tests without RefreshDatabase) falls back
+        // to defaults instead of crashing the render. The fallback is never
+        // cached, so real values load on the next call after migrating.
+        try {
+            return Cache::rememberForever(
+                self::CACHE_KEY,
+                fn (): array => static::query()->pluck('value', 'key')->all(),
+            );
+        } catch (QueryException) {
+            return [];
+        }
     }
 
     private static function asInt(string $key): int

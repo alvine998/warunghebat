@@ -1,3 +1,39 @@
+// PWA: service worker + install prompt. Deferred past first paint, so the
+// offline cache and install banner never compete with the landing content.
+(function registerPwa() {
+    if (!('serviceWorker' in navigator)) return;
+    const register = () => navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+    if (document.readyState === 'complete') {
+        setTimeout(register, 1);
+    } else {
+        window.addEventListener('load', () => setTimeout(register, 1), { once: true });
+    }
+})();
+
+let deferredInstallPrompt = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const installBar = document.getElementById('pwa-install');
+    if (!installBar) return;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        installBar.classList.remove('hidden');
+    });
+
+    document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt = null;
+        installBar.classList.add('hidden');
+    });
+
+    document.getElementById('pwa-install-dismiss')?.addEventListener('click', () => {
+        installBar.classList.add('hidden');
+    });
+});
+
 // Landing interactions. Lenis is lazy-loaded (separate chunk) and only on
 // desktop pointers — mobile (the main audience) never downloads it.
 document.addEventListener('DOMContentLoaded', () => {

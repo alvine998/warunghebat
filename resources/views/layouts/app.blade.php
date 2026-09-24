@@ -13,6 +13,13 @@
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%231A130D'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23FF7A29' font-weight='900'>W</text></svg>">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('favicon-64.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ route('pwa.manifest') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Warung Hebat">
     <style>
         #navbar { transition: all .35s cubic-bezier(.22,1,.36,1); }
         #navbar.is-scrolled { background: rgba(255,249,239,.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px -12px rgba(26,19,13,.18); }
@@ -212,6 +219,19 @@
     @guest
         @include('components.auth-modals')
     @endguest
+
+    {{-- PWA install banner (Android/Chrome only — shown on beforeinstallprompt). --}}
+    <div id="pwa-install" class="hidden fixed z-40 inset-x-3 bottom-20 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-[380px] rounded-3xl bg-ink-900 text-white border border-white/10 shadow-2xl p-4">
+        <div class="flex items-center gap-3">
+            <img src="{{ asset('icons/icon-192.png') }}" alt="" width="44" height="44" class="w-11 h-11 rounded-2xl shrink-0">
+            <div class="flex-1 min-w-0">
+                <p class="text-[14px] font-extrabold">Pasang Warung Hebat</p>
+                <p class="text-[12px] font-semibold text-white/60">Buka kayak aplikasi, tetap ringan.</p>
+            </div>
+            <button id="pwa-install-dismiss" class="shrink-0 text-white/50 hover:text-white font-black px-2" aria-label="Tutup">✕</button>
+        </div>
+        <button id="pwa-install-btn" class="mt-3 w-full py-3 rounded-2xl bg-brand-500 text-sm font-extrabold hover:bg-brand-600 transition">Pasang Sekarang</button>
+    </div>
 
     @include('components.toasts')
 
