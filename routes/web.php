@@ -20,7 +20,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PromoController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PwaController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\WalletController;
@@ -30,6 +32,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/warung', [HomeController::class, 'nearby'])->name('store.index');
 Route::get('/w/{store}', [StoreController::class, 'show'])->name('store.show');
 Route::get('/kategori/{category}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/cari', [SearchController::class, 'index'])->name('search.index');
 Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
 
 // Editorial content: blog index + detail, plus the company page.
@@ -89,6 +92,17 @@ Route::post('/hubungi-kami', [ContactController::class, 'send'])->name('contact.
 // existing files, which also keeps the worker's scope at "/").
 Route::get('/manifest.webmanifest', [PwaController::class, 'manifest'])->name('pwa.manifest');
 Route::get('/offline', [PwaController::class, 'offline'])->name('pwa.offline');
+
+// Push notifications (Firebase Cloud Messaging): the service worker pulls
+// its public web config from here, and signed-in users register one FCM
+// device token each via the endpoints below — only after tapping
+// "Aktifkan Notifikasi", never automatically.
+Route::get('/push/firebase-sw-config.js', [PushSubscriptionController::class, 'workerConfig'])->name('push.firebase-sw-config');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/push/subscriptions', [PushSubscriptionController::class, 'store'])->name('push.subscriptions.store');
+    Route::delete('/push/subscriptions', [PushSubscriptionController::class, 'destroy'])->name('push.subscriptions.destroy');
+});
 
 // Crawler files. robots.txt is served here (not from public/) so the sitemap
 // URL always matches the domain the app runs on.

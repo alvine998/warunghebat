@@ -35,4 +35,26 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Firebase Cloud Messaging (Web Push)
+    |--------------------------------------------------------------------------
+    |
+    | Public web keys for the browser SDK. The server private key is only
+    | needed later when the backend starts sending pushes via the FCM
+    | HTTP v1 API — until then the client registers tokens and the
+    | service worker can display messages sent from Firebase.
+    |
+    */
+
+    'firebase' => [
+        'api_key' => env('FIREBASE_API_KEY'),
+        'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'storage_bucket' => env('FIREBASE_STORAGE_BUCKET'),
+        'messaging_sender_id' => env('FIREBASE_MESSAGING_SENDER_ID'),
+        'app_id' => env('FIREBASE_APP_ID'),
+        'vapid_key' => env('FIREBASE_VAPID_KEY'),
+    ],
+
 ];

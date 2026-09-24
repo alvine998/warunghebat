@@ -10,6 +10,233 @@
     }
 })();
 
+// Push notifications (Firebase Cloud Messaging). Permission is ONLY requested
+// after the user taps "Aktifkan" — never on page load. Until the FIREBASE_*
+// keys are set, the banner component is not rendered and this stays idle.
+(function pushNotifications() {
+    const box = document.getElementById('push-notify');
+    if (!box) return;
+
+    let config = null;
+    try {
+        config = JSON.parse(box.dataset.firebaseConfig || 'null');
+    } catch {
+        config = null;
+    }
+    if (!config || !config.vapidKey) return;
+
+    const supported = 'Notification' in window
+        && 'serviceWorker' in navigator
+        && 'PushManager' in window
+        && window.isSecureContext === true;
+    if (!supported) return;
+
+    const statusEl = box.querySelector('[data-push-status]');
+    const enableBtn = box.querySelector('[data-push-enable]');
+    const disableBtn = box.querySelector('[data-push-disable]');
+    const TOKEN_KEY = 'wh-push-token';
+    const DISMISSED_KEY = 'wh-push-dismissed';
+
+    const setStatus = (msg) => {
+        if (!statusEl) return;
+        if (!msg) {
+            statusEl.classList.add('hidden');
+            statusEl.textContent = '';
+        } else {
+            statusEl.textContent = msg;
+            statusEl.classList.remove('hidden');
+        }
+    };
+    const show = () => box.classList.remove('hidden');
+    const hide = () => box.classList.add('hidden');
+    const csrf = () => document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    let firebasePromise = null;
+    const loadFirebase = () => {
+        if (firebasePromise) return firebasePromise;
+        firebasePromise = new Promise((resolve, reject) => {
+            if (window.firebase?.messaging) {
+                resolve(window.firebase);
+                return;
+            }
+            const version = '10.12.2';
+            const files = ['firebase-app-compat.js', 'firebase-messaging-compat.js'];
+            const loadOne = (i) => {
+                if (i >= files.length) {
+                    if (window.firebase?.messaging) resolve(window.firebase);
+                    else reject(new Error('sdk'));
+                    return;
+                }
+                const s = document.createElement('script');
+                s.src = `https://www.gstatic.com/firebasejs/${version}/${files[i]}`;
+                s.async = true;
+                s.onload = () => loadOne(i + 1);
+                s.onerror = () => reject(new Error('sdk'));
+                document.head.appendChild(s);
+            };
+            loadOne(window.firebase ? 1 : 0);
+        });
+        return firebasePromise;
+    };
+
+    const getMessaging = async () => {
+        const fb = await loadFirebase();
+        const app = fb.apps?.length
+            ? fb.app()
+            : fb.initializeApp({
+                apiKey: config.apiKey,
+                authDomain: config.authDomain,
+                projectId: config.projectId,
+                storageBucket: config.storageBucket,
+                messagingSenderId: config.messagingSenderId,
+                appId: config.appId,
+            });
+        return fb.messaging(app);
+    };
+
+    const saveToken = async (token) => {
+        const res = await fetch('/push/subscriptions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrf(),
+            },
+            body: JSON.stringify({ token, device_name: (navigator.platform || '').slice(0, 100) || null }),
+        });
+        if (!res.ok) throw new Error('save');
+        window.localStorage.setItem(TOKEN_KEY, token);
+    };
+
+    const listenForeground = (messaging, fb) => {
+        try {
+            messaging.onMessage((payload) => {
+                const n = payload.notification || {};
+                const data = payload.data || {};
+                try {
+                    new Notification(n.title || data.title || 'Warung Hebat', {
+                        body: n.body || data.body || 'Ada kabar baru buatmu.',
+                        icon: n.icon || data.icon || '/icons/icon-192.png',
+                        tag: data.tag || 'warunghebat',
+                    });
+                } catch {
+                    // Foreground toast fallback is the banner status line.
+                    setStatus(n.body || data.body || 'Ada kabar baru buatmu.');
+                }
+                void fb;
+            });
+        } catch {
+            // Foreground listener is best-effort; background SW still delivers.
+        }
+    };
+
+    const enable = async () => {
+        if (!enableBtn) return;
+        enableBtn.disabled = true;
+        setStatus('');
+
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+                if (permission === 'denied') renderDenied();
+                else setStatus('Izin notifikasi belum diberikan.');
+                enableBtn.disabled = false;
+                return;
+            }
+            setStatus('Menghubungkan…');
+            const messaging = await getMessaging();
+            const token = await messaging.getToken({ vapidKey: config.vapidKey });
+            if (!token) throw new Error('token');
+            await saveToken(token);
+            listenForeground(messaging, window.firebase);
+            window.localStorage.removeItem(DISMISSED_KEY);
+            setStatus('Notifikasi aktif di perangkat ini. 🎉');
+            enableBtn.classList.add('hidden');
+            disableBtn?.classList.remove('hidden');
+            setTimeout(hide, 2500);
+        } catch {
+            setStatus('Gagal mengaktifkan. Cek koneksi lalu coba lagi.');
+            enableBtn.disabled = false;
+        }
+    };
+
+    const disable = async () => {
+        const token = window.localStorage.getItem(TOKEN_KEY);
+        try {
+            if (token) {
+                await fetch('/push/subscriptions', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'X-CSRF-TOKEN': csrf(),
+                    },
+                    body: JSON.stringify({ token }),
+                });
+            }
+        } catch {
+            // Token stays server-side; user can retry — never fatal.
+        }
+        window.localStorage.removeItem(TOKEN_KEY);
+        disableBtn?.classList.add('hidden');
+        enableBtn?.classList.remove('hidden');
+        if (enableBtn) enableBtn.disabled = false;
+        setStatus('Notifikasi dimatikan di perangkat ini.');
+    };
+
+    const dismiss = () => {
+        try {
+            window.localStorage.setItem(DISMISSED_KEY, '1');
+        } catch {
+            // Private mode — banner just hides for this session.
+        }
+        hide();
+    };
+
+    const renderDenied = () => {
+        setStatus('Notifikasi diblokir. Buka ikon 🔒/⚙️ di address bar → izinkan Notifikasi untuk situs ini.');
+        enableBtn?.classList.add('hidden');
+        show();
+    };
+
+    enableBtn?.addEventListener('click', enable);
+    disableBtn?.addEventListener('click', disable);
+    box.querySelector('[data-push-dismiss]')?.addEventListener('click', dismiss);
+    box.querySelector('[data-push-later]')?.addEventListener('click', dismiss);
+
+    // Initial state — no permission prompt here, ever.
+    const dismissed = (() => {
+        try {
+            return window.localStorage.getItem(DISMISSED_KEY) === '1';
+        } catch {
+            return false;
+        }
+    })();
+
+    if (Notification.permission === 'granted') {
+        // Already allowed earlier: silently refresh the token (no prompt).
+        hide();
+        (async () => {
+            try {
+                const messaging = await getMessaging();
+                const token = await messaging.getToken({ vapidKey: config.vapidKey });
+                if (token && token !== window.localStorage.getItem(TOKEN_KEY)) {
+                    await saveToken(token);
+                }
+                listenForeground(messaging, window.firebase);
+                enableBtn?.classList.add('hidden');
+                disableBtn?.classList.remove('hidden');
+            } catch {
+                // Offline or SDK blocked — retry on next visit.
+            }
+        })();
+    } else if (Notification.permission === 'denied') {
+        renderDenied();
+    } else if (!dismissed) {
+        show();
+    }
+})();
+
 let deferredInstallPrompt = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -350,36 +577,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Post raw digits so server-side integer validation still passes.
         input.form?.addEventListener('submit', () => {
             input.value = toDigits(input.value);
-        });
-    });
-
-    // ---------- Nearby search (rAF-debounced) ----------
-    const searchInput = document.getElementById('hero-search');
-    const searchHint = document.getElementById('search-hint');
-    const storeCards = Array.from(document.querySelectorAll('[data-store-name]')).map((card) => ({
-        card,
-        name: (card.dataset.storeName || '').toLowerCase(),
-        cat: (card.dataset.storeCat || '').toLowerCase(),
-    }));
-    let searchQueued = false;
-    searchInput?.addEventListener('input', (e) => {
-        if (searchQueued) return;
-        searchQueued = true;
-        requestAnimationFrame(() => {
-            searchQueued = false;
-            const raw = e.target.value;
-            const q = raw.toLowerCase().trim();
-            let visible = 0;
-            for (const { card, name, cat } of storeCards) {
-                const match = !q || name.includes(q) || cat.includes(q);
-                card.style.display = match ? '' : 'none';
-                if (match) visible++;
-            }
-            if (searchHint) {
-                searchHint.textContent = q
-                    ? `${visible} warung ditemukan untuk "${raw}" di dekatmu`
-                    : 'Coba ketik "gorengan", "kopi", atau "sembako"...';
-            }
         });
     });
 

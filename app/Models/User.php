@@ -51,6 +51,12 @@ class User extends Authenticatable
         return $this->hasMany(Favorite::class);
     }
 
+    /** Web-push device tokens for Firebase Cloud Messaging, one row per device. */
+    public function fcmTokens(): HasMany
+    {
+        return $this->hasMany(FcmToken::class);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

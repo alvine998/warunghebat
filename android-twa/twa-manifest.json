@@ -1,0 +1,43 @@
+{
+  "packageId": "com.warunghebat.twa",
+  "host": "warunghebat.com",
+  "name": "Warung Hebat — Belanja Dekat, Hidup Hebat",
+  "launcherName": "Warung Hebat",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#1A130D",
+  "themeColorDark": "#1A130D",
+  "navigationColor": "#1A130D",
+  "navigationColorDark": "#1A130D",
+  "navigationDividerColor": "#1A130D",
+  "navigationDividerColorDark": "#1A130D",
+  "backgroundColor": "#FFF9EF",
+  "enableNotifications": true,
+  "enableSiteSettingsShortcut": true,
+  "startUrl": "/",
+  "iconUrl": "https://warunghebat.com/icons/icon-512.png",
+  "maskableIconUrl": "https://warunghebat.com/icons/maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "android-keystore.jks",
+    "alias": "warunghebat"
+  },
+  "appVersionCode": 1,
+  "appVersion": "1.0.0",
+  "shortcuts": [
+    {
+      "name": "Warung Terdekat",
+      "shortName": "Warung",
+      "url": "https://warunghebat.com/warung",
+      "chosenIconUrl": "https://warunghebat.com/icons/icon-192.png"
+    }
+  ],
+  "webManifestUrl": "https://warunghebat.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "minSdkVersion": 23,
+  "fingerprints": [],
+  "generatorApp": "bubblewrap-cli"
+}

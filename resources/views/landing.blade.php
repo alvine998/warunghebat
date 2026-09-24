@@ -28,12 +28,16 @@
             </p>
 
             {{-- Search (mobile-first) --}}
-            <div class="reveal mt-6 bg-white rounded-[22px] border border-ink-900/10 shadow-xl shadow-ink-900/10 p-2 flex items-center gap-2 max-w-md" style="--reveal-delay:240ms">
+            <form method="GET" action="{{ route('search.index') }}" role="search" class="reveal mt-6 bg-white rounded-[22px] border border-ink-900/10 shadow-xl shadow-ink-900/10 p-2 flex items-center gap-2 max-w-md" style="--reveal-delay:240ms">
                 <span class="pl-3 text-ink-500"><x-icon name="search" class="w-5 h-5" /></span>
-                <input id="hero-search" type="text" placeholder="Cari nasi goreng, kopi susu, telur..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
-                <a href="#warung" class="shrink-0 bg-ink-900 text-white text-sm font-extrabold px-5 py-3 rounded-2xl hover:bg-brand-600 transition">Cari</a>
-            </div>
-            <p id="search-hint" class="reveal mt-2.5 text-[12px] font-semibold text-ink-500" style="--reveal-delay:280ms">Coba ketik "gorengan", "kopi", atau "sembako"...</p>
+                <label class="sr-only" for="hero-search">Cari warung atau produk</label>
+                <input id="hero-search" name="q" type="search" autocomplete="off" placeholder="Cari nasi goreng, kopi susu, telur..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
+                @if(isset($userLat))<input type="hidden" name="lat" value="{{ $userLat }}">@endif
+                @if(isset($userLng))<input type="hidden" name="lng" value="{{ $userLng }}">@endif
+                <input type="hidden" name="radius" value="{{ $radius ?? 5 }}">
+                <button type="submit" class="shrink-0 bg-ink-900 text-white text-sm font-extrabold px-5 py-3 rounded-2xl hover:bg-brand-600 transition">Cari</button>
+            </form>
+            <p id="search-hint" class="reveal mt-2.5 text-[12px] font-semibold text-ink-500" style="--reveal-delay:280ms">Tekan Enter — hasil warung & produk tampil di halaman pencarian.</p>
 
             <div class="reveal mt-5 flex flex-wrap items-center gap-2.5" style="--reveal-delay:320ms">
                 @guest

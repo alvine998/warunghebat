@@ -1,5 +1,13 @@
 *.log
 .DS_Store
+/.cache/
+/android-twa/android-keystore.jks
+/android-twa/.signing.env
+/android-twa/.gradle/
+/android-twa/app/build/
+/android-twa/app-release-*.aab
+/android-twa/app-release-*.apk
+/android-twa/app-release-unsigned-aligned.apk
 .env
 .env.backup
 .env.production

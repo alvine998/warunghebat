@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.warunghebat.twa",
+      "sha256_cert_fingerprints": [
+        "54:FC:5C:27:CC:20:A1:A9:BE:CC:97:02:ED:9C:5F:FD:E3:08:FD:FC:6E:AC:0F:3B:DF:26:21:0D:5A:98:61:85"
+      ]
+    }
+  }
+]

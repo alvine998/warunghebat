@@ -25,6 +25,19 @@
     </div>
     <p id="locate-status" class="hidden mb-4 text-[13px] font-bold text-ink-500" role="status"></p>
 
+    <form method="GET" action="{{ route('store.index') }}" role="search" class="mb-5 bg-white rounded-[22px] border border-ink-900/10 shadow-sm p-2 flex items-center gap-2 max-w-xl">
+        <span class="pl-3 text-ink-500"><x-icon name="search" class="w-5 h-5" /></span>
+        <label class="sr-only" for="warung-q">Cari warung</label>
+        <input id="warung-q" name="q" type="search" autocomplete="off" value="{{ request('q') }}" placeholder="Cari nama warung, alamat, atau dagangan..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
+        @if(isset($userLat))<input type="hidden" name="lat" value="{{ $userLat }}">@endif
+        @if(isset($userLng))<input type="hidden" name="lng" value="{{ $userLng }}">@endif
+        <input type="hidden" name="radius" value="{{ $radius ?? 5 }}">
+        <button type="submit" class="shrink-0 bg-ink-900 text-white text-sm font-extrabold px-5 py-3 rounded-2xl hover:bg-brand-600 transition">Cari</button>
+    </form>
+    @if(request('q') !== null && request('q') !== '')
+        <p class="mb-4 text-[13px] font-bold text-ink-500" role="status">{{ $stores->total() }} hasil untuk “{{ request('q') }}” <a href="{{ route('store.index', array_filter(['lat' => $userLat ?? null, 'lng' => $userLng ?? null, 'radius' => $radius ?? null], fn ($value) => $value !== null)) }}" class="ml-1 underline underline-offset-4 decoration-brand-500 hover:text-brand-600">bersihkan ✕</a></p>
+    @endif
+
     <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         @forelse($stores as $i => $w)
         <x-store-card :store="$w" :index="$i" />
@@ -32,7 +45,7 @@
         <div class="sm:col-span-2 lg:col-span-3 rounded-[24px] bg-white border border-dashed border-ink-900/15 p-10 text-center">
             <p class="text-4xl">🏪</p>
             <p class="font-extrabold text-lg mt-2">Belum ada warung di radius ini</p>
-            <p class="text-sm font-medium text-ink-500 mt-1">Coba perbesar radius, matikan lokasi, atau cari nama warung di beranda.</p>
+            <p class="text-sm font-medium text-ink-500 mt-1">Coba kata kunci lain di kolom pencarian di atas, perbesar radius, atau matikan lokasi.</p>
             <div class="mt-4 flex justify-center gap-2">
                 <a href="{{ route('store.index') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full">Lihat semua warung</a>
                 @guest

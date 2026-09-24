@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#1A130D">
     <meta name="color-scheme" content="light">
     <meta name="format-detection" content="telephone=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Warung Hebat — Belanja Dekat, Hidup Hebat')</title>
     @include('components.seo')
     {{-- Fonts + CSS/JS are self-hosted via Vite (hashed, immutable).
@@ -241,6 +242,7 @@
     </div>
 
     @include('components.toasts')
+    @include('components.push-notifications')
 
     @stack('scripts')
 </body>
