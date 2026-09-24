@@ -35,6 +35,31 @@
     <a href="{{ route('admin.products', ['status' => 'pending']) }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Verifikasi →</a>
 </div>
 
+@if(($stats['pending_kyc'] ?? 0) > 0)
+<div class="mt-3 rounded-[24px] bg-white border border-amber-200 p-5">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div class="flex-1">
+            <p class="flex items-center gap-2 font-extrabold">🛡️ {{ number_format($stats['pending_kyc'], 0, ',', '.') }} pengajuan KYC menunggu pemeriksaan</p>
+            <p class="text-[13px] font-medium text-ink-500">Periksa KTP + selfie + foto warung sebelum warung boleh jualan.</p>
+        </div>
+        <a href="{{ route('admin.warungs', ['kyc' => 'pending']) }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Periksa →</a>
+    </div>
+    @if(($pendingKyc ?? collect())->isNotEmpty())
+    <div class="mt-4 grid gap-2">
+        @foreach($pendingKyc as $kyc)
+        <div class="flex items-center gap-3 rounded-2xl border border-ink-900/10 p-2.5">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-extrabold truncate">{{ $kyc->full_name }} — {{ $kyc->user?->store?->name ?? 'Warung' }}</p>
+                <p class="text-xs font-semibold text-ink-500">NIK {{ $kyc->nik }} • {{ $kyc->created_at->diffForHumans() }}</p>
+            </div>
+            <a href="{{ route('admin.warungs', ['kyc' => 'pending', 'search' => $kyc->full_name]) }}" class="text-[11px] font-extrabold rounded-full px-3 py-1.5 bg-amber-100 text-amber-800 hover:bg-ink-900 hover:text-white transition">Periksa</a>
+        </div>
+        @endforeach
+    </div>
+    @endif
+</div>
+@endif
+
 @if($stats['pending_payments'] > 0 || $stats['pending_withdrawals'] > 0)
 <div class="mt-3 rounded-[24px] bg-white border border-ink-900/10 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
     <div class="flex-1">

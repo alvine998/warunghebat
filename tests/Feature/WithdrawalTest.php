@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\SellerVerification;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -235,6 +236,7 @@ class WithdrawalTest extends TestCase
         Wallet::factory()->for($otherStore)->withBalance(500000)->create();
 
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         Store::factory()->for($seller)->create();
 
         $this->actingAs($seller)
@@ -274,6 +276,7 @@ class WithdrawalTest extends TestCase
     private function sellerWithBalance(int $balance): array
     {
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         $store = Store::factory()->for($seller)->create();
         $wallet = Wallet::factory()->for($store)->withBalance($balance)->create();
 

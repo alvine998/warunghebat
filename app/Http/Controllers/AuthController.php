@@ -99,6 +99,10 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        if ($user->role === 'penjual') {
+            return redirect()->route('seller.verification.show')->with('success', 'Akun penjual dibuat! Verifikasi kepemilikan warungmu dulu agar bisa jualan.');
+        }
+
         return redirect()->route('dashboard')->with('success', 'Selamat datang di Warung Hebat, '.$user->name.'!');
     }
 

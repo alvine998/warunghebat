@@ -39,6 +39,35 @@
         </div>
     </div>
 
+    @if(auth()->user()->role === 'penjual')
+        @php($kyc = $verification ?? null)
+        @if(! $kyc)
+            <div class="mt-5 rounded-[28px] bg-amber-50 border border-amber-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex-1">
+                    <p class="font-extrabold">🛡️ Verifikasi warungmu dulu biar bisa jualan</p>
+                    <p class="text-[13px] font-medium text-amber-900/70">Unggah KTP + selfie + foto depan warung. Admin memeriksa sebelum warungmu bisa jualan.</p>
+                </div>
+                <a href="{{ route('seller.verification.show') }}" class="text-sm font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition w-fit">Verifikasi →</a>
+            </div>
+        @elseif($kyc->isPending())
+            <div class="mt-5 rounded-[28px] bg-amber-50 border border-amber-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex-1">
+                    <p class="font-extrabold">⏳ KYC menunggu verifikasi admin</p>
+                    <p class="text-[13px] font-medium text-amber-900/70">Berkasmu masuk antrean (biasanya &lt; 1x24 jam). Jualan dibuka otomatis setelah disetujui.</p>
+                </div>
+                <a href="{{ route('seller.verification.show') }}" class="text-sm font-extrabold border border-ink-900/15 px-5 py-2.5 rounded-full hover:bg-ink-900 hover:text-white transition w-fit">Lihat status →</a>
+            </div>
+        @elseif($kyc->isRejected())
+            <div class="mt-5 rounded-[28px] bg-red-50 border border-red-200 p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex-1">
+                    <p class="font-extrabold text-red-700">❌ Verifikasi ditolak — {{ $kyc->rejection_reason }}</p>
+                    <p class="text-[13px] font-medium text-red-700/70">Perbaiki berkasmu lalu kirim ulang agar bisa jualan lagi.</p>
+                </div>
+                <a href="{{ route('seller.verification.show') }}" class="text-sm font-extrabold bg-red-600 text-white px-5 py-2.5 rounded-full hover:bg-red-700 transition w-fit">Perbaiki →</a>
+            </div>
+        @endif
+    @endif
+
     <div class="mt-5 grid gap-3.5 lg:grid-cols-[1fr_380px]">
         <div class="grid gap-3.5 content-start">
         @if(auth()->user()->canSell() && ! empty($storeStats ?? null))

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\SellerVerification;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -232,6 +233,7 @@ class AdminSettingsTest extends TestCase
         ]));
 
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         $store = Store::factory()->for($seller)->create();
         Wallet::factory()->for($store)->withBalance(500000)->create();
 

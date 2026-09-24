@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\SellerVerification;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +15,7 @@ class StoreSlugTest extends TestCase
     public function test_update_derives_slug_from_name(): void
     {
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         Store::resolveFor($seller);
 
         $this->actingAs($seller)->put(route('seller.store.update'), [
@@ -27,6 +29,8 @@ class StoreSlugTest extends TestCase
     {
         $a = User::factory()->create(['role' => 'penjual']);
         $b = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($a)->verified()->create();
+        SellerVerification::factory()->for($b)->verified()->create();
         Store::resolveFor($a);
         Store::resolveFor($b);
 

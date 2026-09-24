@@ -31,6 +31,7 @@ class DashboardController extends Controller
         $lowStockProducts = $user->canSell() ? $user->lowStockProducts() : collect();
         $store = $user->canSell() ? Store::resolveFor($user) : null;
         $finance = $user->canSell() ? $user->financialOverview() : null;
+        $verification = $user->role === 'penjual' ? $user->sellerVerification : null;
 
         $wallet = null;
 
@@ -42,6 +43,6 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('dashboard', compact('stats', 'recentOrders', 'storeStats', 'lowStockProducts', 'store', 'finance', 'wallet'));
+        return view('dashboard', compact('stats', 'recentOrders', 'storeStats', 'lowStockProducts', 'store', 'finance', 'wallet', 'verification'));
     }
 }

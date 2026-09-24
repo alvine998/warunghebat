@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\SellerVerification;
 use App\Models\Store;
 use App\Models\User;
 use App\Models\Withdrawal;
@@ -24,14 +25,16 @@ class AdminController extends Controller
             'pending_products' => Product::where('status', 'pending')->count(),
             'pending_payments' => Payment::where('status', Payment::STATUS_PENDING)->count(),
             'pending_withdrawals' => Withdrawal::where('status', Withdrawal::STATUS_PENDING)->count(),
+            'pending_kyc' => SellerVerification::where('status', SellerVerification::STATUS_PENDING)->count(),
             'escrow' => (int) Order::where('status', Order::STATUS_PAID)->sum('total'),
         ];
 
         $latestUsers = User::latest()->take(8)->get();
         $pendingProducts = Product::with('user')->where('status', 'pending')->latest()->take(5)->get();
-        $latestStores = Store::with('user')->withCount('products')->latest('id')->take(5)->get();
+        $latestStores = Store::with('user.sellerVerification')->withCount('products')->latest('id')->take(5)->get();
+        $pendingKyc = SellerVerification::with('user.store')->where('status', SellerVerification::STATUS_PENDING)->latest()->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'latestUsers', 'pendingProducts', 'latestStores'));
+        return view('admin.dashboard', compact('stats', 'latestUsers', 'pendingProducts', 'latestStores', 'pendingKyc'));
     }
 
     public function users(Request $request): View
@@ -58,8 +61,9 @@ class AdminController extends Controller
 
     public function warungs(Request $request): View
     {
-        $query = Store::with(['user' => fn ($query) => $query->withCount('products')])->latest();
+        $query = Store::with(['user.sellerVerification', 'user' => fn ($query) => $query->withCount('products')])->latest();
         $search = trim((string) $request->input('search', ''));
+        $kyc = $request->string('kyc')->toString();
 
         if ($search !== '') {
             $query->where(function ($query) use ($search): void {
@@ -72,9 +76,26 @@ class AdminController extends Controller
             });
         }
 
+        if (in_array($kyc, SellerVerification::STATUSES, true)) {
+            $query->whereHas('user.sellerVerification', fn ($query) => $query->where('status', $kyc));
+        } elseif ($kyc === 'none') {
+            $query->whereDoesntHave('user.sellerVerification');
+        } elseif ($kyc !== '' && $kyc !== 'all') {
+            $kyc = null;
+        }
+
         $warungs = $query->paginate(12)->withQueryString();
 
-        return view('admin.warungs', compact('warungs'));
+        $counts = [
+            'all' => Store::count(),
+            'none' => Store::whereDoesntHave('user.sellerVerification')->count(),
+        ];
+
+        foreach (SellerVerification::STATUSES as $value) {
+            $counts[$value] = Store::whereHas('user.sellerVerification', fn ($query) => $query->where('status', $value))->count();
+        }
+
+        return view('admin.warungs', compact('warungs', 'counts', 'kyc'));
     }
 
     public function suspendStore(Store $store): RedirectResponse

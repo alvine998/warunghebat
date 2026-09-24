@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
+use App\Models\SellerVerification;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -33,6 +34,7 @@ class PaymentFlowTest extends TestCase
 
         $admin = User::factory()->create(['role' => 'admin']);
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         $store = Store::factory()->for($seller)->create(['name' => 'Warung Bang Jago', 'is_open' => true]);
         $product = Product::factory()->for($seller)->create([
             'price' => 20000,

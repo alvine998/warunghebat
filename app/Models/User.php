@@ -67,6 +67,32 @@ class User extends Authenticatable
         return $this->hasOne(Store::class);
     }
 
+    /** Bukti kepemilikan warung (KTP + selfie + foto warung), satu baris per penjual. */
+    public function sellerVerification(): HasOne
+    {
+        return $this->hasOne(SellerVerification::class);
+    }
+
+    /** Status KYC: pending / verified / rejected, atau null bila belum mengajukan. */
+    public function kycStatus(): ?string
+    {
+        if ($this->relationLoaded('sellerVerification') && $this->sellerVerification) {
+            return $this->sellerVerification->status;
+        }
+
+        return $this->sellerVerification()->value('status');
+    }
+
+    /** Admin lolos dari kewajiban KYC; penjual wajib verified untuk jualan. */
+    public function isKycVerified(): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return $this->kycStatus() === SellerVerification::STATUS_VERIFIED;
+    }
+
     /**
      * Product-derived stats for this seller's store.
      *

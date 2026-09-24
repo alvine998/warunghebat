@@ -27,6 +27,9 @@
                 <div class="min-w-0">
                     <h1 class="font-black tracking-tight text-[26px] sm:text-4xl leading-tight break-words">{{ $store->name }}</h1>
                     <p class="text-[13px] font-semibold text-ink-500 mt-1 break-words">{{ $store->user?->name ?? 'Penjual warung' }}</p>
+                    @if($store->user?->sellerVerification?->isVerified())
+                        <p class="mt-1.5 inline-flex items-center gap-1 text-[12px] font-extrabold rounded-full px-3 py-1.5 bg-leaf-100 text-leaf-700">✅ Warung terverifikasi</p>
+                    @endif
                     <p class="mt-2 inline-flex items-center gap-1.5 text-[12px] font-extrabold rounded-full px-3 py-1.5 {{ $store->ratingAverage() !== null ? 'bg-amber-100 text-amber-800' : 'bg-cream-100 text-ink-500' }}">
                         @if($store->ratingAverage() !== null)
                             <span aria-hidden="true">★</span> {{ $store->rating_label }}

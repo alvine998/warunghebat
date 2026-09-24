@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\SellerVerification;
 use App\Models\Setting;
 use App\Models\Store;
 use App\Models\User;
@@ -129,6 +130,7 @@ class WalletCreditTest extends TestCase
     public function test_seller_wallet_page_shows_balance_and_held_funds(): void
     {
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         $store = Store::factory()->for($seller)->create(['name' => 'Warung Bang Jago']);
         Wallet::factory()->for($store)->withBalance(75000)->create();
 

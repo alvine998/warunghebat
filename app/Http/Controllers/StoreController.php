@@ -19,6 +19,7 @@ class StoreController extends Controller
     public function show(Store $store): View
     {
         $store->load([
+            'user.sellerVerification',
             'user:id,name',
             'products' => fn ($query) => $query->where('status', 'approved')->latest('id'),
             'ratings.user:id,name',

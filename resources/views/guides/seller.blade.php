@@ -52,8 +52,11 @@
             <li>Buka halaman <a href="{{ route('register') }}" data-open-register class="font-extrabold text-leaf-700 underline underline-offset-4">Daftar</a>.</li>
             <li>Isi <strong>nama</strong>, <strong>email aktif</strong>, dan <strong>kata sandi minimal 8 karakter</strong> (plus konfirmasinya).</li>
             <li>Pada pilihan peran, pilih <strong>Penjual</strong> — bukan Pembeli. Ini yang membuka menu warung, produk, dan dompet di dashboard.</li>
-            <li>Klik <strong>Daftar</strong> — kamu langsung masuk dan diarahkan ke <a href="{{ route('dashboard') }}" class="font-extrabold text-leaf-700 underline underline-offset-4">Dashboard</a>.</li>
+            <li>Klik <strong>Daftar</strong> — kamu langsung masuk dan diarahkan ke halaman <strong>Verifikasi Warung (KYC)</strong>.</li>
         </ol>
+        <div class="mt-4 rounded-2xl bg-leaf-50 border border-leaf-500/30 p-4 text-[13px] font-medium text-leaf-700 leading-relaxed">
+            🛡️ <strong>Wajib KYC:</strong> penjual harus membuktikan warung miliknya (NIK + nama KTP + foto KTP + selfie pegang KTP + foto depan warung). Admin memeriksa maks. 1×24 jam — <strong>warung baru bisa jualan setelah KYC disetujui</strong>.
+        </div>
         <div class="mt-4 rounded-2xl bg-amber-50 border border-amber-200 p-4 text-[13px] font-medium text-amber-900 leading-relaxed">
             ⚠️ <strong>Salah pilih peran?</strong> Akun yang sudah terdaftar sebagai pembeli tidak bisa diubah sendiri — hubungi CS via <a href="{{ route('contact') }}" class="font-extrabold underline">Hubungi Kami</a> dengan menyertakan email akunmu.
         </div>

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\SellerVerification;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -80,6 +81,7 @@ class FlashSaleTest extends TestCase
     {
         Storage::fake('public');
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         Store::factory()->for($seller)->create();
 
         $this->actingAs($seller)->post(route('seller.products.store'), [
@@ -98,6 +100,7 @@ class FlashSaleTest extends TestCase
     {
         Storage::fake('public');
         $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
         Store::factory()->for($seller)->create();
 
         $this->actingAs($seller)->post(route('seller.products.store'), [

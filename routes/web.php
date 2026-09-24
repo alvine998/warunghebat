@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminInquiryController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminPaymentMethodController;
+use App\Http\Controllers\AdminSellerVerificationController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminWithdrawalController;
 use App\Http\Controllers\ArticleController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PwaController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SellerVerificationController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\WalletController;
@@ -115,19 +117,28 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 
 // ---------- SELLER (penjual + admin, CRUD produk) ----------
 Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(function () {
+    // KYC kepemilikan warung — bisa dibuka tanpa verified agar tidak loop.
     Route::middleware('penjual')->group(function () {
-        Route::get('/store', [StoreController::class, 'edit'])->name('store.edit');
-        Route::put('/store', [StoreController::class, 'update'])->name('store.update');
-        Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
-        Route::post('/wallet/withdrawals', [WalletController::class, 'store'])->name('wallet.withdraw');
+        Route::get('/verifikasi', [SellerVerificationController::class, 'show'])->name('verification.show');
+        Route::post('/verifikasi', [SellerVerificationController::class, 'store'])->name('verification.store');
     });
-    Route::patch('/store/toggle', [StoreController::class, 'toggle'])->name('store.toggle');
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Semua aktivitas jualan diblokir sampai KYC disetujui admin.
+    Route::middleware('seller.verified')->group(function () {
+        Route::middleware('penjual')->group(function () {
+            Route::get('/store', [StoreController::class, 'edit'])->name('store.edit');
+            Route::put('/store', [StoreController::class, 'update'])->name('store.update');
+            Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+            Route::post('/wallet/withdrawals', [WalletController::class, 'store'])->name('wallet.withdraw');
+        });
+        Route::patch('/store/toggle', [StoreController::class, 'toggle'])->name('store.toggle');
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    });
 });
 
 // ---------- ADMIN BACKOFFICE (auth + admin only) ----------
@@ -137,6 +148,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/warungs', [AdminController::class, 'warungs'])->name('warungs');
     Route::patch('/warungs/{store}/suspend', [AdminController::class, 'suspendStore'])->name('warungs.suspend');
     Route::patch('/warungs/{store}/activate', [AdminController::class, 'activateStore'])->name('warungs.activate');
+
+    // KYC kepemilikan warung: admin memeriksa KTP + selfie + foto warung.
+    Route::patch('/kyc/{verification}/verify', [AdminSellerVerificationController::class, 'verify'])->name('kyc.verify');
+    Route::patch('/kyc/{verification}/reject', [AdminSellerVerificationController::class, 'reject'])->name('kyc.reject');
     Route::get('/products', [AdminController::class, 'products'])->name('products');
     Route::patch('/products/bulk-update', [AdminController::class, 'bulkUpdate'])->name('products.bulk-update');
     Route::patch('/products/{product}/approve', [AdminController::class, 'approve'])->name('products.approve');
