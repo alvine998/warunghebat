@@ -252,7 +252,7 @@
 @endif
 
 {{-- ================= KATEGORI ================= --}}
-<section id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+<section id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 scroll-mt-20">
     <div class="flex items-end justify-between gap-4 mb-7">
         <div>
             <p class="reveal inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[0.18em] text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3.5 py-1.5">🛍️ KATEGORI</p>
@@ -282,7 +282,7 @@
 </section>
 
 {{-- ================= CARA KERJA ================= --}}
-<section id="cara-kerja" class="bg-ink-900 text-white relative overflow-hidden grain">
+<section id="cara-kerja" class="bg-ink-900 text-white relative overflow-hidden grain scroll-mt-16">
     <div class="hidden sm:block absolute -top-32 right-0 w-96 h-96 bg-brand-500/20 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 relative">
         <p class="reveal inline-flex text-[11px] font-extrabold tracking-[0.18em] text-brand-300 bg-white/10 border border-white/15 rounded-full px-3.5 py-1.5">🛵 CARA KERJA</p>
@@ -319,7 +319,7 @@
 </section>
 
 {{-- ================= WARUNG TERDEKAT ================= --}}
-<section id="warung" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+<section id="warung" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 scroll-mt-20">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
         <div>
             <p class="reveal inline-flex text-[11px] font-extrabold tracking-[0.18em] text-leaf-700 bg-leaf-100 border border-leaf-500/20 rounded-full px-3.5 py-1.5">📍 NEARBY-FIRST</p>
@@ -415,7 +415,7 @@
 </section>
 
 {{-- ================= CERITA KAMI ================= --}}
-<section id="cerita" class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
+<section id="cerita" class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20 scroll-mt-20">
     <div class="reveal-scale relative rounded-[32px] bg-ink-900 text-white p-7 sm:p-12 overflow-hidden grain">
         <div class="hidden sm:block absolute -top-24 -left-24 w-80 h-80 bg-brand-500/25 blur-[100px] rounded-full pointer-events-none" aria-hidden="true"></div>
         <div class="hidden sm:block absolute -bottom-28 -right-20 w-80 h-80 bg-leaf-500/20 blur-[100px] rounded-full pointer-events-none" aria-hidden="true"></div>
@@ -453,7 +453,7 @@
 </section>
 
 {{-- ================= MITRA ================= --}}
-<section id="mitra" class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
+<section id="mitra" class="max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20 scroll-mt-20">
     <div class="grid gap-3 lg:grid-cols-[1fr_1fr] lg:gap-5">
         <div class="reveal rounded-[32px] bg-leaf-700 text-white p-7 sm:p-10 relative overflow-hidden grain">
             <div class="hidden sm:block absolute -bottom-24 -right-24 w-80 h-80 bg-white/10 blur-[80px] rounded-full pointer-events-none" aria-hidden="true"></div>
@@ -517,7 +517,7 @@
 
 {{-- ================= ARTIKEL ================= --}}
 @if($articles->isNotEmpty())
-<section id="artikel" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+<section id="artikel" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 scroll-mt-20">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
         <div>
             <p class="reveal inline-flex text-[11px] font-extrabold tracking-[0.18em] text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3.5 py-1.5">📰 ARTIKEL</p>
@@ -540,7 +540,7 @@
 @endif
 
 {{-- ================= FAQ ================= --}}
-<section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+<section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20 scroll-mt-20">
     <p class="reveal text-center inline-flex mx-auto w-fit text-[11px] font-extrabold tracking-[0.18em] text-brand-700 bg-brand-50 border border-brand-200 rounded-full px-3.5 py-1.5">❓ FAQ</p>
     <h2 class="reveal font-black tracking-tight text-3xl sm:text-4xl text-center mt-3" style="--reveal-delay:80ms">Masih kepo? Wajar.</h2>
     <div class="mt-8 grid gap-2.5">

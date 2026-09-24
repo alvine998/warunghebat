@@ -43,7 +43,8 @@
     @else
     {{-- ===== NAVBAR ===== --}}
     <header id="navbar" class="fixed top-0 inset-x-0 z-50">
-        <div class="nav-inner max-w-7xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 py-4">
+        @php($onHome = request()->routeIs('home'))
+        <div class="nav-inner max-w-7xl mx-auto flex items-center justify-between gap-2 px-4 sm:px-6 py-4">
             <a href="{{ route('home') }}" class="flex items-center gap-2.5 shrink-0" aria-label="Warung Hebat">
                 <span class="w-10 h-10 rounded-2xl bg-ink-900 grid place-items-center shadow-lg shadow-ink-900/20 -rotate-3">
                     <span class="text-brand-400 font-black text-xl leading-none translate-y-[-1px]">W</span>
@@ -54,18 +55,16 @@
                 </span>
             </a>
 
-            <nav class="hidden lg:flex items-center gap-1 text-[14px] font-semibold text-ink-700">
-                <a href="#kategori" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Kategori</a>
-                <a href="#cara-kerja" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cara Kerja</a>
-                <a href="#warung" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Warung Terdekat</a>
-                <a href="{{ route('articles.index') }}" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Artikel</a>
-                <a href="{{ route('guides.index') }}" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Panduan</a>
-                <a href="#cerita" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Cerita Kami</a>
-                <a href="#mitra" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">Jadi Mitra</a>
-                <a href="#faq" class="px-4 py-2 rounded-full hover:bg-ink-900/5 transition">FAQ</a>
+            <nav class="hidden min-w-0 flex-1 items-center justify-center gap-0.5 text-[13px] font-semibold text-ink-700 whitespace-nowrap xl:flex 2xl:gap-1 2xl:text-sm" aria-label="Navigasi utama">
+                <a href="{{ $onHome ? '#kategori' : route('home').'#kategori' }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">Kategori</a>
+                <a href="{{ $onHome ? '#warung' : route('home').'#warung' }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">Warung Terdekat</a>
+                <a href="{{ route('promo.index') }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">Promo</a>
+                <a href="{{ route('articles.index') }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">Artikel</a>
+                <a href="{{ route('guides.index') }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">Panduan</a>
+                <a href="{{ $onHome ? '#faq' : route('home').'#faq' }}" class="px-3 py-2 rounded-full hover:bg-ink-900/5 transition">FAQ</a>
             </nav>
 
-            <div class="flex items-center gap-2">
+            <div class="flex shrink-0 items-center gap-2">
                 @auth
                     @php($cartCount = (int) collect(session('cart.items', []))->sum('qty'))
                     <a href="{{ route('cart.index') }}" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold px-4 py-2.5 rounded-full hover:bg-ink-900/5 transition">
@@ -74,10 +73,7 @@
                             <span class="grid place-items-center min-w-5 h-5 px-1 rounded-full bg-brand-500 text-white text-[11px] font-black">{{ $cartCount }}</span>
                         @endif
                     </a>
-                    @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="hidden sm:inline-flex text-sm font-extrabold px-4 py-2.5 rounded-full bg-brand-500 text-white hover:bg-brand-600 transition">🛠️ Backoffice</a>
-                    @endif
-                    <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}" class="hidden sm:inline-flex items-center gap-2 text-sm font-bold bg-ink-900 text-white pl-1.5 pr-4 py-1.5 rounded-full hover:bg-black transition">
+                    <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}" class="hidden sm:inline-flex items-center gap-2 text-sm font-bold bg-ink-900 text-white pl-1.5 pr-4 py-1.5 rounded-full hover:bg-black transition whitespace-nowrap">
                         <span class="w-8 h-8 rounded-full bg-brand-500 grid place-items-center text-white text-sm font-extrabold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                         {{ Str::limit(auth()->user()->name, 12) }}
                     </a>
@@ -90,7 +86,7 @@
                     <a href="{{ route('register') }}" data-open-register class="hidden sm:inline-flex text-sm font-bold px-5 py-2.5 rounded-full bg-ink-900 text-white hover:bg-brand-600 transition shadow-lg shadow-ink-900/20">Daftar Gratis</a>
                     <a href="{{ route('register') }}" data-open-register class="sm:hidden inline-flex text-[13px] font-bold px-4 py-2 rounded-full bg-ink-900 text-white">Daftar</a>
                 @endauth
-                <button id="menu-btn" class="lg:hidden w-10 h-10 grid place-items-center rounded-full border border-ink-900/15 bg-white" aria-label="Menu">
+                <button id="menu-btn" class="xl:hidden w-10 h-10 grid place-items-center rounded-full border border-ink-900/15 bg-white" aria-label="Menu">
                     <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"/></svg>
                     <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
@@ -98,16 +94,17 @@
         </div>
 
         {{-- Mobile menu --}}
-        <div id="mobile-menu" class="hidden lg:hidden mx-4 mb-4 rounded-3xl bg-ink-900 text-white p-3 shadow-2xl">
+        <div id="mobile-menu" class="hidden xl:hidden mx-4 mb-4 rounded-3xl bg-ink-900 text-white p-3 shadow-2xl">
             <nav class="grid text-[15px] font-bold">
-                <a href="#kategori" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="grid" class="w-5 h-5 text-brand-300" /> Kategori</a>
-                <a href="#cara-kerja" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="truck" class="w-5 h-5 text-brand-300" /> Cara Kerja</a>
-                <a href="#warung" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="map-pin" class="w-5 h-5 text-brand-300" /> Warung Terdekat</a>
-                <a href="#cerita" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="heart-solid" class="w-5 h-5 text-brand-300" /> Cerita Kami</a>
-                <a href="#mitra" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="store" class="w-5 h-5 text-brand-300" /> Jadi Mitra</a>
+                <a href="{{ $onHome ? '#kategori' : route('home').'#kategori' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="grid" class="w-5 h-5 text-brand-300" /> Kategori</a>
+                <a href="{{ $onHome ? '#cara-kerja' : route('home').'#cara-kerja' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="truck" class="w-5 h-5 text-brand-300" /> Cara Kerja</a>
+                <a href="{{ $onHome ? '#warung' : route('home').'#warung' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="map-pin" class="w-5 h-5 text-brand-300" /> Warung Terdekat</a>
+                <a href="{{ $onHome ? '#cerita' : route('home').'#cerita' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="heart-solid" class="w-5 h-5 text-brand-300" /> Cerita Kami</a>
+                <a href="{{ $onHome ? '#mitra' : route('home').'#mitra' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="store" class="w-5 h-5 text-brand-300" /> Jadi Mitra</a>
+                <a href="{{ route('articles.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="document" class="w-5 h-5 text-brand-300" /> Artikel</a>
                 <a href="{{ route('guides.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> Panduan</a>
                 <a href="{{ route('promo.index') }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="star-solid" class="w-5 h-5 text-brand-300" /> Promo</a>
-                <a href="#faq" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> FAQ</a>
+                <a href="{{ $onHome ? '#faq' : route('home').'#faq' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="question" class="w-5 h-5 text-brand-300" /> FAQ</a>
             </nav>
             @guest
             <div class="grid grid-cols-2 gap-2 p-2">
@@ -212,8 +209,8 @@
         <nav class="sm:hidden fixed bottom-0 inset-x-0 z-40 safe-bottom">
             <div class="mx-3 mb-3 rounded-3xl bg-ink-900 border border-white/10 shadow-2xl grid grid-cols-4 text-[10px] font-bold text-white/70">
                 <a href="{{ route('home') }}" class="flex flex-col items-center gap-1 py-3 text-brand-300"><x-icon name="home" class="w-5 h-5" />Beranda</a>
-                <a href="#warung" class="flex flex-col items-center gap-1 py-3"><x-icon name="map-pin" class="w-5 h-5" />Terdekat</a>
-                <a href="#kategori" class="flex flex-col items-center gap-1 py-3"><x-icon name="grid" class="w-5 h-5" />Kategori</a>
+                <a href="{{ $onHome ? '#warung' : route('home').'#warung' }}" class="flex flex-col items-center gap-1 py-3"><x-icon name="map-pin" class="w-5 h-5" />Terdekat</a>
+                <a href="{{ $onHome ? '#kategori' : route('home').'#kategori' }}" class="flex flex-col items-center gap-1 py-3"><x-icon name="grid" class="w-5 h-5" />Kategori</a>
                 @auth
                 <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 py-3"><x-icon name="user" class="w-5 h-5" />Akun</a>
                 @else
