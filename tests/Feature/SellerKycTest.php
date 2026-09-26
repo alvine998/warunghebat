@@ -54,6 +54,52 @@ class SellerKycTest extends TestCase
             ->assertSee('name="selfie_image" type="file" accept="image/jpeg,image/png,image/webp" capture="user"', false);
     }
 
+    public function test_verification_form_shows_the_photo_compression_limit(): void
+    {
+        $seller = User::factory()->create(['role' => 'penjual']);
+
+        $this->actingAs($seller)
+            ->get(route('seller.verification.show'))
+            ->assertOk()
+            ->assertSee('foto akan dikompres maksimal 1MB')
+            ->assertSee('foto dikompres maksimal 1MB');
+    }
+
+    public function test_kyc_upload_accepts_images_at_or_below_one_megabyte(): void
+    {
+        Storage::fake('public');
+        $seller = User::factory()->create(['role' => 'penjual']);
+
+        $this->actingAs($seller)
+            ->post(route('seller.verification.store'), [
+                'nik' => '3174051209900001',
+                'full_name' => 'Bang Jago',
+                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(1000),
+                'selfie_image' => UploadedFile::fake()->image('selfie.jpg'),
+                'storefront_image' => UploadedFile::fake()->image('warung.jpg'),
+            ])
+            ->assertRedirect(route('dashboard'))
+            ->assertSessionHas('success');
+    }
+
+    public function test_kyc_upload_rejects_images_larger_than_one_megabyte(): void
+    {
+        Storage::fake('public');
+        $seller = User::factory()->create(['role' => 'penjual']);
+
+        $this->actingAs($seller)
+            ->post(route('seller.verification.store'), [
+                'nik' => '3174051209900001',
+                'full_name' => 'Bang Jago',
+                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(1001),
+                'selfie_image' => UploadedFile::fake()->image('selfie.jpg'),
+                'storefront_image' => UploadedFile::fake()->image('warung.jpg'),
+            ])
+            ->assertSessionHasErrors(['ktp_image']);
+
+        $this->assertNull($seller->fresh()->sellerVerification);
+    }
+
     public function test_penjual_can_submit_kyc_documents(): void
     {
         Storage::fake('public');

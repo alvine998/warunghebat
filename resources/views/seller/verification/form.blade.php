@@ -68,7 +68,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Foto KTP * <span class="font-semibold text-ink-500">(JPG/PNG/WebP, maks 2MB — pastikan NIK & foto jelas)</span></label>
+                <label class="text-[13px] font-extrabold">Foto KTP * <span class="font-semibold text-ink-500">(foto akan dikompres maksimal 1MB — pastikan NIK & foto jelas)</span></label>
                 @if($verification?->ktp_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->ktp_url }}" alt="Foto KTP saat ini" class="w-20 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -79,7 +79,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Selfie pegang KTP * <span class="font-semibold text-ink-500">(wajah + KTP terlihat jelas)</span></label>
+                <label class="text-[13px] font-extrabold">Selfie pegang KTP * <span class="font-semibold text-ink-500">(wajah + KTP jelas; foto dikompres maksimal 1MB)</span></label>
                 @if($verification?->selfie_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->selfie_url }}" alt="Selfie saat ini" class="w-14 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -90,7 +90,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Foto depan warung * <span class="font-semibold text-ink-500">(plang/spanduk warung terlihat — bukti warung milikmu)</span></label>
+                <label class="text-[13px] font-extrabold">Foto depan warung * <span class="font-semibold text-ink-500">(plang/spanduk terlihat; foto dikompres maksimal 1MB)</span></label>
                 @if($verification?->storefront_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->storefront_url }}" alt="Foto warung saat ini" class="w-20 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -100,10 +100,105 @@
                 <input name="storefront_image" type="file" accept="image/jpeg,image/png,image/webp" {{ $verification ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
             </div>
 
+            <p id="image-compression-status" class="hidden rounded-xl p-3 text-sm font-semibold" aria-live="polite"></p>
             <p class="text-[12px] font-medium text-ink-500 leading-relaxed">Dengan mengirim, kamu menyatakan warung ini milikmu / kamu diberi kuasa pemiliknya. Data KTP hanya dipakai untuk verifikasi & tidak ditampilkan ke pembeli.</p>
 
-            <button class="mt-1 w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 transition">{{ $verification ? 'Kirim ulang untuk verifikasi' : 'Kirim untuk verifikasi' }}</button>
+            <button id="verification-submit" class="mt-1 w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 transition">{{ $verification ? 'Kirim ulang untuk verifikasi' : 'Kirim untuk verifikasi' }}</button>
         </form>
     @endif
 </section>
+
+@if(!$verification?->isVerified())
+<script>
+    const verificationForm = document.querySelector('form[action="{{ route('seller.verification.store') }}"]');
+    const compressionStatus = document.getElementById('image-compression-status');
+    const submitButton = document.getElementById('verification-submit');
+    const maximumImageBytes = 1000000;
+
+    function showCompressionStatus(message, isError = false) {
+        compressionStatus.textContent = message;
+        compressionStatus.classList.remove('hidden', 'bg-leaf-50', 'text-leaf-700', 'bg-red-50', 'text-red-700');
+        compressionStatus.classList.add(isError ? 'bg-red-50' : 'bg-leaf-50', isError ? 'text-red-700' : 'text-leaf-700');
+    }
+
+    function loadImage(file) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const objectUrl = URL.createObjectURL(file);
+
+            image.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve(image);
+            };
+            image.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                reject(new Error('Foto tidak dapat dibaca.'));
+            };
+            image.src = objectUrl;
+        });
+    }
+
+    function canvasBlob(canvas, quality) {
+        return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    async function compressImage(file) {
+        if (file.size <= maximumImageBytes) {
+            return file;
+        }
+
+        const image = await loadImage(file);
+        const canvas = document.createElement('canvas');
+        const originalDimension = Math.max(image.width, image.height);
+        const filename = file.name.replace(/\.[^.]+$/, '') || 'photo';
+
+        for (const maxDimension of [2400, 2000, 1600, 1200]) {
+            const scale = Math.min(1, maxDimension / originalDimension);
+            canvas.width = Math.round(image.width * scale);
+            canvas.height = Math.round(image.height * scale);
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            for (const quality of [0.82, 0.72, 0.62, 0.52, 0.42, 0.32]) {
+                const blob = await canvasBlob(canvas, quality);
+
+                if (blob && blob.size <= maximumImageBytes) {
+                    return new File([blob], `${filename}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+                }
+            }
+        }
+
+        throw new Error(`Foto ${file.name} tetap lebih dari 1MB setelah dikompres. Coba ambil ulang dengan resolusi lebih rendah.`);
+    }
+
+    verificationForm.addEventListener('submit', async (event) => {
+        const imageInputs = [...verificationForm.querySelectorAll('input[type="file"]')];
+        const selectedImages = imageInputs.filter((input) => input.files.length && input.files[0].size > maximumImageBytes);
+
+        if (!selectedImages.length) {
+            return;
+        }
+
+        event.preventDefault();
+        submitButton.disabled = true;
+        submitButton.textContent = 'Mengompres foto…';
+
+        try {
+            for (const input of selectedImages) {
+                showCompressionStatus(`Mengompres ${input.files[0].name}…`);
+                const compressedFile = await compressImage(input.files[0]);
+                const transfer = new DataTransfer();
+                transfer.items.add(compressedFile);
+                input.files = transfer.files;
+            }
+
+            showCompressionStatus('Foto berhasil dikompres. Mengirim berkas verifikasi…');
+            verificationForm.requestSubmit();
+        } catch (error) {
+            showCompressionStatus(error.message || 'Foto gagal dikompres. Coba pilih foto lain.', true);
+            submitButton.disabled = false;
+            submitButton.textContent = '{{ $verification ? 'Kirim ulang untuk verifikasi' : 'Kirim untuk verifikasi' }}';
+        }
+    });
+</script>
+@endif
 @endsection
