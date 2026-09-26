@@ -36,8 +36,9 @@
             <h2 class="font-black tracking-tight text-3xl sm:text-4xl">Bikin akun gratis 🎉</h2>
             <p class="text-ink-500 font-medium text-[15px] mt-1.5">Sudah punya akun? <a href="{{ route('login') }}" class="text-brand-600 font-extrabold">Masuk</a></p>
 
-            <form method="POST" action="{{ route('register') }}" class="mt-6 grid gap-3.5">
+            <form method="POST" action="{{ route('register') }}" class="mt-6 grid gap-3.5" data-auth-form>
                 @csrf
+                <div data-auth-errors class="hidden rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-semibold p-3" role="alert" aria-live="polite"></div>
                 <label class="grid gap-1.5">
                     <span class="text-[13px] font-bold">Nama lengkap</span>
                     <input name="name" required autofocus value="{{ old('name') }}" placeholder="cth. Sari Dewi" class="w-full rounded-2xl border border-ink-900/15 bg-white px-4 py-3.5 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">

@@ -21,12 +21,14 @@ class SearchController extends Controller
     {
         $validated = $request->validate([
             'q' => ['nullable', 'string', 'max:120'],
+            'brand' => ['nullable', 'string', 'max:100'],
             'lat' => ['nullable', 'numeric', 'between:-90,90'],
             'lng' => ['nullable', 'numeric', 'between:-180,180'],
             'radius' => ['nullable', 'numeric', 'min:0.1', 'max:50'],
         ]);
 
         $q = isset($validated['q']) ? trim($validated['q']) : '';
+        $brandFilter = isset($validated['brand']) ? trim($validated['brand']) : '';
         $lat = isset($validated['lat']) ? (float) $validated['lat'] : null;
         $lng = isset($validated['lng']) ? (float) $validated['lng'] : null;
         $radius = isset($validated['radius']) ? (float) $validated['radius'] : 5.0;
@@ -35,14 +37,19 @@ class SearchController extends Controller
         $stores = collect();
         $storeTotal = 0;
         $products = new LengthAwarePaginator([], 0, 12);
+        $brands = collect();
+        $activeBrand = null;
 
-        if ($q !== '') {
-            [$stores, $storeTotal] = $this->searchStores($q, $lat, $lng, $radius, $hasCoords);
-            $products = $this->searchProducts($request, $q, $lat, $lng, $radius, $hasCoords);
+        if ($q !== '' || $brandFilter !== '') {
+            [$stores, $storeTotal] = $q !== '' ? $this->searchStores($q, $lat, $lng, $radius, $hasCoords) : [collect(), 0];
+            [$products, $brands, $activeBrand] = $this->searchProducts($request, $q, $brandFilter, $lat, $lng, $radius, $hasCoords);
         }
 
         return view('search.index', [
             'q' => $q,
+            'brandFilter' => $brandFilter,
+            'activeBrand' => $activeBrand,
+            'brands' => $brands,
             'stores' => $stores,
             'storeTotal' => $storeTotal,
             'products' => $products->withQueryString(),
@@ -63,7 +70,7 @@ class SearchController extends Controller
         $candidates = Store::query()
             ->with([
                 'user:id,name',
-                'products' => fn ($query) => $query->select('id', 'user_id', 'name', 'category')->where('status', 'approved')->latest('id')->take(3),
+                'products' => fn ($query) => $query->select('id', 'user_id', 'name', 'category', 'category_id', 'brand_id')->where('status', 'approved')->latest('id')->take(3),
             ])
             ->withCount([
                 'products as approved_products_count' => fn ($query) => $query->where('status', 'approved'),
@@ -103,19 +110,34 @@ class SearchController extends Controller
         return [$nearby->take(6)->values(), $nearby->count()];
     }
 
-    private function searchProducts(Request $request, string $q, ?float $lat, ?float $lng, float $radius, bool $hasCoords): LengthAwarePaginator
+    /** @return array{0: LengthAwarePaginator, 1: Collection, 2: mixed} */
+    private function searchProducts(Request $request, string $q, string $brandFilter, ?float $lat, ?float $lng, float $radius, bool $hasCoords): array
     {
         $candidates = Product::query()
-            ->with(['user:id,name', 'user.store:id,user_id,name,slug,is_open,address,latitude,longitude'])
+            ->with(['user:id,name', 'user.store:id,user_id,name,slug,is_open,address,latitude,longitude', 'brand:id,name,slug', 'categoryRef:id,name,slug'])
             ->where('status', 'approved')
-            ->where(fn ($query) => $query
+            ->when($q !== '', fn ($query) => $query->where(fn ($query) => $query
                 ->where('name', 'like', "%{$q}%")
                 ->orWhere('description', 'like', "%{$q}%")
-                ->orWhere('category', 'like', "%{$q}%"))
+                ->orWhere('category', 'like', "%{$q}%")
+                ->orWhereHas('brand', fn ($brand) => $brand->where('name', 'like', "%{$q}%"))
+                ->orWhereHas('categoryRef', fn ($category) => $category->where('name', 'like', "%{$q}%"))))
+            ->when($brandFilter !== '', fn ($query) => $query->whereHas('brand', fn ($brand) => $brand
+                ->where('slug', $brandFilter)->orWhere('name', $brandFilter)))
             ->whereHas('user.store')
             ->latest('id')
             ->take(150)
             ->get();
+
+        $brands = $candidates->map(fn (Product $product) => $product->brand)
+            ->filter()
+            ->unique('id')
+            ->sortBy('name')
+            ->values();
+
+        $activeBrand = $brandFilter !== ''
+            ? $brands->first(fn ($brand) => $brand->slug === $brandFilter || $brand->name === $brandFilter)
+            : null;
 
         $candidates->each(function (Product $product) use ($lat, $lng, $hasCoords): void {
             $store = $product->user->store;
@@ -140,12 +162,14 @@ class SearchController extends Controller
         $perPage = 12;
         $currentPage = Paginator::resolveCurrentPage('page');
 
-        return new LengthAwarePaginator(
+        $paginator = new LengthAwarePaginator(
             $nearby->forPage($currentPage, $perPage)->values(),
             $nearby->count(),
             $perPage,
             $currentPage,
             ['path' => Paginator::resolveCurrentPath(), 'pageName' => 'page']
         );
+
+        return [$paginator, $brands, $activeBrand];
     }
 }

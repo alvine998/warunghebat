@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminArticleController;
+use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminInquiryController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\PwaController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SellerBrandController;
 use App\Http\Controllers\SellerTransactionController;
 use App\Http\Controllers\SellerVerificationController;
 use App\Http\Controllers\SitemapController;
@@ -140,6 +142,8 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
             Route::get('/transactions', [SellerTransactionController::class, 'index'])->name('transactions.index');
             Route::get('/transactions/create', [SellerTransactionController::class, 'create'])->name('transactions.create');
             Route::post('/transactions', [SellerTransactionController::class, 'store'])->name('transactions.store');
+            Route::get('/transactions/{transaction}/edit', [SellerTransactionController::class, 'edit'])->name('transactions.edit');
+            Route::put('/transactions/{transaction}', [SellerTransactionController::class, 'update'])->name('transactions.update');
         });
         Route::patch('/store/toggle', [StoreController::class, 'toggle'])->name('store.toggle');
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -148,6 +152,14 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        // Master brand milik warung sendiri — dipakai untuk filter di kategori & pencarian.
+        Route::get('/brands', [SellerBrandController::class, 'index'])->name('brands.index');
+        Route::get('/brands/create', [SellerBrandController::class, 'create'])->name('brands.create');
+        Route::post('/brands', [SellerBrandController::class, 'store'])->name('brands.store');
+        Route::get('/brands/{brand}/edit', [SellerBrandController::class, 'edit'])->name('brands.edit');
+        Route::put('/brands/{brand}', [SellerBrandController::class, 'update'])->name('brands.update');
+        Route::delete('/brands/{brand}', [SellerBrandController::class, 'destroy'])->name('brands.destroy');
     });
 });
 
@@ -166,6 +178,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/products/bulk-update', [AdminController::class, 'bulkUpdate'])->name('products.bulk-update');
     Route::patch('/products/{product}/approve', [AdminController::class, 'approve'])->name('products.approve');
     Route::patch('/products/{product}/reject', [AdminController::class, 'reject'])->name('products.reject');
+
+    // Master kategori produk: dipakai penjual saat tambah produk & URL /kategori/{slug}.
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories');
+    Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::patch('/categories/{category}/toggle', [AdminCategoryController::class, 'toggle'])->name('categories.toggle');
+    Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
 
     // Editorial blog: buyers read it, the backoffice writes it.
     Route::get('/articles', [AdminArticleController::class, 'index'])->name('articles');

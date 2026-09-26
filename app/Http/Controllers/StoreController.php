@@ -21,7 +21,7 @@ class StoreController extends Controller
         $store->load([
             'user.sellerVerification',
             'user:id,name',
-            'products' => fn ($query) => $query->where('status', 'approved')->latest('id'),
+            'products' => fn ($query) => $query->with(['categoryRef:id,name,slug', 'brand:id,name,slug'])->where('status', 'approved')->latest('id'),
             'ratings.user:id,name',
         ]);
 

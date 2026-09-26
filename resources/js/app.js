@@ -475,6 +475,64 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(cartConflictModal);
     };
 
+    document.querySelectorAll('[data-auth-form]').forEach((form) => {
+        const errors = form.querySelector('[data-auth-errors]');
+        const submitButton = form.querySelector('button[type="submit"], button:not([type])');
+        const submitLabel = submitButton?.textContent;
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errors?.classList.add('hidden');
+            if (errors) errors.textContent = '';
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Memproses…';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form),
+                    headers: {
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+                const result = await response.json();
+
+                if (response.ok && result.redirect_url) {
+                    window.location.assign(result.redirect_url);
+                    return;
+                }
+
+                const messages = Object.values(result.errors || {}).flat();
+                if (errors) {
+                    errors.textContent = messages.join(' ')
+                        || result.message
+                        || 'Terjadi kesalahan. Silakan coba lagi.';
+                    errors.classList.remove('hidden');
+                }
+            } catch {
+                if (errors) {
+                    errors.textContent = 'Koneksi bermasalah. Periksa internet lalu coba lagi.';
+                    errors.classList.remove('hidden');
+                }
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = submitLabel;
+                }
+            }
+        });
+
+        form.querySelectorAll('input').forEach((input) => {
+            input.addEventListener('input', () => {
+                errors?.classList.add('hidden');
+                if (errors) errors.textContent = '';
+            });
+        });
+    });
+
     // Register role radios drive the "Daftar dengan Google" link's ?role so a
     // brand-new Google account is created with the chosen role.
     document.querySelectorAll('[data-google-role]').forEach((link) => {

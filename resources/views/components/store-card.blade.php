@@ -2,7 +2,7 @@
     $dist = $store->distance_km ?? null;
     $distLabel = $dist !== null ? ($dist < 1 ? round($dist * 1000).'m' : number_format($dist, 1).' km') : null;
     $etaLabel = $dist !== null ? max(5, (int) round($dist * 8 + 5)).' mnt' : null;
-    $topCats = $store->products->pluck('category')->filter()->unique()->take(2)->values();
+    $topCats = $store->products->map(fn ($p) => $p->categoryRef->name ?? $p->category)->filter()->unique()->take(2)->values();
     $catLine = $topCats->isNotEmpty() ? $topCats->join(' • ') : ($store->description ? \Str::limit($store->description, 42) : 'Warung tetangga');
 @endphp
 <article data-store-name="{{ $store->name }}" data-store-cat="{{ $catLine }} {{ $store->address }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 hover:-translate-y-1 transition-all duration-300" style="--reveal-delay:{{ ($index % 3) * 90 }}ms">

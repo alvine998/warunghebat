@@ -136,7 +136,7 @@
             @endif
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-extrabold truncate">{{ $p->name }}</p>
-                <p class="text-xs font-semibold text-ink-500">{{ $p->user->name }} • {{ $p->category }} • Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                <p class="text-xs font-semibold text-ink-500">{{ $p->user->name }} • {{ $p->categoryName() }}@if($p->brand) • 🏷️ {{ $p->brand->name }}@endif • Rp {{ number_format($p->price, 0, ',', '.') }}</p>
             </div>
             <form method="POST" action="{{ route('admin.products.approve', $p) }}">
                 @csrf

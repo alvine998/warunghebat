@@ -13,8 +13,9 @@
                 @if (($errors ?? null)?->any() && request()->routeIs('login'))
                     <div class="mb-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-semibold p-3">{{ $errors->first() }}</div>
                 @endif
-                <form method="POST" action="{{ route('login') }}" class="grid gap-3">
+                <form method="POST" action="{{ route('login') }}" class="grid gap-3" data-auth-form>
                     @csrf
+                    <div data-auth-errors class="hidden rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-semibold p-3" role="alert" aria-live="polite"></div>
                     <label class="grid gap-1.5">
                         <span class="text-[13px] font-bold">Email</span>
                         <input name="email" type="email" required value="{{ old('email') }}" placeholder="kamu@email.com" class="w-full rounded-2xl border border-ink-900/15 bg-white px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
@@ -54,8 +55,9 @@
                 <div class="inline-flex items-center gap-1.5 rounded-full bg-leaf-100 text-leaf-700 text-[11px] font-extrabold px-3 py-1.5 mb-4">🎉 100% GRATIS</div>
                 <p class="font-extrabold text-xl tracking-tight">Bikin akun Warung Hebat</p>
                 <p class="text-sm text-ink-500 font-medium mb-5">Satu akun untuk jajan & jualan.</p>
-                <form method="POST" action="{{ route('register') }}" class="grid gap-3">
+                <form method="POST" action="{{ route('register') }}" class="grid gap-3" data-auth-form>
                     @csrf
+                    <div data-auth-errors class="hidden rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-semibold p-3" role="alert" aria-live="polite"></div>
                     <label class="grid gap-1.5">
                         <span class="text-[13px] font-bold">Nama lengkap</span>
                         <input name="name" required value="{{ old('name') }}" placeholder="cth. Sari Dewi" class="w-full rounded-2xl border border-ink-900/15 bg-white px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">

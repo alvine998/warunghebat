@@ -82,7 +82,10 @@
                                 @endif
                                 <p class="mt-2 text-sm font-semibold text-ink-600">{{ $transaction->items->map(fn ($item) => $item->name.' × '.number_format($item->qty, 0, ',', '.'))->join(', ') }}</p>
                             </div>
-                            <p class="shrink-0 font-black">Rp {{ number_format($transaction->total, 0, ',', '.') }}</p>
+                            <div class="flex shrink-0 items-center gap-3">
+                                <p class="font-black">Rp {{ number_format($transaction->total, 0, ',', '.') }}</p>
+                                <a href="{{ route('seller.transactions.edit', $transaction) }}" class="rounded-full border border-ink-900/15 px-3 py-1.5 text-xs font-extrabold hover:bg-ink-900 hover:text-white">Edit</a>
+                            </div>
                         </div>
                     </article>
                 @endforeach

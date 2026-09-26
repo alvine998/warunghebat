@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\Product;
+use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -27,9 +26,9 @@ class SitemapController extends Controller
             ['loc' => route('guides.seller'), 'changefreq' => 'monthly', 'priority' => '0.7'],
         ];
 
-        foreach (Product::CATEGORIES as $category) {
+        foreach (Category::active()->get() as $category) {
             $urls[] = [
-                'loc' => route('category.show', ['category' => Str::slug($category)]),
+                'loc' => route('category.show', ['category' => $category->slug]),
                 'changefreq' => 'daily',
                 'priority' => '0.8',
             ];

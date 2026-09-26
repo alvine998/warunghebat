@@ -65,7 +65,7 @@
                     <p class="font-extrabold">{{ $p->name }}</p>
                     <span class="text-[11px] font-extrabold rounded-full px-3 py-1 {{ $p->status === 'approved' ? 'bg-leaf-100 text-leaf-700' : ($p->status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700') }}">{{ $p->status }}</span>
                 </div>
-                <p class="text-xs font-semibold text-ink-500 mt-0.5">{{ $p->user->name }} • {{ $p->user->email }} • {{ $p->category }} • Rp {{ number_format($p->price, 0, ',', '.') }} • Stok {{ $p->stock }}</p>
+                <p class="text-xs font-semibold text-ink-500 mt-0.5">{{ $p->user->name }} • {{ $p->user->email }} • {{ $p->categoryName() }}@if($p->brand) • 🏷️ {{ $p->brand->name }}@endif • Rp {{ number_format($p->price, 0, ',', '.') }} • Stok {{ $p->stock }}</p>
                 @if($p->hasActivePromo())
                 <p class="mt-1 text-[12px] font-extrabold text-white bg-brand-500 rounded-full px-3 py-1 w-fit">⚡ Promo Rp {{ number_format($p->discount_price, 0, ',', '.') }} (−{{ $p->discountPercent() }}%)@if($p->promo_ends_at) • s/d {{ $p->promo_ends_at->format('d M Y H:i') }}@endif</p>
                 @elseif($p->discount_price !== null)

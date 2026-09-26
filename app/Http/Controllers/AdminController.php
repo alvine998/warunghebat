@@ -114,7 +114,7 @@ class AdminController extends Controller
 
     public function products(Request $request): View
     {
-        $query = Product::with('user')->latest();
+        $query = Product::with(['user', 'categoryRef:id,name,slug', 'brand:id,name,slug'])->latest();
         $search = trim((string) $request->input('search', ''));
 
         if ($request->filled('status') && in_array($request->string('status'), Product::STATUSES, true)) {
@@ -126,6 +126,8 @@ class AdminController extends Controller
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('category', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('categoryRef', fn ($query) => $query->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('brand', fn ($query) => $query->where('name', 'like', "%{$search}%"))
                     ->orWhereHas('user', function ($query) use ($search): void {
                         $query->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");

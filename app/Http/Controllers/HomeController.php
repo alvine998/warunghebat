@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class HomeController extends Controller
             'articles' => Article::query()->published()->with('author:id,name')->latest('published_at')->take(3)->get(),
             'flashSale' => $flashSale,
             'flashSaleEndsAt' => $flashSaleEndsAt->toIso8601String(),
+            'categories' => Category::active()->withCount(['products' => fn ($query) => $query->where('status', 'approved')])->get(),
             'nearbyParams' => array_filter(
                 ['lat' => $params['lat'], 'lng' => $params['lng'], 'radius' => $params['radius']],
                 fn ($value) => $value !== null
@@ -91,7 +93,7 @@ class HomeController extends Controller
         $query = Store::query()
             ->with([
                 'user:id,name',
-                'products' => fn ($query) => $query->select('id', 'user_id', 'name', 'category')->where('status', 'approved')->latest('id')->take(3),
+                'products' => fn ($query) => $query->select('id', 'user_id', 'name', 'category', 'category_id', 'brand_id')->where('status', 'approved')->latest('id')->take(3),
             ])
             ->withCount([
                 'products as approved_products_count' => fn ($query) => $query->where('status', 'approved'),

@@ -108,7 +108,7 @@
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
                 @foreach($store->products as $i => $p)
-                <article data-product-search="{{ trim($p->name.' '.$p->category.' '.($p->description ?? '')) }}" class="reveal group rounded-[20px] sm:rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ ($i%4)*70 }}ms">
+                <article data-product-search="{{ trim($p->name.' '.($p->categoryRef->name ?? $p->category).' '.($p->brand->name ?? '').' '.($p->description ?? '')) }}" class="reveal group rounded-[20px] sm:rounded-[24px] bg-white border border-ink-900/10 overflow-hidden hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ ($i%4)*70 }}ms">
                     @if($p->image_path)
                         <button type="button" class="relative block w-full cursor-zoom-in" data-zoom-src="{{ $p->image_url }}" data-zoom-alt="Foto {{ $p->name }}" data-zoom-caption="{{ $p->name }}" aria-label="Perbesar foto {{ $p->name }}">
                             <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" loading="lazy" class="w-full h-28 sm:h-36 object-cover">
@@ -119,7 +119,12 @@
                     @endif
                     <div class="p-2.5 sm:p-4">
                         <p class="font-extrabold text-[13px] sm:text-[15px] leading-snug break-words line-clamp-2 min-h-[2.1em] sm:min-h-0">{{ $p->name }}</p>
-                        <p class="mt-1 text-[11px] font-extrabold bg-cream-100 text-ink-700 rounded-full px-2 py-0.5 w-fit max-w-full truncate">{{ $p->category }}</p>
+                        <p class="mt-1 flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[11px] font-extrabold bg-cream-100 text-ink-700 rounded-full px-2 py-0.5 w-fit max-w-full truncate">{{ $p->categoryRef->name ?? $p->category }}</span>
+                            @if($p->brand)
+                            <span class="text-[11px] font-extrabold bg-ink-900 text-white rounded-full px-2 py-0.5 w-fit max-w-full truncate">🏷️ {{ $p->brand->name }}</span>
+                            @endif
+                        </p>
                         @if($p->description)
                             <p class="hidden sm:block text-[13px] font-medium text-ink-500 leading-snug mt-1 line-clamp-2">{{ $p->description }}</p>
                         @endif

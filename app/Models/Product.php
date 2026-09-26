@@ -19,11 +19,15 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'cost_price',
         'discount_price',
         'promo_starts_at',
         'promo_ends_at',
         'stock',
+        'barcode',
         'category',
+        'category_id',
+        'brand_id',
         'image_path',
         'status',
         'rejection_reason',
@@ -33,6 +37,7 @@ class Product extends Model
     {
         return [
             'price' => 'integer',
+            'cost_price' => 'integer',
             'discount_price' => 'integer',
             'promo_starts_at' => 'datetime',
             'promo_ends_at' => 'datetime',
@@ -42,6 +47,10 @@ class Product extends Model
 
     public const STATUSES = ['pending', 'approved', 'rejected'];
 
+    /**
+     * Legacy hardcoded list — kept so old factories/tests that pass a
+     * category string keep working. New code must use categories table.
+     */
     public const CATEGORIES = [
         'Makanan',
         'Minuman',
@@ -52,9 +61,51 @@ class Product extends Model
         'Lainnya',
     ];
 
+    protected static function booted(): void
+    {
+        // Keep the legacy `category` string and the new `category_id` in sync
+        // so old rows, factories, and tests keep working during migration.
+        static::saving(function (Product $product): void {
+            if ($product->category_id && ! $product->category) {
+                $product->category = Category::whereKey($product->category_id)->value('name');
+            } elseif ($product->category && ! $product->category_id) {
+                $product->category_id = Category::where('name', $product->category)->value('id');
+            }
+
+            if ($product->category_id) {
+                $name = Category::whereKey($product->category_id)->value('name');
+
+                if (is_string($name) && $name !== '') {
+                    $product->category = $name;
+                }
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function categoryRef(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    /** Display name: relation first, legacy string column as fallback. */
+    public function categoryName(): string
+    {
+        return $this->categoryRef->name ?? $this->category ?? 'Lainnya';
+    }
+
+    public function brandName(): ?string
+    {
+        return $this->brand->name ?? null;
     }
 
     public function getImageUrlAttribute(): ?string
@@ -104,6 +155,35 @@ class Product extends Model
     public function effectivePrice(): int
     {
         return $this->hasActivePromo() ? (int) $this->discount_price : (int) $this->price;
+    }
+
+    /**
+     * Estimated profit per pcs (Harga Jual efektif − HPP).
+     * Null when HPP is unknown. Private to the seller — never shown to buyers.
+     */
+    public function estimatedProfit(): ?int
+    {
+        if ($this->cost_price === null) {
+            return null;
+        }
+
+        return $this->effectivePrice() - (int) $this->cost_price;
+    }
+
+    /** Whole-percent margin on the effective selling price, null when HPP is unknown. */
+    public function profitMarginPercent(): ?int
+    {
+        if ($this->cost_price === null) {
+            return null;
+        }
+
+        $effective = $this->effectivePrice();
+
+        if ($effective <= 0) {
+            return null;
+        }
+
+        return (int) round(($effective - (int) $this->cost_price) / $effective * 100);
     }
 
     /** Whole-percent discount while a promo is live, null otherwise. */

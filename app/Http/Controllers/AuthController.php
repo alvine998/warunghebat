@@ -50,7 +50,18 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended($this->redirectFor(Auth::user()));
+            $redirect = redirect()->intended($this->redirectFor(Auth::user()));
+
+            return $request->expectsJson()
+                ? response()->json(['redirect_url' => $redirect->getTargetUrl()])
+                : $redirect;
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Email atau kata sandi salah. Coba lagi ya.',
+                'errors' => ['email' => ['Email atau kata sandi salah. Coba lagi ya.']],
+            ], 422);
         }
 
         return back()->withErrors([
@@ -106,11 +117,13 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        if ($user->role === 'penjual') {
-            return redirect()->route('seller.verification.show')->with('success', 'Akun penjual dibuat! Verifikasi kepemilikan warungmu dulu agar bisa jualan.');
-        }
+        $redirect = $user->role === 'penjual'
+            ? redirect()->route('seller.verification.show')->with('success', 'Akun penjual dibuat! Verifikasi kepemilikan warungmu dulu agar bisa jualan.')
+            : redirect()->route('dashboard')->with('success', 'Selamat datang di Warung Hebat, '.$user->name.'!');
 
-        return redirect()->route('dashboard')->with('success', 'Selamat datang di Warung Hebat, '.$user->name.'!');
+        return $request->expectsJson()
+            ? response()->json(['redirect_url' => $redirect->getTargetUrl()])
+            : $redirect;
     }
 
     // ---------- ADMIN BACKOFFICE SIDE ----------

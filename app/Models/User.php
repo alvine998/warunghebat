@@ -79,6 +79,11 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
+    public function brands(): HasMany
+    {
+        return $this->hasMany(Brand::class);
+    }
+
     public function store(): HasOne
     {
         return $this->hasOne(Store::class);
@@ -147,7 +152,8 @@ class User extends Authenticatable
             'avg_price' => (int) round($this->products()->avg('price') ?? 0),
             'total' => $this->products()->count(),
             'categories' => $this->products()
-                ->selectRaw('category, COUNT(*) AS products, COALESCE(SUM(stock), 0) AS stock, COALESCE(SUM(price * stock), 0) AS value')
+                ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+                ->selectRaw('COALESCE(categories.name, products.category, ?) AS category, COUNT(*) AS products, COALESCE(SUM(stock), 0) AS stock, COALESCE(SUM(price * stock), 0) AS value', ['Lainnya'])
                 ->groupBy('category')
                 ->orderByDesc('value')
                 ->get(),

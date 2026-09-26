@@ -53,6 +53,223 @@ class SellerTransactionTest extends TestCase
         $this->assertSame(30000, $item->subtotal);
     }
 
+    public function test_walk_in_sale_can_be_recorded_anonymously(): void
+    {
+        [$seller, , $product] = $this->verifiedSellerWithProduct();
+
+        $this->actingAs($seller)
+            ->post(route('seller.transactions.store'), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'anonymous',
+                'items' => [['product_id' => $product->id, 'qty' => 1]],
+            ])
+            ->assertRedirect(route('seller.transactions.index'));
+
+        $transaction = InStoreTransaction::sole();
+
+        $this->assertNull($transaction->buyer_user_id);
+        $this->assertNull($transaction->buyer_name);
+        $this->assertNull($transaction->buyer_email);
+        $this->assertNull($transaction->buyer_phone);
+        $this->assertSame(9, $product->fresh()->stock);
+        $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_walk_in_sale_can_save_details_without_creating_a_buyer_account(): void
+    {
+        [$seller, , $product] = $this->verifiedSellerWithProduct();
+
+        $this->actingAs($seller)
+            ->post(route('seller.transactions.store'), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'identified',
+                'buyer_name' => 'Dina Pembeli',
+                'buyer_email' => 'dina@example.com',
+                'buyer_phone' => '08123456789',
+                'items' => [['product_id' => $product->id, 'qty' => 1]],
+            ])
+            ->assertRedirect(route('seller.transactions.index'));
+
+        $transaction = InStoreTransaction::sole();
+
+        $this->assertNull($transaction->buyer_user_id);
+        $this->assertSame('Dina Pembeli', $transaction->buyer_name);
+        $this->assertSame('dina@example.com', $transaction->buyer_email);
+        $this->assertSame('08123456789', $transaction->buyer_phone);
+        $this->assertDatabaseMissing('users', ['email' => 'dina@example.com']);
+    }
+
+    public function test_seller_can_open_edit_form_with_existing_transaction_data(): void
+    {
+        [$seller, $store, $product] = $this->verifiedSellerWithProduct();
+        $transaction = InStoreTransaction::recordSale(
+            $store,
+            [['product_id' => $product->id, 'qty' => 2]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+
+        $this->actingAs($seller)
+            ->get(route('seller.transactions.edit', $transaction))
+            ->assertOk()
+            ->assertSee('Edit transaksi langsung')
+            ->assertSee('Input pembeli baru')
+            ->assertSee('Anonim / tanpa data')
+            ->assertSee('Budi')
+            ->assertSee('Nasi Goreng');
+    }
+
+    public function test_seller_can_edit_own_sale_preserving_existing_prices_and_adjusting_stock(): void
+    {
+        [$seller, $store, $product] = $this->verifiedSellerWithProduct(['price' => 15000], 10);
+        $addedProduct = Product::factory()->for($seller)->create([
+            'name' => 'Teh Botol',
+            'price' => 8000,
+            'stock' => 5,
+            'status' => 'approved',
+        ]);
+        $transaction = InStoreTransaction::recordSale(
+            $store,
+            [['product_id' => $product->id, 'qty' => 2]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+        $product->update(['price' => 20000]);
+
+        $this->actingAs($seller)
+            ->put(route('seller.transactions.update', $transaction), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'anonymous',
+                'items' => [
+                    ['product_id' => $product->id, 'qty' => 3],
+                    ['product_id' => $addedProduct->id, 'qty' => 1],
+                ],
+            ])
+            ->assertRedirect(route('seller.transactions.index'))
+            ->assertSessionHas('success');
+
+        $transaction->refresh();
+
+        $this->assertSame(53000, $transaction->total);
+        $this->assertNull($transaction->buyer_name);
+        $this->assertSame(7, $product->fresh()->stock);
+        $this->assertSame(4, $addedProduct->fresh()->stock);
+        $this->assertDatabaseHas('in_store_transaction_items', [
+            'in_store_transaction_id' => $transaction->id,
+            'product_id' => $product->id,
+            'price' => 15000,
+            'qty' => 3,
+            'subtotal' => 45000,
+        ]);
+        $this->assertDatabaseHas('in_store_transaction_items', [
+            'in_store_transaction_id' => $transaction->id,
+            'product_id' => $addedProduct->id,
+            'price' => 8000,
+            'qty' => 1,
+            'subtotal' => 8000,
+        ]);
+    }
+
+    public function test_transaction_update_can_remove_a_product_and_restore_its_stock(): void
+    {
+        [$seller, $store, $product] = $this->verifiedSellerWithProduct([], 5);
+        $transaction = InStoreTransaction::recordSale(
+            $store,
+            [['product_id' => $product->id, 'qty' => 2]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+
+        $this->actingAs($seller)
+            ->put(route('seller.transactions.update', $transaction), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'identified',
+                'buyer_name' => 'Dina',
+                'items' => [['product_id' => Product::factory()->for($seller)->create(['status' => 'approved', 'stock' => 5, 'price' => 15000])->id, 'qty' => 1]],
+            ])
+            ->assertRedirect(route('seller.transactions.index'));
+
+        $this->assertSame(5, $product->fresh()->stock);
+        $this->assertSame(1, $transaction->fresh()->items()->count());
+        $this->assertSame(15000, $transaction->fresh()->total);
+    }
+
+    public function test_identified_walk_in_requires_a_name(): void
+    {
+        [$seller, , $product] = $this->verifiedSellerWithProduct();
+
+        $this->actingAs($seller)
+            ->from(route('seller.transactions.create'))
+            ->post(route('seller.transactions.store'), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'identified',
+                'items' => [['product_id' => $product->id, 'qty' => 1]],
+            ])
+            ->assertRedirect(route('seller.transactions.create'))
+            ->assertSessionHasErrors(['buyer_name']);
+
+        $this->assertDatabaseCount('in_store_transactions', 0);
+        $this->assertSame(10, $product->fresh()->stock);
+    }
+
+    public function test_seller_cannot_view_or_update_another_sellers_transaction(): void
+    {
+        [$seller] = $this->verifiedSellerWithProduct();
+        [, $otherStore, $otherProduct] = $this->verifiedSellerWithProduct();
+        $transaction = InStoreTransaction::recordSale(
+            $otherStore,
+            [['product_id' => $otherProduct->id, 'qty' => 1]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+
+        $this->actingAs($seller)
+            ->get(route('seller.transactions.edit', $transaction))
+            ->assertNotFound();
+
+        $this->actingAs($seller)
+            ->put(route('seller.transactions.update', $transaction), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'anonymous',
+                'items' => [['product_id' => $otherProduct->id, 'qty' => 1]],
+            ])
+            ->assertNotFound();
+
+        $this->assertSame(9, $otherProduct->fresh()->stock);
+    }
+
+    public function test_transaction_update_rolls_back_when_requested_stock_is_unavailable(): void
+    {
+        [$seller, $store, $product] = $this->verifiedSellerWithProduct([], 5);
+        $transaction = InStoreTransaction::recordSale(
+            $store,
+            [['product_id' => $product->id, 'qty' => 2]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+
+        $this->actingAs($seller)
+            ->from(route('seller.transactions.edit', $transaction))
+            ->put(route('seller.transactions.update', $transaction), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'identified',
+                'buyer_name' => 'Dina',
+                'items' => [['product_id' => $product->id, 'qty' => 6]],
+            ])
+            ->assertRedirect(route('seller.transactions.edit', $transaction))
+            ->assertSessionHasErrors(['items']);
+
+        $this->assertSame(3, $product->fresh()->stock);
+        $this->assertSame(30000, $transaction->fresh()->total);
+        $this->assertSame('Budi', $transaction->fresh()->buyer_name);
+        $this->assertSame(2, $transaction->items()->sole()->qty);
+    }
+
     public function test_registered_buyer_is_matched_by_email_and_promo_price_is_used(): void
     {
         [$seller, , $product] = $this->verifiedSellerWithProduct([

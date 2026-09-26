@@ -263,19 +263,12 @@
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        @foreach([
-            ['utensils','Makanan','1.2rb warung','bg-brand-500','Siap saji & masakan'],
-            ['cup','Minuman','860 warung','bg-leaf-500','Kopi, jus & es'],
-            ['basket','Sembako','640 warung','bg-ink-900','Beras, telur, minyak'],
-            ['package','Harian','520 warung','bg-amber-500','Sabun & tisu'],
-            ['cookie','Jajanan','980 warung','bg-pink-500','Pasar & kekinian'],
-            ['snowflake','Frozen','310 warung','bg-sky-500','Nugget & dimsum'],
-        ] as $i => $c)
-        <a href="{{ route('category.show', array_merge(['category' => Str::slug($c[1])], $nearbyParams ?? [])) }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 p-4 sm:p-5 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ $i*70 }}ms">
-            <span class="w-12 h-12 rounded-2xl {{ $c[3] }} grid place-items-center text-white shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform"><x-icon name="{{ $c[0] }}" class="w-6 h-6" /></span>
-            <p class="font-extrabold text-[15px] mt-3">{{ $c[1] }}</p>
-            <p class="text-[12px] font-bold text-leaf-600">{{ $c[2] }}</p>
-            <p class="text-[12px] font-medium text-ink-500 mt-0.5">{{ $c[4] }}</p>
+        @foreach(($categories ?? collect()) as $i => $c)
+        <a href="{{ route('category.show', array_merge(['category' => $c->slug], $nearbyParams ?? [])) }}" class="reveal group rounded-[24px] bg-white border border-ink-900/10 p-4 sm:p-5 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-ink-900/10 transition-all duration-300" style="--reveal-delay:{{ $i*70 }}ms">
+            <span class="w-12 h-12 rounded-2xl {{ ['bg-brand-500','bg-leaf-500','bg-ink-900','bg-amber-500','bg-pink-500','bg-sky-500'][$i % 6] }} grid place-items-center text-white shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-transform"><x-icon name="{{ $c->icon ?? 'package' }}" class="w-6 h-6" /></span>
+            <p class="font-extrabold text-[15px] mt-3">{{ $c->name }}</p>
+            <p class="text-[12px] font-bold text-leaf-600">{{ $c->products_count }} produk</p>
+            <p class="text-[12px] font-medium text-ink-500 mt-0.5">{{ $c->description ?? '' }}</p>
         </a>
         @endforeach
     </div>

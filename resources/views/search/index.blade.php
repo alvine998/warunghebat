@@ -29,9 +29,28 @@
         <input id="search-q" name="q" type="search" autocomplete="off" value="{{ $q }}" placeholder="Cari nasi goreng, kopi susu, telur..." class="flex-1 min-w-0 bg-transparent outline-none text-[15px] font-semibold placeholder:text-ink-500/60 placeholder:font-medium py-2.5">
         @if($userLat !== null)<input type="hidden" name="lat" value="{{ $userLat }}">@endif
         @if($userLng !== null)<input type="hidden" name="lng" value="{{ $userLng }}">@endif
+        @if(!empty($brandFilter))<input type="hidden" name="brand" value="{{ $brandFilter }}">@endif
         <input type="hidden" name="radius" value="{{ $radius ?? 5 }}">
         <button type="submit" class="shrink-0 bg-ink-900 text-white text-sm font-extrabold px-5 py-3 rounded-2xl hover:bg-brand-600 transition">Cari</button>
     </form>
+    @if(($brands ?? collect())->isNotEmpty())
+    <form method="GET" action="{{ route('search.index') }}" class="mt-3 flex flex-wrap items-center gap-2 text-[13px] font-bold">
+        @if($q !== '')<input type="hidden" name="q" value="{{ $q }}">@endif
+        @if($userLat !== null)<input type="hidden" name="lat" value="{{ $userLat }}">@endif
+        @if($userLng !== null)<input type="hidden" name="lng" value="{{ $userLng }}">@endif
+        <input type="hidden" name="radius" value="{{ $radius ?? 5 }}">
+        <label for="brand-filter" class="text-ink-500">🏷️ Brand:</label>
+        <select id="brand-filter" name="brand" onchange="this.form.submit()" class="rounded-full border border-ink-900/15 bg-white px-4 py-2 font-extrabold outline-none focus:border-brand-500">
+            <option value="">Semua brand</option>
+            @foreach($brands as $b)
+            <option value="{{ $b->slug }}" @selected(($brandFilter ?? '') === $b->slug || ($brandFilter ?? '') === $b->name)>{{ $b->name }}</option>
+            @endforeach
+        </select>
+        @if(!empty($brandFilter))
+        <a href="{{ route('search.index', array_filter(['q' => $q ?: null, 'lat' => $userLat, 'lng' => $userLng, 'radius' => $radius], fn ($value) => $value !== null)) }}" class="underline underline-offset-4 decoration-brand-500 hover:text-brand-600">reset ✕</a>
+        @endif
+    </form>
+    @endif
     <div class="mt-3 flex flex-wrap items-center gap-2 text-[13px] font-bold">
         <span class="inline-flex items-center gap-1.5 bg-ink-900 text-white rounded-full pl-3 pr-4 py-2">◎ Radius {{ $radiusLabel }} km</span>
         <button id="locate-btn" type="button" class="inline-flex items-center gap-1.5 bg-white border border-ink-900/15 rounded-full px-4 py-2 hover:border-ink-900 transition">📍 {{ $userLat !== null ? 'Perbarui lokasiku' : 'Gunakan lokasiku' }}</button>

@@ -10,6 +10,7 @@
         <a href="{{ route('dashboard') }}" class="text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Dashboard</a>
         <div class="flex items-center gap-2 flex-wrap">
             @include('seller.store._open_toggle', ['store' => $store])
+            <a href="{{ route('seller.brands.index') }}" class="text-[13px] font-extrabold px-5 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">🏷️ Brand</a>
             <a href="{{ route('seller.store.edit') }}" class="text-[13px] font-extrabold px-5 py-2.5 rounded-full border border-ink-900/15 hover:bg-ink-900 hover:text-white transition">⚙️ Pengaturan Warung</a>
             <a href="{{ route('seller.products.create') }}" class="text-[13px] font-extrabold bg-ink-900 text-white px-5 py-2.5 rounded-full hover:bg-brand-600 transition">+ Tambah Produk</a>
         </div>
@@ -41,7 +42,7 @@
             <thead>
                 <tr class="border-b border-ink-900/10 bg-cream-50/60 text-[11px] font-extrabold uppercase tracking-wider text-ink-500">
                     <th class="px-5 py-3.5 w-[38%]">Produk</th>
-                    <th class="px-4 py-3.5">Harga</th>
+                    <th class="px-4 py-3.5">Harga Jual</th>
                     <th class="px-4 py-3.5">Stok</th>
                     <th class="px-4 py-3.5">Status</th>
                     <th class="px-4 py-3.5">Diperbarui</th>
@@ -60,7 +61,7 @@
                             @endif
                             <div class="min-w-0">
                                 <p class="font-extrabold leading-snug">{{ $p->name }}</p>
-                                <p class="mt-0.5 text-xs font-bold text-ink-500">{{ $p->category }}</p>
+                                <p class="mt-0.5 text-xs font-bold text-ink-500">{{ $p->categoryName() }}@if($p->brand) • 🏷️ {{ $p->brand->name }} @endif @if($p->barcode) • <span class="font-mono">⌁ {{ $p->barcode }}</span> @endif</p>
                                 @if($p->description)
                                     <p class="mt-1 text-[13px] font-medium text-ink-500 leading-snug line-clamp-2">{{ $p->description }}</p>
                                 @endif
@@ -71,6 +72,13 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 font-black whitespace-nowrap">Rp {{ number_format($p->price, 0, ',', '.') }}
+                        @if(!is_null($p->cost_price))
+                            @php($profit = $p->estimatedProfit())
+                            @php($margin = $p->profitMarginPercent())
+                            <span class="mt-1 block text-[11px] font-bold {{ ($profit ?? 0) >= 0 ? 'text-leaf-700' : 'text-red-700' }}">HPP Rp {{ number_format($p->cost_price, 0, ',', '.') }} • {{ ($profit ?? 0) >= 0 ? 'Untung' : 'Rugi' }} Rp {{ number_format(abs($profit ?? 0), 0, ',', '.') }}{{ !is_null($margin) ? " ({$margin}%)" : '' }}</span>
+                        @else
+                            <span class="mt-1 block text-[11px] font-bold text-ink-500/70">HPP belum diisi</span>
+                        @endif
                         @if($p->hasActivePromo())
                             <span class="mt-1 block text-[11px] font-extrabold text-white bg-brand-500 rounded-full px-2.5 py-1 w-fit">⚡ Rp {{ number_format($p->discount_price, 0, ',', '.') }} (−{{ $p->discountPercent() }}%)</span>
                         @elseif($p->discount_price !== null)
@@ -120,8 +128,15 @@
                     <p class="font-extrabold leading-snug flex-1 min-w-0">{{ $p->name }}</p>
                     <span class="text-[11px] font-extrabold rounded-full px-3 py-1 {{ $p->status === 'approved' ? 'bg-leaf-100 text-leaf-700' : ($p->status === 'pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-700') }}">{{ $p->status }}</span>
                 </div>
-                <p class="text-[11px] font-bold text-ink-500">{{ $p->category }} • {{ $p->updated_at?->diffForHumans() }}</p>
+                <p class="text-[11px] font-bold text-ink-500">{{ $p->categoryName() }}@if($p->brand) • 🏷️ {{ $p->brand->name }} @endif • {{ $p->updated_at?->diffForHumans() }} @if($p->barcode) • <span class="font-mono">⌁ {{ $p->barcode }}</span> @endif</p>
                 <p class="text-sm font-black">Rp {{ number_format($p->price, 0, ',', '.') }} <span class="font-bold text-ink-500">• Stok: {{ $p->stock }}</span></p>
+                @if(!is_null($p->cost_price))
+                    @php($profit = $p->estimatedProfit())
+                    @php($margin = $p->profitMarginPercent())
+                    <p class="text-[12px] font-bold {{ ($profit ?? 0) >= 0 ? 'text-leaf-700' : 'text-red-700' }}">HPP Rp {{ number_format($p->cost_price, 0, ',', '.') }} • {{ ($profit ?? 0) >= 0 ? 'Untung' : 'Rugi' }} Rp {{ number_format(abs($profit ?? 0), 0, ',', '.') }}{{ !is_null($margin) ? " ({$margin}%)" : '' }}</p>
+                @else
+                    <p class="text-[12px] font-bold text-ink-500/70">HPP belum diisi</p>
+                @endif
                 @if($p->hasActivePromo())
                 <p class="text-[12px] font-extrabold text-white bg-brand-500 rounded-full px-3 py-1 w-fit">⚡ Promo Rp {{ number_format($p->discount_price, 0, ',', '.') }} (−{{ $p->discountPercent() }}%)</p>
                 @elseif($p->discount_price !== null)

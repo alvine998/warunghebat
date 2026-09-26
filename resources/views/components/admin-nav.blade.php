@@ -6,6 +6,7 @@
         ['route' => 'admin.users', 'pattern' => 'admin.users', 'icon' => 'users', 'label' => 'Pengguna'],
         ['route' => 'admin.warungs', 'pattern' => 'admin.warungs', 'icon' => 'store', 'label' => 'Warung'],
         ['route' => 'admin.products', 'pattern' => 'admin.products*', 'icon' => 'package', 'label' => 'Produk'],
+        ['route' => 'admin.categories', 'pattern' => 'admin.categories*', 'icon' => 'basket', 'label' => 'Kategori'],
         ['route' => 'admin.articles', 'pattern' => 'admin.articles*', 'icon' => 'document', 'label' => 'Artikel'],
     ];
 
