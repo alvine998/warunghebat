@@ -96,6 +96,33 @@ class FlashSaleTest extends TestCase
         $this->assertSame(0, Product::count());
     }
 
+    public function test_seller_can_disable_promo_when_editing_a_product(): void
+    {
+        Storage::fake('public');
+        $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
+        Store::factory()->for($seller)->create();
+        $product = Product::factory()->for($seller)->create([
+            'discount_price' => 15000,
+            'promo_starts_at' => now()->subDay(),
+            'promo_ends_at' => now()->addDay(),
+        ]);
+
+        $this->actingAs($seller)->put(route('seller.products.update', $product), [
+            'name' => $product->name,
+            'price' => '20000',
+            'stock' => '10',
+            'category' => 'Makanan',
+            'has_promo' => 'no',
+            'image' => UploadedFile::fake()->image('produk.jpg'),
+        ])->assertRedirect(route('seller.products.index'));
+
+        $product->refresh();
+        $this->assertNull($product->discount_price);
+        $this->assertNull($product->promo_starts_at);
+        $this->assertNull($product->promo_ends_at);
+    }
+
     public function test_seller_can_set_a_promo_with_a_window(): void
     {
         Storage::fake('public');

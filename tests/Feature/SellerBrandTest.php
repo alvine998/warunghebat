@@ -60,6 +60,21 @@ class SellerBrandTest extends TestCase
         $this->assertDatabaseHas('brands', ['id' => $brand->id]);
     }
 
+    public function test_product_form_has_promo_and_brand_radio_choices(): void
+    {
+        $seller = $this->verifiedSeller();
+
+        $this->actingAs($seller)
+            ->get(route('seller.products.create'))
+            ->assertOk()
+            ->assertSee('name="has_promo" value="yes"', false)
+            ->assertSee('name="has_promo" value="no"', false)
+            ->assertSee('id="promo-fields"', false)
+            ->assertSee('name="has_brand" value="yes"', false)
+            ->assertSee('name="has_brand" value="no"', false)
+            ->assertSee('id="brand-fields"', false);
+    }
+
     public function test_seller_can_create_product_with_existing_brand(): void
     {
         Storage::fake('public');
@@ -97,6 +112,28 @@ class SellerBrandTest extends TestCase
         $brand = Brand::where('user_id', $seller->id)->where('name', 'Bango')->sole();
 
         $this->assertSame($brand->id, Product::sole()->brand_id);
+    }
+
+    public function test_seller_can_remove_brand_from_product_when_editing(): void
+    {
+        Storage::fake('public');
+        $seller = $this->verifiedSeller();
+        $brand = Brand::factory()->for($seller)->create(['name' => 'Indomie']);
+        $product = Product::factory()->for($seller)->create(['brand_id' => $brand->id]);
+
+        $this->actingAs($seller)->put(route('seller.products.update', $product), [
+            'name' => $product->name,
+            'price' => '5000',
+            'stock' => '10',
+            'category_id' => Category::where('slug', 'makanan')->value('id'),
+            'has_brand' => 'no',
+            'brand_id' => $brand->id,
+            'new_brand' => 'Stale value',
+            'image' => UploadedFile::fake()->image('produk.jpg'),
+        ])->assertRedirect(route('seller.products.index'));
+
+        $this->assertNull($product->fresh()->brand_id);
+        $this->assertDatabaseHas('brands', ['id' => $brand->id]);
     }
 
     public function test_category_page_can_filter_products_by_brand(): void

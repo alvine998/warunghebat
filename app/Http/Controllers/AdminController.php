@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProductApprovedMail;
+use App\Mail\ProductRejectedMail;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
@@ -11,7 +13,10 @@ use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use Throwable;
 
 class AdminController extends Controller
 {
@@ -150,6 +155,15 @@ class AdminController extends Controller
     public function approve(Product $product): RedirectResponse
     {
         $product->update(['status' => 'approved', 'rejection_reason' => null]);
+        $product->loadMissing('user');
+
+        if ($product->user) {
+            try {
+                Mail::to($product->user->email)->send(new ProductApprovedMail($product));
+            } catch (Throwable $e) {
+                Log::warning('Product approved email failed for '.$product->user->email.': '.$e->getMessage());
+            }
+        }
 
         return back()->with('success', "Produk \"{$product->name}\" disetujui dan sudah tayang.");
     }
@@ -163,6 +177,15 @@ class AdminController extends Controller
         ]);
 
         $product->update(['status' => 'rejected', 'rejection_reason' => $validated['rejection_reason']]);
+        $product->loadMissing('user');
+
+        if ($product->user) {
+            try {
+                Mail::to($product->user->email)->send(new ProductRejectedMail($product->fresh('user')));
+            } catch (Throwable $e) {
+                Log::warning('Product rejected email failed for '.$product->user->email.': '.$e->getMessage());
+            }
+        }
 
         return back()->with('success', "Produk \"{$product->name}\" ditolak dengan alasan.");
     }
@@ -186,6 +209,24 @@ class AdminController extends Controller
 
         $count = Product::whereIn('id', $validated['product_ids'])->update($updates);
         $message = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
+
+        $products = Product::with('user')->whereIn('id', $validated['product_ids'])->get();
+
+        foreach ($products as $bulkProduct) {
+            if (! $bulkProduct->user) {
+                continue;
+            }
+
+            try {
+                $mail = $validated['action'] === 'approve'
+                    ? new ProductApprovedMail($bulkProduct)
+                    : new ProductRejectedMail($bulkProduct);
+
+                Mail::to($bulkProduct->user->email)->send($mail);
+            } catch (Throwable $e) {
+                Log::warning('Bulk product email failed for '.$bulkProduct->user->email.': '.$e->getMessage());
+            }
+        }
 
         return back()->with('success', "{$count} produk berhasil {$message}.");
     }

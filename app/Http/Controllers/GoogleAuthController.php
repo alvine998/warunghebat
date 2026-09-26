@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
@@ -75,6 +78,12 @@ class GoogleAuthController extends Controller
                 'role' => $request->session()->get('google_role', 'pembeli'),
                 'email_verified_at' => now(),
             ]);
+
+            try {
+                Mail::to($user->email)->send(new WelcomeMail($user));
+            } catch (Throwable $e) {
+                Log::warning('Welcome email failed for '.$user->email.': '.$e->getMessage());
+            }
         }
 
         $request->session()->forget('google_role');

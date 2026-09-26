@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRule;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -113,6 +117,12 @@ class AuthController extends Controller
             'password' => $validated['password'],
             'role' => $validated['role'] ?? 'pembeli',
         ]);
+
+        try {
+            Mail::to($user->email)->send(new WelcomeMail($user));
+        } catch (Throwable $e) {
+            Log::warning('Welcome email failed for '.$user->email.': '.$e->getMessage());
+        }
 
         Auth::login($user);
         $request->session()->regenerate();

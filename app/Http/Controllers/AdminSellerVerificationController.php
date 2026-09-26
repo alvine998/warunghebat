@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WarungApprovedMail;
+use App\Mail\WarungRejectedMail;
 use App\Models\SellerVerification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class AdminSellerVerificationController extends Controller
 {
@@ -22,6 +27,16 @@ class AdminSellerVerificationController extends Controller
             'verified_by' => Auth::id(),
             'verified_at' => now(),
         ]);
+
+        $verification->loadMissing('user.store');
+
+        if ($verification->user) {
+            try {
+                Mail::to($verification->user->email)->send(new WarungApprovedMail($verification->user, $verification));
+            } catch (Throwable $e) {
+                Log::warning('Warung approved email failed for '.$verification->user->email.': '.$e->getMessage());
+            }
+        }
 
         return back()->with(
             'success',
@@ -48,6 +63,16 @@ class AdminSellerVerificationController extends Controller
             'verified_by' => Auth::id(),
             'verified_at' => now(),
         ]);
+
+        $verification->loadMissing('user.store');
+
+        if ($verification->user) {
+            try {
+                Mail::to($verification->user->email)->send(new WarungRejectedMail($verification->user, $verification->fresh('user.store')));
+            } catch (Throwable $e) {
+                Log::warning('Warung rejected email failed for '.$verification->user->email.': '.$e->getMessage());
+            }
+        }
 
         return back()->with('success', "KYC {$verification->full_name} ditolak dengan alasan.");
     }

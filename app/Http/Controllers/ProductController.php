@@ -55,6 +55,7 @@ class ProductController extends Controller
         $this->sanitizeNumeric($request);
         $this->normalizeBarcode($request);
         $this->normalizeCategory($request);
+        $this->normalizeProductOptions($request);
 
         $validated = $this->validated($request);
 
@@ -104,11 +105,13 @@ class ProductController extends Controller
         $this->sanitizeNumeric($request);
         $this->normalizeBarcode($request);
         $this->normalizeCategory($request);
+        $this->normalizeProductOptions($request);
 
         // 1 product = 1 image. New image optional only if product already has one.
+        // Client compresses photos to under 1MB; the server enforces the same cap.
         $imageRule = $product->image_path
-            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048']
-            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024']
+            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'];
 
         $validated = $this->validated($request, $imageRule);
 
@@ -163,7 +166,7 @@ class ProductController extends Controller
     /** @return array<string, mixed> */
     protected function validated(Request $request, ?array $imageRule = null): array
     {
-        $imageRule ??= ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+        $imageRule ??= ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'];
 
         return $request->validate([
             'name' => ['required', 'string', 'max:120'],
@@ -197,7 +200,7 @@ class ProductController extends Controller
             'image.required' => 'Foto produk wajib diunggah (1 foto).',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran foto maksimal 2MB.',
+            'image.max' => 'Ukuran foto maksimal 1MB. Foto otomatis dikompres di HP — coba ambil ulang dengan resolusi lebih rendah.',
         ]);
     }
 
@@ -243,6 +246,24 @@ class ProductController extends Controller
         $barcode = trim((string) $request->input('barcode', ''));
 
         $request->merge(['barcode' => $barcode === '' ? null : $barcode]);
+    }
+
+    protected function normalizeProductOptions(Request $request): void
+    {
+        if ($request->input('has_promo') === 'no') {
+            $request->merge([
+                'discount_price' => null,
+                'promo_starts_at' => null,
+                'promo_ends_at' => null,
+            ]);
+        }
+
+        if ($request->input('has_brand') === 'no') {
+            $request->merge([
+                'brand_id' => null,
+                'new_brand' => null,
+            ]);
+        }
     }
 
     /**
