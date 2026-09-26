@@ -43,6 +43,17 @@ class SellerKycTest extends TestCase
             ->assertRedirect(route('seller.verification.show'));
     }
 
+    public function test_verification_form_requests_rear_camera_for_ktp_and_front_camera_for_selfie(): void
+    {
+        $seller = User::factory()->create(['role' => 'penjual']);
+
+        $this->actingAs($seller)
+            ->get(route('seller.verification.show'))
+            ->assertOk()
+            ->assertSee('name="ktp_image" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"', false)
+            ->assertSee('name="selfie_image" type="file" accept="image/jpeg,image/png,image/webp" capture="user"', false);
+    }
+
     public function test_penjual_can_submit_kyc_documents(): void
     {
         Storage::fake('public');

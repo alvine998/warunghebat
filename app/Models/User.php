@@ -154,7 +154,8 @@ class User extends Authenticatable
             'categories' => $this->products()
                 ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
                 ->selectRaw('COALESCE(categories.name, products.category, ?) AS category, COUNT(*) AS products, COALESCE(SUM(stock), 0) AS stock, COALESCE(SUM(price * stock), 0) AS value', ['Lainnya'])
-                ->groupBy('category')
+                // ONLY_FULL_GROUP_BY: group by the raw columns, not the alias.
+                ->groupBy('categories.name', 'products.category')
                 ->orderByDesc('value')
                 ->get(),
             'top_products' => $this->products()

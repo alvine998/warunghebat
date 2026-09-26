@@ -75,7 +75,7 @@
                         <p class="text-xs font-semibold text-ink-500">Sudah ada. Unggah baru untuk mengganti (opsional).</p>
                     </div>
                 @endif
-                <input name="ktp_image" type="file" accept="image/jpeg,image/png,image/webp" {{ $verification ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
+                <input name="ktp_image" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" {{ $verification ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
             </div>
 
             <div>
@@ -86,7 +86,7 @@
                         <p class="text-xs font-semibold text-ink-500">Sudah ada. Unggah baru untuk mengganti (opsional).</p>
                     </div>
                 @endif
-                <input name="selfie_image" type="file" accept="image/jpeg,image/png,image/webp" {{ $verification ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
+                <input name="selfie_image" type="file" accept="image/jpeg,image/png,image/webp" capture="user" {{ $verification ? '' : 'required' }} class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition file:mr-3 file:rounded-xl file:border-0 file:bg-ink-900 file:text-white file:text-[13px] file:font-extrabold file:px-4 file:py-2">
             </div>
 
             <div>
