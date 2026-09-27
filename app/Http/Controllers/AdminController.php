@@ -77,7 +77,8 @@ class AdminController extends Controller
                     ->orWhereHas('user', function ($query) use ($search): void {
                         $query->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");
-                    });
+                    })
+                    ->orWhereHas('user.sellerVerification', fn ($query) => $query->where('full_name', 'like', "%{$search}%"));
             });
         }
 

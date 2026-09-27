@@ -193,7 +193,7 @@
             @enderror
         </div>
 
-        <button class="mt-1 w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 transition">{{ $product->exists ? 'Simpan & kirim verifikasi ulang' : 'Simpan & kirim verifikasi' }}</button>
+        <button id="product-submit-btn" class="mt-1 w-full py-3.5 rounded-2xl bg-ink-900 text-white font-extrabold text-[15px] hover:bg-brand-600 transition disabled:opacity-60">{{ $product->exists ? 'Simpan & kirim verifikasi ulang' : 'Simpan & kirim verifikasi' }}</button>
     </form>
 </section>
 
@@ -301,10 +301,20 @@
     const photoInfo = document.getElementById('photo-info');
     const removeBtn = document.getElementById('photo-remove');
     const statusBox = document.getElementById('photo-status');
+    const submitBtn = document.getElementById('product-submit-btn');
+    const submitLabel = submitBtn?.textContent ?? '';
     const imageRequired = imageInput.dataset.required === '1';
     const maximumImageBytes = 1000000;
+    let isProcessing = false;
+    let pendingSubmit = false;
 
     if (!productForm || !cameraBtn || !galleryBtn || !cameraInput || !galleryInput || !imageInput) return;
+
+    function setSubmitBusy(busy) {
+        if (!submitBtn) return;
+        submitBtn.disabled = busy;
+        submitBtn.textContent = busy ? 'Mengompres foto…' : submitLabel;
+    }
 
     const kilobytes = (bytes) => Math.max(1, Math.round(bytes / 1024)) + ' KB';
 
@@ -409,17 +419,27 @@
 
         cameraBtn.disabled = true;
         galleryBtn.disabled = true;
+        isProcessing = true;
+        setSubmitBusy(true);
         showPhotoStatus(`Memproses ${file.name}…`);
 
         try {
             const { file: finalFile, compressed } = await compressImage(file);
             setImageFile(finalFile, compressed);
             hidePhotoStatus();
+
+            if (pendingSubmit) {
+                pendingSubmit = false;
+                productForm.requestSubmit();
+            }
         } catch (error) {
+            pendingSubmit = false;
             showPhotoStatus(error.message || 'Foto gagal diproses. Coba pilih foto lain.', true);
         } finally {
             cameraBtn.disabled = false;
             galleryBtn.disabled = false;
+            isProcessing = false;
+            setSubmitBusy(false);
             cameraInput.value = '';
             galleryInput.value = '';
         }
@@ -432,11 +452,19 @@
     removeBtn?.addEventListener('click', clearImageFile);
 
     productForm.addEventListener('submit', async (event) => {
+        if (isProcessing) {
+            event.preventDefault();
+            pendingSubmit = true;
+            showPhotoStatus('Masih mengompres foto — tunggu sebentar, form terkirim otomatis.');
+            return;
+        }
+
         if (!imageInput.files.length) {
             if (!imageRequired) return;
 
             event.preventDefault();
             showPhotoStatus('Pilih dulu foto produk — ketuk “Ambil Foto” atau “Galeri”.', true);
+            document.getElementById('photo-camera-btn')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
 

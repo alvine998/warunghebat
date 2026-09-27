@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use App\Models\SellerVerification;
 use App\Models\Store;
 use App\Models\User;
 use App\Models\Wallet;
@@ -15,6 +16,29 @@ use Tests\TestCase;
 class AdminListFiltersTest extends TestCase
 {
     use RefreshDatabase;
+
+    // ---------- WARUNG MITRA ----------
+
+    public function test_warungs_search_matches_pending_kyc_applicant_name(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $pendingSeller = User::factory()->create(['role' => 'penjual']);
+        $pendingStore = Store::factory()->for($pendingSeller)->create(['name' => 'Warung Tes']);
+        SellerVerification::factory()->for($pendingSeller)->create([
+            'full_name' => 'Tes Independent',
+            'status' => SellerVerification::STATUS_PENDING,
+        ]);
+
+        $verifiedSeller = User::factory()->create(['role' => 'penjual']);
+        $verifiedStore = Store::factory()->for($verifiedSeller)->create(['name' => 'Warung Independent']);
+        SellerVerification::factory()->for($verifiedSeller)->verified()->create(['full_name' => 'Tes Independent']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.warungs', ['search' => 'Tes Independent', 'kyc' => 'pending']))
+            ->assertOk()
+            ->assertSee($pendingStore->name)
+            ->assertDontSee($verifiedStore->name);
+    }
 
     // ---------- PEMBAYARAN ----------
 

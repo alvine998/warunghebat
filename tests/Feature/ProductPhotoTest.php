@@ -28,7 +28,9 @@ class ProductPhotoTest extends TestCase
             ->assertSee('id="photo-camera-input"', false)
             ->assertSee('capture="environment"', false)
             ->assertSee('id="photo-gallery-input"', false)
-            ->assertSee('maximumImageBytes', false);
+            ->assertSee('maximumImageBytes', false)
+            ->assertSee('id="product-submit-btn"', false)
+            ->assertSee('Masih mengompres foto', false);
     }
 
     public function test_product_store_accepts_image_at_or_below_one_megabyte(): void
