@@ -176,6 +176,51 @@ class AdminArticleTest extends TestCase
             ->assertDontSee('Kopi Susu');
     }
 
+    public function test_article_cover_under_one_megabyte_is_accepted(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.articles.store'), [
+                'title' => 'Artikel Baru',
+                'body' => 'Isi artikel.',
+                'status' => Article::STATUS_DRAFT,
+                'cover' => UploadedFile::fake()->image('cover.jpg')->size(950),
+            ])
+            ->assertRedirect(route('admin.articles'));
+
+        $this->assertSame(1, Article::count());
+    }
+
+    public function test_article_cover_over_950_kb_is_rejected(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.articles.store'), [
+                'title' => 'Artikel Baru',
+                'body' => 'Isi artikel.',
+                'status' => Article::STATUS_DRAFT,
+                'cover' => UploadedFile::fake()->image('cover.jpg')->size(951),
+            ])
+            ->assertSessionHasErrors(['cover']);
+
+        $this->assertSame(0, Article::count());
+    }
+
+    public function test_article_cover_form_uses_shared_image_compression(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.articles.create'))
+            ->assertOk()
+            ->assertSee('data-compress-images', false)
+            ->assertSee('otomatis dikompres di bawah 1MB');
+    }
+
     public function test_cover_upload_replaces_the_previous_file(): void
     {
         Storage::fake('public');

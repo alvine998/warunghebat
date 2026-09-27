@@ -41,9 +41,9 @@ class SellerVerificationController extends Controller
         $validated = $request->validate([
             'nik' => ['required', 'string', 'regex:/^[0-9]{16}$/'],
             'full_name' => ['required', 'string', 'max:120'],
-            'ktp_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1000'],
-            'selfie_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1000'],
-            'storefront_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1000'],
+            'ktp_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
+            'selfie_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
+            'storefront_image' => [$isResubmit ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
         ], [
             'nik.required' => 'NIK wajib diisi (16 digit di KTP).',
             'nik.regex' => 'NIK harus tepat 16 digit angka.',
@@ -57,9 +57,9 @@ class SellerVerificationController extends Controller
             'ktp_image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
             'selfie_image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
             'storefront_image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
-            'ktp_image.max' => 'Ukuran foto maksimal 1MB.',
-            'selfie_image.max' => 'Ukuran foto maksimal 1MB.',
-            'storefront_image.max' => 'Ukuran foto maksimal 1MB.',
+            'ktp_image.max' => 'Ukuran foto maksimal 950KB.',
+            'selfie_image.max' => 'Ukuran foto maksimal 950KB.',
+            'storefront_image.max' => 'Ukuran foto maksimal 950KB.',
         ]);
 
         $ktpPath = $existing?->ktp_path;

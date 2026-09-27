@@ -24,7 +24,7 @@ class ProductPhotoTest extends TestCase
             ->assertOk()
             ->assertSee('Ambil Foto', false)
             ->assertSee('Galeri', false)
-            ->assertSee('otomatis dikompres maks 1MB', false)
+            ->assertSee('otomatis dikompres di bawah 1MB', false)
             ->assertSee('id="photo-camera-input"', false)
             ->assertSee('capture="environment"', false)
             ->assertSee('id="photo-gallery-input"', false)
@@ -43,13 +43,13 @@ class ProductPhotoTest extends TestCase
             'price' => '3500',
             'stock' => '20',
             'category' => 'Sembako',
-            'image' => UploadedFile::fake()->image('produk.jpg')->size(1000),
+            'image' => UploadedFile::fake()->image('produk.jpg')->size(950),
         ])->assertRedirect(route('seller.products.index'));
 
         $this->assertSame('Indomie Goreng', Product::sole()->name);
     }
 
-    public function test_product_store_rejects_image_larger_than_one_megabyte(): void
+    public function test_product_store_rejects_image_over_950_kb(): void
     {
         Storage::fake('public');
         $seller = $this->verifiedSeller();
@@ -59,13 +59,13 @@ class ProductPhotoTest extends TestCase
             'price' => '3500',
             'stock' => '20',
             'category' => 'Sembako',
-            'image' => UploadedFile::fake()->image('produk.jpg')->size(1025),
+            'image' => UploadedFile::fake()->image('produk.jpg')->size(951),
         ])->assertSessionHasErrors(['image']);
 
         $this->assertSame(0, Product::count());
     }
 
-    public function test_product_update_rejects_image_larger_than_one_megabyte(): void
+    public function test_product_update_rejects_image_over_950_kb(): void
     {
         Storage::fake('public');
         $seller = $this->verifiedSeller();
@@ -76,7 +76,7 @@ class ProductPhotoTest extends TestCase
             'price' => (string) $product->price,
             'stock' => (string) $product->stock,
             'category' => 'Sembako',
-            'image' => UploadedFile::fake()->image('baru.jpg')->size(1500),
+            'image' => UploadedFile::fake()->image('baru.jpg')->size(951),
         ])->assertSessionHasErrors(['image']);
     }
 

@@ -1,3 +1,116 @@
+// Compress oversized images in multipart forms before upload.
+(function compressImageUploads() {
+    const maximumImageBytes = 950000;
+    const compressibleForms = document.querySelectorAll('form[data-compress-images]');
+
+    function loadImage(file) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const objectUrl = URL.createObjectURL(file);
+
+            image.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve(image);
+            };
+            image.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                reject(new Error('Foto tidak dapat dibaca.'));
+            };
+            image.src = objectUrl;
+        });
+    }
+
+    function canvasBlob(canvas, quality) {
+        return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    async function compressImage(file) {
+        if (file.size <= maximumImageBytes) {
+            return file;
+        }
+
+        const image = await loadImage(file);
+        const canvas = document.createElement('canvas');
+        const originalDimension = Math.max(image.width, image.height);
+        const filename = file.name.replace(/\.[^.]+$/, '') || 'foto';
+
+        for (const maxDimension of [2400, 2000, 1600, 1200]) {
+            const scale = Math.min(1, maxDimension / originalDimension);
+            canvas.width = Math.round(image.width * scale);
+            canvas.height = Math.round(image.height * scale);
+            const context = canvas.getContext('2d');
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            for (const quality of [0.82, 0.72, 0.62, 0.52, 0.42, 0.32]) {
+                const blob = await canvasBlob(canvas, quality);
+
+                if (blob && blob.size <= maximumImageBytes) {
+                    return new File([blob], `${filename}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+                }
+            }
+        }
+
+        throw new Error(`Foto ${file.name} tetap lebih dari 1MB setelah dikompres. Coba pilih foto lain.`);
+    }
+
+    compressibleForms.forEach((form) => {
+        let submitting = false;
+        const status = document.createElement('p');
+        status.className = 'hidden text-sm font-semibold';
+        status.setAttribute('aria-live', 'polite');
+        form.querySelector('button[type="submit"], button:not([type])')?.before(status);
+
+        form.addEventListener('submit', async (event) => {
+            if (submitting) {
+                return;
+            }
+
+            const imageInputs = [...form.querySelectorAll('input[type="file"]')];
+            const oversizedImages = imageInputs.filter((input) => input.files[0]?.size > maximumImageBytes);
+
+            if (!oversizedImages.length) {
+                return;
+            }
+
+            event.preventDefault();
+            const submitButton = event.submitter || form.querySelector('button[type="submit"], button:not([type])');
+            const originalLabel = submitButton?.textContent;
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Mengompres foto…';
+            }
+
+            try {
+                for (const input of oversizedImages) {
+                    status.textContent = `Mengompres ${input.files[0].name}…`;
+                    status.classList.remove('hidden', 'bg-red-50', 'text-red-700');
+                    status.classList.add('bg-leaf-50', 'text-leaf-700', 'rounded-xl', 'p-3');
+                    const compressedFile = await compressImage(input.files[0]);
+                    const transfer = new DataTransfer();
+                    transfer.items.add(compressedFile);
+                    input.files = transfer.files;
+                }
+
+                submitting = true;
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+                form.requestSubmit(submitButton || undefined);
+            } catch (error) {
+                status.textContent = error.message || 'Foto gagal dikompres. Coba pilih foto lain.';
+                status.classList.remove('hidden', 'bg-leaf-50', 'text-leaf-700');
+                status.classList.add('bg-red-50', 'text-red-700', 'rounded-xl', 'p-3');
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalLabel;
+                }
+            }
+        });
+    });
+})();
+
 // PWA: service worker + install prompt. Deferred past first paint, so the
 // offline cache and install banner never compete with the landing content.
 (function registerPwa() {

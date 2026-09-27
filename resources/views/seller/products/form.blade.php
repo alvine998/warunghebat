@@ -166,7 +166,7 @@
         </div>
 
         <div>
-            <label class="text-[13px] font-extrabold">Foto produk * <span class="font-semibold text-ink-500">(1 foto, JPG/PNG/WebP — otomatis dikompres maks 1MB)</span></label>
+            <label class="text-[13px] font-extrabold">Foto produk * <span class="font-semibold text-ink-500">(1 foto, JPG/PNG/WebP — otomatis dikompres di bawah 1MB)</span></label>
             @if($product->exists && $product->image_path)
                 <div class="mt-1.5 flex items-center gap-3">
                     <img src="{{ $product->image_url }}" alt="Foto {{ $product->name }}" class="w-20 h-20 rounded-2xl object-cover border border-ink-900/10">
@@ -304,7 +304,7 @@
     const submitBtn = document.getElementById('product-submit-btn');
     const submitLabel = submitBtn?.textContent ?? '';
     const imageRequired = imageInput.dataset.required === '1';
-    const maximumImageBytes = 1000000;
+    const maximumImageBytes = 950000;
     let isProcessing = false;
     let pendingSubmit = false;
 

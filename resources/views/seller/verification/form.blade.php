@@ -68,7 +68,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Foto KTP * <span class="font-semibold text-ink-500">(foto akan dikompres maksimal 1MB — pastikan NIK & foto jelas)</span></label>
+                <label class="text-[13px] font-extrabold">Foto KTP * <span class="font-semibold text-ink-500">(foto dikompres maksimal 950KB — pastikan NIK & foto jelas)</span></label>
                 @if($verification?->ktp_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->ktp_url }}" alt="Foto KTP saat ini" class="w-20 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -79,7 +79,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Selfie pegang KTP * <span class="font-semibold text-ink-500">(wajah + KTP jelas; foto dikompres maksimal 1MB)</span></label>
+                <label class="text-[13px] font-extrabold">Selfie pegang KTP * <span class="font-semibold text-ink-500">(wajah + KTP jelas; foto dikompres maksimal 950KB)</span></label>
                 @if($verification?->selfie_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->selfie_url }}" alt="Selfie saat ini" class="w-14 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -90,7 +90,7 @@
             </div>
 
             <div>
-                <label class="text-[13px] font-extrabold">Foto depan warung * <span class="font-semibold text-ink-500">(plang/spanduk terlihat; foto dikompres maksimal 1MB)</span></label>
+                <label class="text-[13px] font-extrabold">Foto depan warung * <span class="font-semibold text-ink-500">(plang/spanduk terlihat; foto dikompres maksimal 950KB)</span></label>
                 @if($verification?->storefront_path)
                     <div class="mt-1.5 flex items-center gap-3">
                         <img src="{{ $verification->storefront_url }}" alt="Foto warung saat ini" class="w-20 h-14 rounded-xl object-cover border border-ink-900/10">
@@ -113,7 +113,7 @@
     const verificationForm = document.querySelector('form[action="{{ route('seller.verification.store') }}"]');
     const compressionStatus = document.getElementById('image-compression-status');
     const submitButton = document.getElementById('verification-submit');
-    const maximumImageBytes = 1000000;
+    const maximumImageBytes = 950000;
 
     function showCompressionStatus(message, isError = false) {
         compressionStatus.textContent = message;

@@ -61,11 +61,11 @@ class SellerKycTest extends TestCase
         $this->actingAs($seller)
             ->get(route('seller.verification.show'))
             ->assertOk()
-            ->assertSee('foto akan dikompres maksimal 1MB')
-            ->assertSee('foto dikompres maksimal 1MB');
+            ->assertSee('foto dikompres maksimal 950KB')
+            ->assertSee('wajah + KTP jelas; foto dikompres maksimal 950KB');
     }
 
-    public function test_kyc_upload_accepts_images_at_or_below_one_megabyte(): void
+    public function test_kyc_upload_accepts_images_at_or_below_the_950_kb_limit(): void
     {
         Storage::fake('public');
         $seller = User::factory()->create(['role' => 'penjual']);
@@ -74,7 +74,7 @@ class SellerKycTest extends TestCase
             ->post(route('seller.verification.store'), [
                 'nik' => '3174051209900001',
                 'full_name' => 'Bang Jago',
-                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(1000),
+                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(950),
                 'selfie_image' => UploadedFile::fake()->image('selfie.jpg'),
                 'storefront_image' => UploadedFile::fake()->image('warung.jpg'),
             ])
@@ -82,7 +82,7 @@ class SellerKycTest extends TestCase
             ->assertSessionHas('success');
     }
 
-    public function test_kyc_upload_rejects_images_larger_than_one_megabyte(): void
+    public function test_kyc_upload_rejects_images_over_950_kb(): void
     {
         Storage::fake('public');
         $seller = User::factory()->create(['role' => 'penjual']);
@@ -91,7 +91,7 @@ class SellerKycTest extends TestCase
             ->post(route('seller.verification.store'), [
                 'nik' => '3174051209900001',
                 'full_name' => 'Bang Jago',
-                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(1001),
+                'ktp_image' => UploadedFile::fake()->image('ktp.jpg')->size(951),
                 'selfie_image' => UploadedFile::fake()->image('selfie.jpg'),
                 'storefront_image' => UploadedFile::fake()->image('warung.jpg'),
             ])

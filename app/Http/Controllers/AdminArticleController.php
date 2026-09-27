@@ -97,7 +97,7 @@ class AdminArticleController extends Controller
             'excerpt' => ['nullable', 'string', 'max:300'],
             'body' => ['required', 'string', 'max:20000'],
             'status' => ['required', 'in:'.implode(',', Article::STATUSES)],
-            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
         ], [
             'title.required' => 'Judul artikel wajib diisi.',
             'title.max' => 'Judul maksimal 140 karakter.',
@@ -108,7 +108,7 @@ class AdminArticleController extends Controller
             'status.in' => 'Status artikel tidak valid.',
             'cover.image' => 'File harus berupa gambar.',
             'cover.mimes' => 'Format cover harus JPG, PNG, atau WebP.',
-            'cover.max' => 'Ukuran cover maksimal 2MB.',
+            'cover.max' => 'Ukuran cover maksimal 950KB.',
         ]);
     }
 

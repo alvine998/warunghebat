@@ -8,7 +8,7 @@
 <h1 class="font-black tracking-tight text-3xl mt-2">{{ $article->exists ? 'Edit artikel' : 'Tulis artikel' }}</h1>
 <p class="text-sm font-medium text-ink-500">Isi artikel memakai format Markdown sederhana: <code class="rounded bg-cream-100 px-1.5 py-0.5 text-[12px] font-bold">## Subjudul</code>, <code class="rounded bg-cream-100 px-1.5 py-0.5 text-[12px] font-bold">- daftar</code>, <code class="rounded bg-cream-100 px-1.5 py-0.5 text-[12px] font-bold">**tebal**</code>.</p>
 
-<form method="POST" action="{{ $article->exists ? route('admin.articles.update', $article) : route('admin.articles.store') }}" enctype="multipart/form-data" class="mt-5 max-w-3xl grid gap-3.5">
+<form method="POST" action="{{ $article->exists ? route('admin.articles.update', $article) : route('admin.articles.store') }}" enctype="multipart/form-data" data-compress-images class="mt-5 max-w-3xl grid gap-3.5">
     @csrf
     @if($article->exists)
         @method('PUT')
@@ -45,7 +45,7 @@
             <div>
                 <label for="cover" class="text-[13px] font-extrabold">Cover artikel</label>
                 <input id="cover" name="cover" type="file" accept="image/png,image/jpeg,image/webp" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[13px] font-semibold file:mr-3 file:rounded-full file:border-0 file:bg-ink-900 file:px-4 file:py-2 file:text-[12px] file:font-extrabold file:text-white outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
-                <p class="mt-1.5 text-xs font-semibold text-ink-500">Opsional. JPG, PNG, atau WebP, maksimal 2MB. Dipakai juga sebagai gambar pratinjau saat dibagikan.</p>
+                <p class="mt-1.5 text-xs font-semibold text-ink-500">Opsional. Foto otomatis dikompres di bawah 1MB. Dipakai juga sebagai gambar pratinjau saat dibagikan.</p>
                 @if($article->cover_path)
                     <img src="{{ $article->cover_url }}" alt="Cover {{ $article->title }}" class="mt-2 w-40 rounded-2xl border border-ink-900/10">
                 @endif

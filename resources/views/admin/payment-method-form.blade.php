@@ -8,7 +8,7 @@
 <h1 class="font-black tracking-tight text-3xl mt-2">{{ $method->exists ? 'Edit metode' : 'Tambah metode' }}</h1>
 <p class="text-sm font-medium text-ink-500">Rekening tujuan transfer pembeli. Dana masuk ke Warung Hebat dulu, baru diteruskan ke warung.</p>
 
-<form method="POST" action="{{ $method->exists ? route('admin.payment-methods.update', $method) : route('admin.payment-methods.store') }}" enctype="multipart/form-data" class="mt-5 max-w-2xl grid gap-3.5">
+<form method="POST" action="{{ $method->exists ? route('admin.payment-methods.update', $method) : route('admin.payment-methods.store') }}" enctype="multipart/form-data" data-compress-images class="mt-5 max-w-2xl grid gap-3.5">
     @csrf
     @if($method->exists)
         @method('PUT')
@@ -49,7 +49,7 @@
         <div>
             <label for="image" class="text-[13px] font-extrabold">Gambar QRIS / logo</label>
             <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[13px] font-semibold file:mr-3 file:rounded-full file:border-0 file:bg-ink-900 file:px-4 file:py-2 file:text-[12px] file:font-extrabold file:text-white outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
-            <p class="mt-1.5 text-xs font-semibold text-ink-500">Opsional. JPG, PNG, atau WebP, maksimal 2MB.</p>
+            <p class="mt-1.5 text-xs font-semibold text-ink-500">Opsional. Foto otomatis dikompres di bawah 1MB.</p>
             @if($method->image_path)
                 <img src="{{ $method->image_url }}" alt="{{ $method->name }}" class="mt-2 w-32 rounded-2xl border border-ink-900/10">
             @endif

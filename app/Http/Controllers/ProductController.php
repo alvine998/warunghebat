@@ -110,8 +110,8 @@ class ProductController extends Controller
         // 1 product = 1 image. New image optional only if product already has one.
         // Client compresses photos to under 1MB; the server enforces the same cap.
         $imageRule = $product->image_path
-            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024']
-            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'];
+            ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950']
+            : ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'];
 
         $validated = $this->validated($request, $imageRule);
 
@@ -166,7 +166,7 @@ class ProductController extends Controller
     /** @return array<string, mixed> */
     protected function validated(Request $request, ?array $imageRule = null): array
     {
-        $imageRule ??= ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'];
+        $imageRule ??= ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'];
 
         return $request->validate([
             'name' => ['required', 'string', 'max:120'],
@@ -200,7 +200,7 @@ class ProductController extends Controller
             'image.required' => 'Foto produk wajib diunggah (1 foto).',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran foto maksimal 1MB. Foto otomatis dikompres di HP — coba ambil ulang dengan resolusi lebih rendah.',
+            'image.max' => 'Ukuran foto maksimal 950KB. Foto otomatis dikompres di HP — coba ambil ulang dengan resolusi lebih rendah.',
         ]);
     }
 

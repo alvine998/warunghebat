@@ -79,14 +79,14 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'payment_method_id' => ['required', 'integer', 'exists:payment_methods,id'],
-            'proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
         ], [
             'payment_method_id.required' => 'Pilih metode pembayaran dulu.',
             'payment_method_id.exists' => 'Metode pembayaran tidak ditemukan.',
             'proof.required' => 'Bukti transfer wajib diunggah.',
             'proof.image' => 'File harus berupa gambar.',
             'proof.mimes' => 'Format bukti harus JPG, PNG, atau WebP.',
-            'proof.max' => 'Ukuran bukti maksimal 2MB.',
+            'proof.max' => 'Ukuran bukti maksimal 950KB.',
         ]);
 
         $method = PaymentMethod::active()->whereKey($validated['payment_method_id'])->first();

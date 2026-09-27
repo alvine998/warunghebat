@@ -102,7 +102,7 @@ class AdminPaymentMethodController extends Controller
             'account_number' => ['nullable', 'required_unless:type,qris', 'string', 'max:50'],
             'account_name' => ['nullable', 'string', 'max:80'],
             'instructions' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:1000'],
         ], [
             'type.required' => 'Tipe metode wajib dipilih.',
@@ -111,7 +111,7 @@ class AdminPaymentMethodController extends Controller
             'account_number.required_unless' => 'Nomor rekening wajib diisi untuk transfer bank dan e-wallet.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format gambar harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'image.max' => 'Ukuran gambar maksimal 950KB.',
         ]);
     }
 

@@ -74,7 +74,7 @@ class StoreController extends Controller
             'open_time' => ['nullable', 'date_format:H:i'],
             'close_time' => ['nullable', 'date_format:H:i'],
             'is_open' => ['sometimes', 'boolean'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
         ], [
             'name.required' => 'Nama warung wajib diisi.',
             'phone.regex' => 'Nomor HP/WA tidak valid.',
@@ -88,7 +88,7 @@ class StoreController extends Controller
             'close_time.date_format' => 'Jam tutup harus format JJ:MM.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Format foto harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran foto maksimal 2MB.',
+            'image.max' => 'Ukuran foto maksimal 950KB.',
         ]);
 
         $imagePath = $store->image_path;

@@ -110,7 +110,7 @@
                     <p class="text-[13px] font-semibold text-ink-500 mt-1">Hubungi admin Warung Hebat untuk menyelesaikan pembayaran pesanan ini.</p>
                 </div>
             @else
-                <form method="POST" action="{{ route('orders.proof', $order) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('orders.proof', $order) }}" enctype="multipart/form-data" data-compress-images>
                     @csrf
 
                     <p class="font-extrabold">1. Pilih tujuan transfer</p>
@@ -146,7 +146,7 @@
 
                     <label for="proof" class="sr-only">Bukti transfer</label>
                     <input id="proof" name="proof" type="file" accept="image/png,image/jpeg,image/webp" required class="mt-2 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[13px] font-semibold file:mr-3 file:rounded-full file:border-0 file:bg-ink-900 file:px-4 file:py-2 file:text-[12px] file:font-extrabold file:text-white outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
-                    <p class="mt-1 text-[11px] font-semibold text-ink-500">JPG, PNG, atau WebP. Maksimal 2MB.</p>
+                    <p class="mt-1 text-[11px] font-semibold text-ink-500">JPG, PNG, atau WebP. Otomatis dikompres di bawah 1MB.</p>
 
                     <button class="mt-3 w-full min-h-12 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm transition">Kirim bukti transfer</button>
                 </form>

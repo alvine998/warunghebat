@@ -96,6 +96,38 @@ class AdminPaymentMethodTest extends TestCase
         Storage::disk('public')->assertExists($method->image_path);
     }
 
+    public function test_payment_method_image_under_one_megabyte_is_accepted(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.payment-methods.store'), [
+                'type' => 'qris',
+                'name' => 'QRIS Warung Hebat',
+                'image' => UploadedFile::fake()->image('qris.png')->size(950),
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(1, PaymentMethod::count());
+    }
+
+    public function test_payment_method_image_over_950_kb_is_rejected(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.payment-methods.store'), [
+                'type' => 'qris',
+                'name' => 'QRIS Warung Hebat',
+                'image' => UploadedFile::fake()->image('qris.png')->size(951),
+            ])
+            ->assertSessionHasErrors(['image']);
+
+        $this->assertSame(0, PaymentMethod::count());
+    }
+
     public function test_an_invalid_type_is_rejected(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -177,6 +209,17 @@ class AdminPaymentMethodTest extends TestCase
 
         $this->assertCount(2, $methods);
         $this->assertSame(['Bank Prioritas', 'Bank Aktif'], $methods->pluck('name')->all());
+    }
+
+    public function test_payment_method_image_form_uses_shared_image_compression(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.payment-methods.create'))
+            ->assertOk()
+            ->assertSee('data-compress-images', false)
+            ->assertSee('otomatis dikompres di bawah 1MB');
     }
 
     public function test_admin_can_open_the_payment_methods_pages(): void

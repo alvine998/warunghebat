@@ -70,6 +70,41 @@ class PaymentProofTest extends TestCase
         $this->assertSame(Order::STATUS_PENDING_PAYMENT, $order->fresh()->status);
     }
 
+    public function test_proof_under_one_megabyte_is_accepted(): void
+    {
+        Storage::fake('public');
+        $buyer = User::factory()->create(['role' => 'pembeli']);
+        $order = Order::factory()->for($buyer)->create();
+        $method = PaymentMethod::factory()->create(['is_active' => true]);
+
+        $this->actingAs($buyer)
+            ->post(route('orders.proof', $order), [
+                'payment_method_id' => $method->id,
+                'proof' => UploadedFile::fake()->image('bukti.jpg')->size(950),
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertSame(1, $order->payments()->count());
+    }
+
+    public function test_proof_over_950_kb_is_rejected(): void
+    {
+        $buyer = User::factory()->create(['role' => 'pembeli']);
+        $order = Order::factory()->for($buyer)->create();
+        $method = PaymentMethod::factory()->create(['is_active' => true]);
+
+        $this->actingAs($buyer)
+            ->post(route('orders.proof', $order), [
+                'payment_method_id' => $method->id,
+                'proof' => UploadedFile::fake()->image('bukti.jpg')->size(951),
+            ])
+            ->assertSessionHasErrors(['proof']);
+
+        $this->assertSame(0, $order->payments()->count());
+        $this->assertSame(Order::STATUS_PENDING_PAYMENT, $order->fresh()->status);
+    }
+
     public function test_proof_must_be_an_image(): void
     {
         $buyer = User::factory()->create(['role' => 'pembeli']);
@@ -145,7 +180,9 @@ class PaymentProofTest extends TestCase
             ->assertSee('BCA a/n Warung Hebat')
             ->assertSee('1234567890')
             ->assertSee('Rp 30.000')
-            ->assertSee('Warung Bang Jago');
+            ->assertSee('Warung Bang Jago')
+            ->assertSee('data-compress-images', false)
+            ->assertSee('Otomatis dikompres di bawah 1MB.');
     }
 
     public function test_buyer_cannot_open_another_buyers_order(): void

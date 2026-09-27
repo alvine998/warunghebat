@@ -25,7 +25,7 @@
         @include('seller.store._stats')
     </div>
 
-    <form method="POST" action="{{ route('seller.store.update') }}" enctype="multipart/form-data" class="mt-5 rounded-[28px] bg-white border border-ink-900/10 p-6 grid gap-4">
+    <form method="POST" action="{{ route('seller.store.update') }}" enctype="multipart/form-data" data-compress-images class="mt-5 rounded-[28px] bg-white border border-ink-900/10 p-6 grid gap-4">
         @csrf
         @method('PUT')
 
@@ -89,7 +89,7 @@
         </div>
 
         <div>
-            <label class="text-[13px] font-extrabold">Foto warung <span class="font-semibold text-ink-500">(JPG/PNG/WebP, maks 2MB)</span></label>
+            <label class="text-[13px] font-extrabold">Foto warung <span class="font-semibold text-ink-500">(otomatis dikompres di bawah 1MB)</span></label>
             @if($store->image_path)
                 <div class="mt-1.5 flex items-center gap-3">
                     <img src="{{ $store->image_url }}" alt="Foto {{ $store->name }}" class="w-20 h-20 rounded-2xl object-cover border border-ink-900/10">
