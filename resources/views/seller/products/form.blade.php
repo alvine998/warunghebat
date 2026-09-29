@@ -214,6 +214,7 @@
 </section>
 
 @include('components.barcode-scanner')
+@include('components.camera-capture')
 
 <script>
 (function () {
@@ -711,7 +712,20 @@
         }
     }
 
-    cameraBtn.addEventListener('click', () => cameraInput.click());
+    // Di HP tetap buka aplikasi kamera native (capture="environment"); modal
+    // getUserMedia hanya untuk desktop/webcam.
+    const prefersNativeCamera = () => window.matchMedia?.('(pointer: coarse)').matches;
+
+    cameraBtn.addEventListener('click', async () => {
+        if (isSubmitting) return;
+        if (prefersNativeCamera() || typeof window.openCameraCapture !== 'function') {
+            cameraInput.click();
+            return;
+        }
+        const file = await window.openCameraCapture();
+        if (file) handlePickedFile(file);
+        else cameraInput.click();
+    });
     galleryBtn.addEventListener('click', () => galleryInput.click());
     cameraInput.addEventListener('change', () => handlePickedFile(cameraInput.files[0]));
     galleryInput.addEventListener('change', () => handlePickedFile(galleryInput.files[0]));
