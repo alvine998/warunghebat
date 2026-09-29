@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -41,6 +42,8 @@ class AdminCategoryController extends Controller
             'slug' => Category::uniqueSlug($validated['name']),
         ]);
 
+        Cache::forget('categories-ordered-select');
+
         return redirect()
             ->route('admin.categories')
             ->with('success', "Kategori \"{$category->name}\" ditambahkan.");
@@ -70,6 +73,8 @@ class AdminCategoryController extends Controller
             $category->products()->where('category', $category->getOriginal('name'))->update(['category' => $category->name]);
         }
 
+        Cache::forget('categories-ordered-select');
+
         return redirect()
             ->route('admin.categories')
             ->with('success', "Kategori \"{$category->name}\" diperbarui.");
@@ -78,6 +83,8 @@ class AdminCategoryController extends Controller
     public function toggle(Category $category): RedirectResponse
     {
         $category->update(['is_active' => ! $category->is_active]);
+
+        Cache::forget('categories-ordered-select');
 
         return back()->with('success', $category->is_active
             ? "Kategori \"{$category->name}\" diaktifkan."
@@ -91,6 +98,8 @@ class AdminCategoryController extends Controller
         }
 
         $category->delete();
+
+        Cache::forget('categories-ordered-select');
 
         return back()->with('success', "Kategori \"{$category->name}\" dihapus.");
     }

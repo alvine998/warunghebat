@@ -6,9 +6,11 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -26,11 +28,16 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
+        // Single GROUP BY instead of 4 separate COUNT(*) queries.
+        $grouped = Auth::user()->products()
+            ->selectRaw('status, COUNT(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
         $counts = [
-            'all' => Auth::user()->products()->count(),
-            'pending' => Auth::user()->products()->where('status', 'pending')->count(),
-            'approved' => Auth::user()->products()->where('status', 'approved')->count(),
-            'rejected' => Auth::user()->products()->where('status', 'rejected')->count(),
+            'all' => (int) $grouped->sum(),
+            'pending' => (int) ($grouped['pending'] ?? 0),
+            'approved' => (int) ($grouped['approved'] ?? 0),
+            'rejected' => (int) ($grouped['rejected'] ?? 0),
         ];
 
         return view('seller.products.index', [
@@ -45,12 +52,12 @@ class ProductController extends Controller
         return view('seller.products.form', [
             'product' => new Product,
             'store' => Store::resolveFor(Auth::user()),
-            'categories' => Category::ordered()->get(),
-            'brands' => Auth::user()->brands()->orderBy('name')->get(),
+            'categories' => $this->cachedCategories(),
+            'brands' => Auth::user()->brands()->orderBy('name')->get(['id', 'user_id', 'name', 'slug']),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $this->sanitizeNumeric($request);
         $this->normalizeBarcode($request);
@@ -82,6 +89,13 @@ class ProductController extends Controller
             'rejection_reason' => null,
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'redirect_url' => route('seller.products.index'),
+                'message' => 'Produk ditambahkan dan menunggu verifikasi admin.',
+            ]);
+        }
+
         return redirect()->route('seller.products.index')
             ->with('success', 'Produk ditambahkan dan menunggu verifikasi admin.');
     }
@@ -93,12 +107,12 @@ class ProductController extends Controller
         return view('seller.products.form', [
             'product' => $product->load(['categoryRef', 'brand']),
             'store' => Store::resolveFor(Auth::user()),
-            'categories' => Category::ordered()->get(),
-            'brands' => Auth::user()->brands()->orderBy('name')->get(),
+            'categories' => $this->cachedCategories(),
+            'brands' => Auth::user()->brands()->orderBy('name')->get(['id', 'user_id', 'name', 'slug']),
         ]);
     }
 
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, Product $product): RedirectResponse|JsonResponse
     {
         $this->authorizeOwner($product);
 
@@ -145,8 +159,27 @@ class ProductController extends Controller
             'rejection_reason' => null,
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'redirect_url' => route('seller.products.index'),
+                'message' => 'Produk diperbarui dan menunggu verifikasi ulang admin.',
+            ]);
+        }
+
         return redirect()->route('seller.products.index')
             ->with('success', 'Produk diperbarui dan menunggu verifikasi ulang admin.');
+    }
+
+    /**
+     * Categories change rarely (admin backoffice) but are loaded on every
+     * product create/edit. Cache the ordered list for an hour to skip the
+     * query on warm pages. Invalidated in AdminCategoryController.
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\Category>
+     */
+    protected function cachedCategories(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('categories-ordered-select', 3600, fn () => Category::ordered()->get(['id', 'name', 'slug', 'sort_order']));
     }
 
     public function destroy(Product $product): RedirectResponse

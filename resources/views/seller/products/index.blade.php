@@ -55,7 +55,7 @@
                     <td class="px-5 py-4">
                         <div class="flex gap-3.5">
                             @if($p->image_path)
-                                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-16 h-16 rounded-2xl object-cover border border-ink-900/10 shrink-0">
+                                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" @if($loop->index < 2) fetchpriority="high" @else loading="lazy" @endif decoding="async" width="64" height="64" class="w-16 h-16 rounded-2xl object-cover border border-ink-900/10 shrink-0">
                             @else
                                 <div class="w-16 h-16 rounded-2xl bg-cream-100 border border-dashed border-ink-900/15 grid place-items-center text-2xl shrink-0">📷</div>
                             @endif
@@ -119,7 +119,7 @@
         @foreach($products as $p)
         <div class="rounded-[24px] bg-white border border-ink-900/10 overflow-hidden flex flex-col">
             @if($p->image_path)
-                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" class="w-full h-44 sm:h-40 object-cover">
+                <img src="{{ $p->image_url }}" alt="Foto {{ $p->name }}" @if($loop->index < 2) fetchpriority="high" @else loading="lazy" @endif decoding="async" width="640" height="360" class="w-full h-44 sm:h-40 object-cover">
             @else
                 <div class="w-full h-44 sm:h-40 bg-cream-100 border-b border-dashed border-ink-900/15 grid place-items-center text-4xl">📷</div>
             @endif
@@ -171,4 +171,20 @@
 
     <div class="mt-6 flex justify-center">{{ $products->links() }}</div>
 </section>
+
+<script>
+(function () {
+    // Cegah klik ganda + kasih feedback saat hapus / pindah halaman.
+    document.querySelectorAll('form[action*="seller/products"]').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const btn = form.querySelector('button[type="submit"], button:not([type])');
+            if (!btn || btn.disabled) return;
+            btn.disabled = true;
+            btn.setAttribute('aria-busy', 'true');
+            if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+            btn.textContent = 'Menghapus…';
+        });
+    });
+})();
+</script>
 @endsection

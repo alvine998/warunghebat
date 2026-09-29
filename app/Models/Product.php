@@ -65,19 +65,25 @@ class Product extends Model
     {
         // Keep the legacy `category` string and the new `category_id` in sync
         // so old rows, factories, and tests keep working during migration.
+        // Optimized: single lookup, skipped entirely when both sides already agree.
         static::saving(function (Product $product): void {
+            if ($product->category_id && $product->category) {
+                // Fast path — controller already sets both consistently. Avoid any query.
+                // Only re-sync when the FK itself changed (rename handled by admin sync job).
+                if ($product->isDirty('category_id')) {
+                    $name = Category::whereKey($product->category_id)->value('name');
+                    if (is_string($name) && $name !== '') {
+                        $product->category = $name;
+                    }
+                }
+
+                return;
+            }
+
             if ($product->category_id && ! $product->category) {
                 $product->category = Category::whereKey($product->category_id)->value('name');
             } elseif ($product->category && ! $product->category_id) {
                 $product->category_id = Category::where('name', $product->category)->value('id');
-            }
-
-            if ($product->category_id) {
-                $name = Category::whereKey($product->category_id)->value('name');
-
-                if (is_string($name) && $name !== '') {
-                    $product->category = $name;
-                }
             }
         });
     }
