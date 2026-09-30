@@ -93,8 +93,11 @@
             </div>
         </div>
 
+        {{-- Mobile menu backdrop: dims page, tap to dismiss --}}
+        <div id="mobile-menu-backdrop" class="hidden xl:hidden fixed inset-0 z-40 bg-ink-900/50" aria-hidden="true"></div>
+
         {{-- Mobile menu --}}
-        <div id="mobile-menu" class="hidden xl:hidden mx-4 mb-4 rounded-3xl bg-ink-900 text-white p-3 shadow-2xl">
+        <div id="mobile-menu" class="hidden xl:hidden relative z-50 mx-4 mb-4 max-h-[calc(100vh-6rem)] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-3xl bg-ink-900 text-white p-3 shadow-2xl">
             <nav class="grid text-[15px] font-bold">
                 <a href="{{ $onHome ? '#kategori' : route('home').'#kategori' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="grid" class="w-5 h-5 text-brand-300" /> Kategori</a>
                 <a href="{{ $onHome ? '#cara-kerja' : route('home').'#cara-kerja' }}" class="px-4 py-3 rounded-2xl hover:bg-white/10 flex items-center gap-2.5"><x-icon name="truck" class="w-5 h-5 text-brand-300" /> Cara Kerja</a>

@@ -99,8 +99,21 @@ class SellerTransactionController extends Controller
             $buyerDetails,
         );
 
-        return redirect()->route('seller.transactions.index')
-            ->with('success', 'Transaksi langsung sebesar Rp '.number_format($transaction->total, 0, ',', '.').' berhasil dicatat.');
+        $message = 'Transaksi langsung sebesar Rp '.number_format($transaction->total, 0, ',', '.').' berhasil dicatat.';
+        $target = $request->input('submit_action') === 'print'
+            ? route('seller.transactions.receipt', $transaction)
+            : route('seller.transactions.index');
+
+        return redirect($target)->with('success', $message);
+    }
+
+    /** Printable counter-sale receipt (thermal-friendly). */
+    public function receipt(InStoreTransaction $transaction): View
+    {
+        $store = Store::resolveFor(Auth::user());
+        $transaction = $store->inStoreTransactions()->with('items')->findOrFail($transaction->id);
+
+        return view('seller.transactions.receipt', compact('store', 'transaction'));
     }
 
     public function update(Request $request, InStoreTransaction $transaction): RedirectResponse

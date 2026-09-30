@@ -95,6 +95,7 @@ class AdminArticleController extends Controller
         return $request->validate([
             'title' => ['required', 'string', 'max:140'],
             'excerpt' => ['nullable', 'string', 'max:300'],
+            'keywords' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:20000'],
             'status' => ['required', 'in:'.implode(',', Article::STATUSES)],
             'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:950'],
@@ -102,6 +103,7 @@ class AdminArticleController extends Controller
             'title.required' => 'Judul artikel wajib diisi.',
             'title.max' => 'Judul maksimal 140 karakter.',
             'excerpt.max' => 'Ringkasan maksimal 300 karakter.',
+            'keywords.max' => 'Kata kunci maksimal 255 karakter.',
             'body.required' => 'Isi artikel wajib diisi.',
             'body.max' => 'Isi artikel maksimal 20.000 karakter.',
             'status.required' => 'Status artikel wajib dipilih.',
@@ -110,6 +112,21 @@ class AdminArticleController extends Controller
             'cover.mimes' => 'Format cover harus JPG, PNG, atau WebP.',
             'cover.max' => 'Ukuran cover maksimal 950KB.',
         ]);
+    }
+
+    /**
+     * Comma/newline separated admin input → tidy lowercase, deduplicated list.
+     * Raw input is already capped at 255 chars, so the result fits the column.
+     */
+    protected function normalizeKeywords(?string $keywords): ?string
+    {
+        $list = collect(preg_split('/[,\n]+/', $keywords ?? ''))
+            ->map(fn (string $keyword): string => mb_strtolower(trim($keyword)))
+            ->filter()
+            ->unique()
+            ->implode(', ');
+
+        return $list === '' ? null : $list;
     }
 
     /**
@@ -125,6 +142,7 @@ class AdminArticleController extends Controller
             'title' => $validated['title'],
             'slug' => Article::uniqueSlug($validated['title'], $article?->id),
             'excerpt' => $validated['excerpt'] ?? null,
+            'keywords' => $this->normalizeKeywords($validated['keywords'] ?? null),
             'body' => $validated['body'],
             'status' => $validated['status'],
             'published_at' => $publishing ? ($article?->published_at ?? now()) : $article?->published_at,

@@ -2,8 +2,10 @@
 
 @section('title', 'Keranjang — Warung Hebat')
 
+@section('bare', true)
+
 @section('content')
-<section class="pt-24 sm:pt-28 pb-10 sm:pb-14 max-w-2xl mx-auto px-4 sm:px-6">
+<section class="pt-6 sm:pt-8 pb-10 max-w-2xl mx-auto px-4 sm:px-6">
     <a href="{{ ! empty($cart['store_slug']) ? route('store.show', $cart['store_slug']) : route('home').'#warung' }}" class="inline-flex items-center gap-1.5 min-h-10 text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Lanjut belanja</a>
 
     <div class="mt-3 flex items-end justify-between gap-3">

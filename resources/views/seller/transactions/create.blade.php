@@ -2,6 +2,8 @@
 
 @section('title', 'Catat Transaksi Langsung — Warung Hebat')
 
+@section('bare', true)
+
 @section('content')
 @php
     $transaction = $transaction ?? null;
@@ -120,7 +122,14 @@
         </div>
 
         @if($products->isNotEmpty() || isset($transaction))
-            <button class="min-h-12 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold transition">{{ isset($transaction) ? 'Simpan perubahan' : 'Simpan transaksi' }}</button>
+            <div class="flex flex-col gap-2 sm:flex-row">
+                @if(isset($transaction))
+                    <button class="min-h-12 flex-1 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold transition">Simpan perubahan</button>
+                @else
+                    <button name="submit_action" value="print" class="min-h-12 flex-1 rounded-full bg-ink-900 hover:bg-brand-600 text-white font-extrabold transition">Simpan &amp; cetak struk</button>
+                    <button name="submit_action" value="save" class="min-h-12 flex-1 rounded-full border border-ink-900/20 hover:bg-ink-900 hover:text-white text-ink-900 font-extrabold transition">Simpan saja</button>
+                @endif
+            </div>
         @endif
     </form>
 </section>

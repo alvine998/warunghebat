@@ -123,8 +123,10 @@ class AdminController extends Controller
         $query = Product::with(['user', 'categoryRef:id,name,slug', 'brand:id,name,slug'])->latest();
         $search = trim((string) $request->input('search', ''));
 
-        if ($request->filled('status') && in_array($request->string('status'), Product::STATUSES, true)) {
-            $query->where('status', $request->string('status'));
+        $status = $request->string('status')->toString();
+
+        if (in_array($status, Product::STATUSES, true)) {
+            $query->where('status', $status);
         }
 
         if ($search !== '') {

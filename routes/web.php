@@ -142,6 +142,7 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
             Route::get('/transactions', [SellerTransactionController::class, 'index'])->name('transactions.index');
             Route::get('/transactions/create', [SellerTransactionController::class, 'create'])->name('transactions.create');
             Route::post('/transactions', [SellerTransactionController::class, 'store'])->name('transactions.store');
+            Route::get('/transactions/{transaction}/receipt', [SellerTransactionController::class, 'receipt'])->name('transactions.receipt');
             Route::get('/transactions/{transaction}/edit', [SellerTransactionController::class, 'edit'])->name('transactions.edit');
             Route::put('/transactions/{transaction}', [SellerTransactionController::class, 'update'])->name('transactions.update');
         });

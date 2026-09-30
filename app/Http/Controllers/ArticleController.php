@@ -38,6 +38,7 @@ class ArticleController extends Controller
             'seoImage' => $article->cover_url,
             'seoType' => 'article',
             'seoPublishedAt' => $article->published_at,
+            'seoKeywords' => $article->keywords,
         ]);
     }
 }

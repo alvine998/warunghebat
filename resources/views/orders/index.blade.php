@@ -2,8 +2,10 @@
 
 @section('title', 'Pesanan Saya — Warung Hebat')
 
+@section('bare', true)
+
 @section('content')
-<section class="pt-24 sm:pt-28 pb-10 sm:pb-14 max-w-2xl mx-auto px-4 sm:px-6">
+<section class="pt-6 sm:pt-8 pb-10 max-w-2xl mx-auto px-4 sm:px-6">
     <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 min-h-10 text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Dashboard</a>
 
     <h1 class="mt-3 font-black tracking-tight text-[26px] sm:text-3xl">Pesanan saya</h1>

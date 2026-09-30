@@ -9,6 +9,8 @@ use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -22,8 +24,10 @@ class ProductController extends Controller
     {
         $query = Auth::user()->products()->with(['categoryRef:id,name,slug', 'brand:id,user_id,name,slug'])->latest();
 
-        if ($request->filled('status') && in_array($request->string('status'), Product::STATUSES, true)) {
-            $query->where('status', $request->string('status'));
+        $status = $request->string('status')->toString();
+
+        if (in_array($status, Product::STATUSES, true)) {
+            $query->where('status', $status);
         }
 
         $products = $query->paginate(12)->withQueryString();
@@ -66,7 +70,7 @@ class ProductController extends Controller
 
         $validated = $this->validated($request);
 
-        $imagePath = $request->file('image')->store('products', 'public');
+        $imagePath = $this->storeProductImage($request->file('image'), $validated['name']);
 
         $category = Category::find($validated['category_id']);
         $brandId = $this->resolveBrandId($request, $validated['brand_id'] ?? null);
@@ -134,7 +138,7 @@ class ProductController extends Controller
             if ($imagePath) {
                 Storage::disk('public')->delete($imagePath);
             }
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = $this->storeProductImage($request->file('image'), $validated['name']);
         }
 
         $category = Category::find($validated['category_id']);
@@ -175,14 +179,27 @@ class ProductController extends Controller
      * product create/edit. Cache the ordered list for an hour to skip the
      * query on warm pages. Invalidated in AdminCategoryController.
      *
-     * @return \Illuminate\Support\Collection<int, \App\Models\Category>
+     * @return Collection<int, Category>
      */
-    protected function cachedCategories(): \Illuminate\Support\Collection
+    protected function cachedCategories(): Collection
     {
         return Cache::remember('categories-ordered-select', 3600, fn () => Category::ordered()->get(['id', 'name', 'slug', 'sort_order']));
     }
 
-    public function destroy(Product $product): RedirectResponse
+    /**
+     * `store()` names uploads with a random 40-char hash, so the storage folder
+     * and image URLs say nothing about the product. Name the file after the
+     * product instead; the short random suffix keeps it unique when two
+     * products share a name.
+     */
+    protected function storeProductImage(UploadedFile $image, string $productName): string
+    {
+        $filename = (Str::slug($productName) ?: 'produk').'-'.Str::random(8).'.'.$image->guessExtension();
+
+        return $image->storeAs('products', $filename, 'public');
+    }
+
+    protected function destroy(Product $product): RedirectResponse
     {
         $this->authorizeOwner($product);
 

@@ -475,12 +475,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- Mobile menu ----------
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
+    const menuBackdrop = document.getElementById('mobile-menu-backdrop');
     const menuIconOpen = document.getElementById('menu-icon-open');
     const menuIconClose = document.getElementById('menu-icon-close');
 
     function closeMobileMenu() {
         if (!mobileMenu) return;
         mobileMenu.classList.add('hidden');
+        menuBackdrop?.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
         menuIconOpen?.classList.remove('hidden');
         menuIconClose?.classList.add('hidden');
@@ -492,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isHidden = mobileMenu.classList.contains('hidden');
         if (isHidden) {
             mobileMenu.classList.remove('hidden');
+            menuBackdrop?.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
             menuIconOpen?.classList.add('hidden');
             menuIconClose?.classList.remove('hidden');
@@ -499,6 +502,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             closeMobileMenu();
         }
+    });
+
+    menuBackdrop?.addEventListener('click', closeMobileMenu);
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeMobileMenu();
     });
 
     // ---------- Reveal on scroll ----------

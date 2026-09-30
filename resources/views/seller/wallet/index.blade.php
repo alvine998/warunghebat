@@ -2,8 +2,10 @@
 
 @section('title', 'Saldo Warung — Warung Hebat')
 
+@section('bare', true)
+
 @section('content')
-<section class="pt-24 sm:pt-28 pb-10 sm:pb-14 max-w-4xl mx-auto px-4 sm:px-6">
+<section class="pt-6 sm:pt-8 pb-10 max-w-4xl mx-auto px-4 sm:px-6">
     <div class="flex items-center justify-between gap-2 flex-wrap">
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 min-h-10 text-[13px] font-extrabold text-ink-500 hover:text-ink-900">← Dashboard</a>
         <a href="{{ route('seller.products.index') }}" class="text-[13px] font-extrabold text-ink-500 hover:text-ink-900">Kelola produk →</a>

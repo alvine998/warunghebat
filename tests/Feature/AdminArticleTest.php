@@ -84,6 +84,51 @@ class AdminArticleTest extends TestCase
         $this->assertNull($article->published_at);
     }
 
+    public function test_article_keywords_are_normalized_on_save(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)->post(route('admin.articles.store'), [
+            'title' => 'Panduan Sembako',
+            'keywords' => ' Sembako , BELANJA hemat, sembako, ',
+            'body' => 'Isi artikel.',
+            'status' => Article::STATUS_PUBLISHED,
+        ]);
+
+        $this->assertSame('sembako, belanja hemat', Article::firstWhere('slug', 'panduan-sembako')->keywords);
+    }
+
+    public function test_blank_article_keywords_are_stored_as_null(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)->post(route('admin.articles.store'), [
+            'title' => 'Artikel Tanpa Kata Kunci',
+            'keywords' => ' , , ',
+            'body' => 'Isi artikel.',
+            'status' => Article::STATUS_DRAFT,
+        ]);
+
+        $this->assertNull(Article::firstWhere('slug', 'artikel-tanpa-kata-kunci')->keywords);
+    }
+
+    public function test_store_article_rejects_oversized_keywords(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->from(route('admin.articles.create'))
+            ->post(route('admin.articles.store'), [
+                'title' => 'Judul',
+                'keywords' => str_repeat('a', 256),
+                'body' => 'Isi artikel.',
+                'status' => Article::STATUS_DRAFT,
+            ])
+            ->assertSessionHasErrors('keywords');
+
+        $this->assertSame(0, Article::count());
+    }
+
     public function test_store_article_rejects_invalid_input(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);

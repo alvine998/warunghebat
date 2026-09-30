@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use App\Models\SellerVerification;
 use App\Models\Store;
 use App\Models\User;
@@ -38,6 +39,63 @@ class AdminListFiltersTest extends TestCase
             ->assertOk()
             ->assertSee($pendingStore->name)
             ->assertDontSee($verifiedStore->name);
+    }
+
+    // ---------- PRODUK ----------
+
+    public function test_product_status_tab_only_lists_that_status(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $seller = User::factory()->create(['role' => 'penjual']);
+        $pending = Product::factory()->for($seller)->create(['name' => 'Kopi Pending', 'status' => 'pending']);
+        $approved = Product::factory()->for($seller)->create(['name' => 'Kopi Tayang', 'status' => 'approved']);
+        $rejected = Product::factory()->for($seller)->create(['name' => 'Kopi Ditolak', 'status' => 'rejected']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.products', ['status' => 'pending']))
+            ->assertOk()
+            ->assertSee($pending->name)
+            ->assertDontSee($approved->name)
+            ->assertDontSee($rejected->name);
+
+        $this->actingAs($admin)
+            ->get(route('admin.products', ['status' => 'approved']))
+            ->assertOk()
+            ->assertSee($approved->name)
+            ->assertDontSee($pending->name);
+
+        $this->actingAs($admin)
+            ->get(route('admin.products', ['status' => 'rejected']))
+            ->assertOk()
+            ->assertSee($rejected->name)
+            ->assertDontSee($pending->name);
+    }
+
+    public function test_unknown_product_status_is_ignored(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $seller = User::factory()->create(['role' => 'penjual']);
+        Product::factory()->for($seller)->create(['name' => 'Kopi Pending', 'status' => 'pending']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.products', ['status' => 'ngawur']))
+            ->assertOk()
+            ->assertSee('Kopi Pending');
+    }
+
+    public function test_seller_product_status_tab_only_lists_that_status(): void
+    {
+        $seller = User::factory()->create(['role' => 'penjual']);
+        SellerVerification::factory()->for($seller)->verified()->create();
+        Store::factory()->for($seller)->create();
+        Product::factory()->for($seller)->create(['name' => 'Kopi Pending', 'status' => 'pending']);
+        Product::factory()->for($seller)->create(['name' => 'Kopi Tayang', 'status' => 'approved']);
+
+        $this->actingAs($seller)
+            ->get(route('seller.products.index', ['status' => 'pending']))
+            ->assertOk()
+            ->assertSee('Kopi Pending')
+            ->assertDontSee('Kopi Tayang');
     }
 
     // ---------- PEMBAYARAN ----------

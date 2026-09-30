@@ -22,20 +22,32 @@
         <div class="absolute -top-20 -right-20 w-72 h-72 bg-brand-500/30 blur-[90px] rounded-full"></div>
         <div class="relative flex flex-col sm:flex-row sm:items-center gap-5">
             <span class="w-16 h-16 rounded-3xl bg-brand-500 grid place-items-center text-2xl font-black shrink-0">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-            <div class="flex-1">
+            <div class="flex-1 min-w-0">
                 <p class="text-[12px] font-bold text-white/50 tracking-widest">SELAMAT DATANG KEMBALI 👋</p>
-                <h1 class="font-black tracking-tight text-2xl sm:text-3xl">{{ auth()->user()->name }}</h1>
-                <p class="text-sm font-medium text-white/60">{{ auth()->user()->email }} • Bergabung {{ auth()->user()->created_at->diffForHumans() }}</p>
+                <h1 class="font-black tracking-tight text-2xl sm:text-3xl break-words">{{ auth()->user()->name }}</h1>
+                <p class="text-sm font-medium text-white/60 break-words">
+                    <span class="block sm:inline">{{ auth()->user()->email }}</span>
+                    <span class="hidden sm:inline"> • </span>
+                    <span class="block sm:inline">Bergabung {{ auth()->user()->created_at->diffForHumans() }}</span>
+                </p>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button class="bg-white/10 border border-white/15 hover:bg-white/20 font-extrabold text-sm px-6 py-3 rounded-full transition">Keluar</button>
+                <button class="w-full sm:w-auto bg-white/10 border border-white/15 hover:bg-white/20 font-extrabold text-sm px-6 py-3 rounded-full transition">Keluar</button>
             </form>
         </div>
-        <div class="relative mt-6 grid grid-cols-3 gap-2.5 max-w-lg">
-            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['points'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">POIN HEBAT</p></div>
-            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['orders'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">PESANAN</p></div>
-            <div class="rounded-2xl bg-white/10 border border-white/10 p-4"><p class="font-black text-xl">{{ number_format($stats['favorites'] ?? 0, 0, ',', '.') }}</p><p class="text-[11px] font-bold text-white/60">WARUNG FAVORIT</p></div>
+        {{-- Fluid type + min-w-0 so three tiles stay inside 320px screens without a custom breakpoint. --}}
+        <div class="relative mt-6 grid grid-cols-3 gap-2 sm:gap-2.5 max-w-lg">
+            @foreach([
+                ['label' => 'POIN HEBAT', 'value' => $stats['points'] ?? 0],
+                ['label' => 'PESANAN', 'value' => $stats['orders'] ?? 0],
+                ['label' => 'WARUNG FAVORIT', 'value' => $stats['favorites'] ?? 0],
+            ] as $stat)
+                <div class="min-w-0 rounded-2xl bg-white/10 border border-white/10 p-2.5 sm:p-4">
+                    <p class="font-black tabular-nums text-[clamp(15px,4.6vw,20px)] leading-tight">{{ number_format($stat['value'], 0, ',', '.') }}</p>
+                    <p class="mt-0.5 text-[clamp(9px,2.5vw,11px)] font-bold text-white/60 leading-tight">{{ $stat['label'] }}</p>
+                </div>
+            @endforeach
         </div>
     </div>
 

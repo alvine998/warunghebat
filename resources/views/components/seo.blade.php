@@ -9,6 +9,7 @@
     $seoType = $seoType ?? 'website';
     $seoUrl = $seoUrl ?? url()->current();
     $seoPublishedAt = $seoPublishedAt ?? null;
+    $seoKeywords = trim((string) ($seoKeywords ?? ''));
 
     // Private areas keep out of search results; buyer flows have no SEO value.
     $seoRobots = $seoRobots ?? (request()->routeIs(
@@ -16,6 +17,9 @@
     ) ? 'noindex, nofollow' : 'index, follow');
 @endphp
 <meta name="description" content="{{ $seoDescription }}">
+@if($seoKeywords !== '')
+<meta name="keywords" content="{{ $seoKeywords }}">
+@endif
 <meta name="robots" content="{{ $seoRobots }}">
 <link rel="canonical" href="{{ $seoUrl }}">
 <meta property="og:site_name" content="Warung Hebat">

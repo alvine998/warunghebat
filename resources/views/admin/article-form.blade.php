@@ -28,6 +28,12 @@
         </div>
 
         <div>
+            <label for="keywords" class="text-[13px] font-extrabold">Kata kunci SEO</label>
+            <input id="keywords" name="keywords" maxlength="255" value="{{ old('keywords', $article->keywords) }}" placeholder="sembako, belanja hemat, warung tetangga" class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[15px] font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition">
+            <p class="mt-1.5 text-xs font-semibold text-ink-500">Pisahkan dengan koma. Maksimal 255 karakter, dipakai sebagai tag <code class="rounded bg-cream-100 px-1.5 py-0.5 text-[11px] font-bold">meta keywords</code> di halaman artikel.</p>
+        </div>
+
+        <div>
             <label for="body" class="text-[13px] font-extrabold">Isi artikel *</label>
             <textarea id="body" name="body" rows="18" required placeholder="Tulis artikelnya di sini..." class="mt-1.5 w-full rounded-2xl border border-ink-900/15 px-4 py-3 text-[14px] font-medium leading-relaxed outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition resize-y">{{ old('body', $article->body) }}</textarea>
         </div>

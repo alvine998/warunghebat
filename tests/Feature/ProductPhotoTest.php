@@ -51,6 +51,25 @@ class ProductPhotoTest extends TestCase
         $this->assertSame('Indomie Goreng', Product::sole()->name);
     }
 
+    public function test_stored_image_is_named_after_the_product(): void
+    {
+        Storage::fake('public');
+        $seller = $this->verifiedSeller();
+
+        $this->actingAs($seller)->post(route('seller.products.store'), [
+            'name' => 'Indomie Goreng',
+            'price' => '3500',
+            'stock' => '20',
+            'category' => 'Sembako',
+            'image' => UploadedFile::fake()->image('foto hp saya.jpg')->size(100),
+        ])->assertRedirect(route('seller.products.index'));
+
+        $path = Product::sole()->image_path;
+
+        $this->assertMatchesRegularExpression('#^products/indomie-goreng-[A-Za-z0-9]{8}\.jpg$#', $path);
+        Storage::disk('public')->assertExists($path);
+    }
+
     public function test_product_store_rejects_image_over_950_kb(): void
     {
         Storage::fake('public');

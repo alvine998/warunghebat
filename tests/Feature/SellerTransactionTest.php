@@ -99,6 +99,60 @@ class SellerTransactionTest extends TestCase
         $this->assertDatabaseMissing('users', ['email' => 'dina@example.com']);
     }
 
+    public function test_save_and_print_redirects_to_the_receipt(): void
+    {
+        [$seller, , $product] = $this->verifiedSellerWithProduct();
+
+        $this->actingAs($seller)
+            ->post(route('seller.transactions.store'), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'identified',
+                'buyer_name' => 'Budi Santoso',
+                'submit_action' => 'print',
+                'items' => [['product_id' => $product->id, 'qty' => 2]],
+            ])
+            ->assertRedirect(route('seller.transactions.receipt', InStoreTransaction::sole()));
+
+        $this->actingAs($seller)
+            ->get(route('seller.transactions.receipt', InStoreTransaction::sole()))
+            ->assertOk()
+            ->assertSee('STRUK TRANSAKSI')
+            ->assertSee('Budi Santoso')
+            ->assertSee('Nasi Goreng')
+            ->assertSee('Rp 30.000');
+    }
+
+    public function test_save_only_redirects_to_the_index(): void
+    {
+        [$seller, , $product] = $this->verifiedSellerWithProduct();
+
+        $this->actingAs($seller)
+            ->post(route('seller.transactions.store'), [
+                'buyer_type' => InStoreTransaction::BUYER_WALK_IN,
+                'buyer_mode' => 'anonymous',
+                'submit_action' => 'save',
+                'items' => [['product_id' => $product->id, 'qty' => 1]],
+            ])
+            ->assertRedirect(route('seller.transactions.index'));
+    }
+
+    public function test_seller_cannot_print_another_sellers_receipt(): void
+    {
+        [$seller] = $this->verifiedSellerWithProduct();
+        [, $otherStore, $otherProduct] = $this->verifiedSellerWithProduct();
+        $transaction = InStoreTransaction::recordSale(
+            $otherStore,
+            [['product_id' => $otherProduct->id, 'qty' => 1]],
+            InStoreTransaction::BUYER_WALK_IN,
+            null,
+            ['name' => 'Budi'],
+        );
+
+        $this->actingAs($seller)
+            ->get(route('seller.transactions.receipt', $transaction))
+            ->assertNotFound();
+    }
+
     public function test_seller_can_open_edit_form_with_existing_transaction_data(): void
     {
         [$seller, $store, $product] = $this->verifiedSellerWithProduct();

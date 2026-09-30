@@ -19,6 +19,7 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
+        'keywords',
         'body',
         'cover_path',
         'status',

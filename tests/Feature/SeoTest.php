@@ -73,6 +73,32 @@ class SeoTest extends TestCase
             ->assertSee('"headline":"Cara Memilih Sembako"', false);
     }
 
+    public function test_article_keywords_are_rendered_as_a_meta_tag(): void
+    {
+        $article = Article::factory()->create([
+            'title' => 'Cara Memilih Sembako',
+            'keywords' => 'sembako, belanja hemat',
+            'published_at' => now()->subDay(),
+        ]);
+
+        $this->get(route('articles.show', $article))
+            ->assertOk()
+            ->assertSee('<meta name="keywords" content="sembako, belanja hemat">', false);
+    }
+
+    public function test_meta_keywords_tag_is_absent_when_an_article_has_none(): void
+    {
+        $article = Article::factory()->create([
+            'title' => 'Artikel Tanpa Kata Kunci',
+            'keywords' => null,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $this->get(route('articles.show', $article))
+            ->assertOk()
+            ->assertDontSee('name="keywords"', false);
+    }
+
     public function test_about_page_is_indexable(): void
     {
         $this->get(route('about'))
